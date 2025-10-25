@@ -1,0 +1,12 @@
+{
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"editor.tabSize": 2,
+	"editor.indentSize": "tabSize",
+	"editor.detectIndentation": false,
+
+	"files.exclude": {
+		".svelte-kit/": true
+	}
+}
