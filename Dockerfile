@@ -1,43 +1,33 @@
 # Build stage
 FROM node:25-alpine AS builder
 
-# Set working directory
+ENV NODE_ENV=production 
+
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* ./
+COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm install --include=dev
 
-# Copy source code
 COPY . .
 
-# Build the application
 RUN npm run build
 
 # Production stage
 FROM node:25-alpine AS runner
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* ./
+COPY package*.json ./
 
-# Install only production dependencies
-RUN npm install --omit=dev
+RUN npm install --include=dev
 
-# Copy built application from builder stage
-COPY --from=builder /app/build ./build
+COPY --from=builder /app .
 
-# Expose port 3000
-EXPOSE 3000
-
-# Set environment variables
-ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
+ENV ORIGIN=*
 
-# Start the application
-CMD ["node", "build"]
+EXPOSE 3000
+
+CMD ["npm", "run", "dev", "--", "--port", "3000", "--host", "0.0.0.0"]

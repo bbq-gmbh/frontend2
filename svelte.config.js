@@ -29,7 +29,7 @@ const config = {
 		experimental: {
 			async: true
 		}
-	}
+	},
 };
 
 export default config;
