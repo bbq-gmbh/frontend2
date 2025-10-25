@@ -2,9 +2,8 @@
 	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
 	import favicon from '@/assets/favicon.svg';
-	import type { LayoutData } from './$types';
 
-	let { children, data }: { children: any; data: LayoutData } = $props();
+	let { children }: { children: any } = $props();
 </script>
 
 <svelte:head>

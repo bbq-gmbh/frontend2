@@ -40,6 +40,6 @@ export const actions = {
 
 		setAuthCookies(cookies, result.tokens);
 
-		throw redirect(302, '/');
+		throw redirect(302, '/app');
 	}
 } satisfies Actions;

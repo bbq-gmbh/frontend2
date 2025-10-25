@@ -1,15 +1,10 @@
 import { redirect } from '@sveltejs/kit';
-import { clearAuthCookies, logoutAll } from '$lib/server/auth';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
-export const actions = {
-	default: async ({ cookies, locals }) => {
-		if (locals.accessToken) {
-			await logoutAll(locals.accessToken);
-		}
+import { clearAuthCookies, logoutAll } from '@/server/auth';
 
-		clearAuthCookies(cookies);
+export const load: PageServerLoad = async ({ cookies, locals }) => {
+	clearAuthCookies(cookies);
 
-		throw redirect(302, '/');
-	}
-} satisfies Actions;
+	redirect(302, '/login');
+};

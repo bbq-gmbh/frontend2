@@ -305,3 +305,13 @@ export function withAuthClient(): { user: User; client: Client } {
 		})
 	};
 }
+
+export function requireAuthSuperuser(locals: App.Locals) {
+	if (!locals.user || !locals.accessToken) {
+		redirect(302, '/login');
+	}
+
+	if (!locals.user.is_superuser) {
+		error(403, 'Forbidden');
+	}
+}

@@ -1,7 +1,11 @@
 <script lang="ts">
-  import type { LayoutServerLoad } from './$types';
+	import type { LayoutData } from './$types';
 
-	let { children, data: LayoutData }: { children: any; data: LayoutServerLoad } = $props();
+	import MainLayout from '#/layout/main-layout.svelte';
+
+	let { children, data }: { children: any; data: LayoutData } = $props();
 </script>
 
-{@render children?.()}
+<MainLayout user={data.user}>
+	{@render children?.()}
+</MainLayout>

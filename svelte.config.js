@@ -17,8 +17,8 @@ const config = {
 		},
 
 		alias: {
+			'#': 'src/lib/components',
 			'@': 'src/lib/',
-			'#': 'src/lib/components'
 		}
 	},
 	compilerOptions: {
