@@ -6,6 +6,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
 	return {
 		user: locals.user!!,
-		accessToken: locals.accessToken!!
+		accessToken: locals.accessToken!!,
+		breadcrumbs: [],
 	};
 };
