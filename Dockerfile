@@ -1,18 +1,43 @@
-FROM oven/bun:1 AS base
-WORKDIR /usr/src/app
+# Build stage
+FROM node:25-alpine AS builder
 
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json bun.lock /temp/dev/
-RUN cd /temp/dev && bun install --frozen-lockfile
+# Set working directory
+WORKDIR /app
 
-FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
 COPY . .
 
-ENV NODE_ENV=production
-RUN bun run build
+# Build the application
+RUN npm run build
 
-USER bun
+# Production stage
+FROM node:25-alpine AS runner
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install only production dependencies
+RUN npm install --omit=dev
+
+# Copy built application from builder stage
+COPY --from=builder /app/build ./build
+
+# Expose port 3000
 EXPOSE 3000
-ENTRYPOINT ["bun", "run", "preview", "--", "--port", "3000"]
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+# Start the application
+CMD ["node", "build"]
