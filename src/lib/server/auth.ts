@@ -282,17 +282,28 @@ export async function validateSession(cookies: any): Promise<{
 	return { user: null, accessToken: null };
 }
 
-export function requireAuth(locals: App.Locals) {
+export function requireAuth(locals: App.Locals, args: { superuser?: boolean } = {}) {
 	if (!locals.user || !locals.accessToken) {
 		redirect(302, '/login');
 	}
+
+	if (args.superuser && !locals.user.is_superuser) {
+		error(403, 'Forbidden');
+	}
 }
 
-export function withAuthClient(): { user: User; client: Client } {
+export function withAuthClient(args: { superuser?: boolean } = {}): {
+	user: User;
+	client: Client;
+} {
 	const { locals } = getRequestEvent();
 
 	if (!locals.user || !locals.accessToken) {
 		error(401, 'Unauthorized');
+	}
+
+	if (args.superuser && !locals.user.is_superuser) {
+		error(403, 'Forbidden');
 	}
 
 	return {
@@ -304,14 +315,4 @@ export function withAuthClient(): { user: User; client: Client } {
 			}
 		})
 	};
-}
-
-export function requireAuthSuperuser(locals: App.Locals) {
-	if (!locals.user || !locals.accessToken) {
-		redirect(302, '/login');
-	}
-
-	if (!locals.user.is_superuser) {
-		error(403, 'Forbidden');
-	}
 }
