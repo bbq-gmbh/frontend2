@@ -124,4 +124,5 @@
 	@apply select-none;
 
 	scrollbar-width: thin;
+	-webkit-user-drag: none;
 }

@@ -5,8 +5,6 @@ import * as sdk from '@/backend/sdk.gen';
 import { error } from '@sveltejs/kit';
 
 export const getUsers = query(async () => {
-	console.log('getUsers');
-
 	const { client } = withAuthClient({ superuser: true });
 	const { data } = await sdk.listUsers({ client });
 

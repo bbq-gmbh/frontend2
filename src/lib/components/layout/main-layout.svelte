@@ -52,16 +52,24 @@
 <Sidebar.Provider>
 	<AppSidebar {user} />
 	<Sidebar.Inset>
-		<header class="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
-			<Sidebar.Trigger />
-			<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
-      {@render breadcrumbList(breadcrumbs)}
-			<div class="ml-auto flex">
-				<ThemeToggle />
+		<div class="flex min-h-full flex-col">
+			<header
+				class="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4"
+			>
+				<Sidebar.Trigger />
+				<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
+				{@render breadcrumbList(breadcrumbs)}
+				<div class="ml-auto flex">
+					<ThemeToggle />
+				</div>
+			</header>
+			<div class="flex grow">
+				<div class="mx-auto flex max-w-[80rem] grow flex-col">
+					<div class="w-full max-w-[80rem] grow p-4 space-y-4">
+						{@render children?.()}
+					</div>
+				</div>
 			</div>
-		</header>
-		<div class="p-4">
-			{@render children?.()}
 		</div>
 	</Sidebar.Inset>
 </Sidebar.Provider>

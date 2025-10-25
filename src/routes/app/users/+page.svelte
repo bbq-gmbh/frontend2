@@ -7,7 +7,7 @@
 
 <h1 class="mb-2 text-3xl font-extrabold">User</h1>
 
-<div class="my-2">
+<div class="my-2 space-y-2">
 	<svelte:boundary>
 		<Button
 			onclick={async () => {
@@ -27,6 +27,6 @@
 	</svelte:boundary>
 </div>
 
-<div class="my-2">
+<div class="my-2 space-y-4">
 	<DataTable />
 </div>

@@ -8,7 +8,7 @@ import type { User, AuthTokens } from '$lib/types/auth';
 import { getRequestEvent } from '$app/server';
 import { client } from '@/backend/client.gen';
 
-const TOKEN_COOKIE_NAME = 'auth_token';
+const TOKEN_COOKIE_NAME = 'access_token';
 const REFRESH_TOKEN_COOKIE_NAME = 'refresh_token';
 
 const BASE_COOKIE_OPTIONS = {
@@ -252,12 +252,12 @@ export async function validateSession(cookies: any): Promise<{
 		return { user: null, accessToken: null };
 	}
 
-	if (accessToken && !isTokenExpired(accessToken)) {
+	if (!!accessToken && !isTokenExpired(accessToken)) {
 		const user = await getCurrentUser(accessToken);
 		return { user, accessToken };
 	}
 
-	if (refreshToken) {
+	if (!!refreshToken) {
 		const refreshResult = await refreshAccessToken(refreshToken);
 
 		if (refreshResult.success) {
