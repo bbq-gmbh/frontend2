@@ -90,7 +90,7 @@
 		<Card.Header>
 			<Card.Title>Nutzer</Card.Title>
 		</Card.Header>
-		<Card.Content class="max-w-[40rem] space-y-4">
+		<Card.Content class="max-w-[40rem] space-y-6">
 			<div class="space-y-2">
 				<Label>Id</Label>
 				<InputGroup.Root>
@@ -137,7 +137,7 @@
 						<Star />
 					</InputGroup.Addon>
 				</InputGroup.Root> -->
-				<Switch disabled={editing} bind:checked={() => false, () => {}} />
+				<Switch disabled={editing} bind:checked={() => user.is_superuser, () => {}} />
 				<Label>Superuser</Label>
 			</div>
 		</Card.Content>
@@ -146,7 +146,7 @@
 		<Card.Header>
 			<Card.Title>Angestellter</Card.Title>
 		</Card.Header>
-		<Card.Content class="max-w-[40rem] space-y-4">
+		<Card.Content class="max-w-[40rem] space-y-6">
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div class="space-y-2">
 					<Label>Vorname</Label>
@@ -157,7 +157,7 @@
 							placeholder="&ndash;"
 							readonly={!editing}
 						/>
-						{#if editing}
+						{#if editing && !!user.employee}
 							<InputGroup.Addon align="inline-start">
 								<Pen />
 							</InputGroup.Addon>
@@ -173,7 +173,7 @@
 							placeholder="&ndash;"
 							readonly={!editing}
 						/>
-						{#if editing}
+						{#if editing && !!user.employee}
 							<InputGroup.Addon align="inline-start">
 								<Pen />
 							</InputGroup.Addon>
