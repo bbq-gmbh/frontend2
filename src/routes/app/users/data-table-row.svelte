@@ -72,26 +72,24 @@
 											</AlertDialog.Header>
 											<AlertDialog.Footer>
 												<AlertDialog.Cancel>Abbrechen</AlertDialog.Cancel>
-												<svelte:boundary>
-													<AlertDialog.Action
-														class="bg-destructive"
-														disabled={!!deleteUser.pending}
-														onclick={async () => {
-															try {
-																await deleteUser(user.id);
-																toast.success('Nice bro');
-                                deleteDialogOpen = false;
-															} catch (error) {
-																toast.error('Fucked up');
-															}
-														}}
-													>
-														{#if !!deleteUser.pending}
-															<Spinner />
-														{/if}
-														Irreversibel Löschen
-													</AlertDialog.Action>
-												</svelte:boundary>
+												<AlertDialog.Action
+													class="bg-destructive"
+													disabled={!!deleteUser.pending}
+													onclick={async () => {
+														try {
+															await deleteUser(user.id);
+															toast.success(`Nutzer ${user.username} erfolgreich gelöscht`);
+															deleteDialogOpen = false;
+														} catch (error) {
+															toast.error(`Fehler beim Löschen von Nutzer ${user.username}`);
+														}
+													}}
+												>
+													{#if !!deleteUser.pending}
+														<Spinner />
+													{/if}
+													Irreversibel Löschen
+												</AlertDialog.Action>
 											</AlertDialog.Footer>
 										</AlertDialog.Content>
 									</AlertDialog.Root>

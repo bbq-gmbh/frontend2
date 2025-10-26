@@ -14,6 +14,6 @@
 
 <ModeWatcher />
 
-<Toaster />
+<Toaster position="bottom-right" />
 
 {@render children?.()}

@@ -23,5 +23,9 @@ export const deleteUser = command(z.string(), async (id) => {
 
 	await new Promise((resolve) => setTimeout(resolve, 1000));
 
+  if (Math.random() < 0.5) {
+    error(500, 'Random test failure');
+  }
+
 	await getUsers().refresh();
 });
