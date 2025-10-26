@@ -8,7 +8,7 @@
 	let { user }: { user: User } = $props();
 </script>
 
-<div class="flex gap-2 items-center">
+<div class="flex items-center gap-2">
 	<UserAvatar {user} />
 	<div class="grid flex-1 text-left text-sm leading-tight">
 		{#if !!user.employee}

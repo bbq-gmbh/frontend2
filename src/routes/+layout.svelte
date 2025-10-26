@@ -14,6 +14,6 @@
 
 <ModeWatcher />
 
-<Toaster position="bottom-right" />
+<Toaster position="bottom-right" duration={5000} />
 
 {@render children?.()}

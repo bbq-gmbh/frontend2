@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Check, IdCardLanyard, Pen, Save, Star, UserIcon, X } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
 
 	import * as InputGroup from '#/ui/input-group';
 	import * as AlertDialog from '#/ui/alert-dialog';
@@ -12,9 +13,9 @@
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	import { editUser } from './user.remote';
-	import { toast } from 'svelte-sonner';
 	import { Spinner } from '#/ui/spinner';
 	import Switch from '#/ui/switch/switch.svelte';
+	import { Badge } from '#/ui/badge';
 
 	const { data }: { data: PageData } = $props();
 	const { user } = data;
@@ -57,7 +58,7 @@
 								await editUser({
 									username: 'snu_pingas'
 								});
-								toast.error('Änderungen erfolgreich gespeichert');
+								toast.success('Änderungen erfolgreich gespeichert');
 								editing = false;
 							} catch (error) {
 								toast.error('Fehler beim Speichern der Änderungen');
@@ -138,7 +139,12 @@
 					</InputGroup.Addon>
 				</InputGroup.Root> -->
 				<Switch disabled={editing} bind:checked={() => user.is_superuser, () => {}} />
-				<Label>Superuser</Label>
+				<Label class="flex gap-1 items-center">
+					Superuser
+					<Badge variant="outline" class="px-0.5">
+						<Star />
+					</Badge>
+				</Label>
 			</div>
 		</Card.Content>
 	</Card.Root>
