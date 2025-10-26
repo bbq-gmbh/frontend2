@@ -6,6 +6,6 @@ export const load: LayoutLoad = async ({ parent, url }) => {
   const userId = url.pathname.match(/\/users\/([^\/\?]+)/)?.[1] || '';
 
 	return {
-		breadcrumbs: [...parentData.breadcrumbs, { name: userId }]
+		breadcrumbs: [...parentData.breadcrumbs, { name: userId, path: userId }]
 	};
 };
