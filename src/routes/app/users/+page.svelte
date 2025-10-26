@@ -28,5 +28,5 @@
 </div>
 
 <div class="my-2 space-y-4">
-	<DataTable />
+	<DataTable users={[{ username: "Jeff", id: "1234", is_superuser: false, created_at: "" }]} />
 </div>

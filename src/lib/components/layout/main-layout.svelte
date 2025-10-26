@@ -50,8 +50,8 @@
 {/snippet}
 
 <Sidebar.Provider>
-	<AppSidebar {user} />
-	<Sidebar.Inset>
+	<AppSidebar {user} /> <!-- [scrollbar-gutter:stable_both-edges] -->
+	<Sidebar.Inset class="">
 		<div class="flex min-h-full flex-col">
 			<header
 				class="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4"
