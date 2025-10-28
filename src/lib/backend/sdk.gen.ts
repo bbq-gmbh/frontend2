@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CanSetupSetupGetData, CanSetupSetupGetResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeesData, GetEmployeesErrors, GetEmployeesResponses, ListUsersData, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, ReadRootGetData, ReadRootGetResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeesData, GetEmployeesErrors, GetEmployeesResponses, GetSetupStatusData, GetSetupStatusResponses, ListUsersData, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, ReadRootGetData, ReadRootGetResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -213,18 +213,26 @@ export const createEmployee = <ThrowOnError extends boolean = false>(options: Op
 };
 
 /**
- * Can Setup
+ * Get Setup Status
  */
-export const canSetupSetupGet = <ThrowOnError extends boolean = false>(options?: Options<CanSetupSetupGetData, ThrowOnError>) => {
-    return (options?.client ?? client).get<CanSetupSetupGetResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
+export const getSetupStatus = <ThrowOnError extends boolean = false>(options?: Options<GetSetupStatusData, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetSetupStatusResponses, unknown, ThrowOnError>({
         url: '/__setup/',
         ...options
+    });
+};
+
+/**
+ * Setup Create
+ */
+export const setupCreate = <ThrowOnError extends boolean = false>(options: Options<SetupCreateData, ThrowOnError>) => {
+    return (options.client ?? client).post<SetupCreateResponses, SetupCreateErrors, ThrowOnError>({
+        url: '/__setup/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     });
 };
 

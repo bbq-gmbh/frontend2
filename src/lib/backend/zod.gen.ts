@@ -20,6 +20,13 @@ export const zEmployeeCreate = z.object({
 });
 
 /**
+ * GetSetupStatus
+ */
+export const zGetSetupStatus = z.object({
+    is_setup: z.boolean()
+});
+
+/**
  * ValidationError
  */
 export const zValidationError = z.object({
@@ -69,6 +76,29 @@ export const zPasswordChangeRequest = z.object({
 });
 
 /**
+ * ServerStoreCreate
+ */
+export const zServerStoreCreate = z.object({
+    timezone: z.string()
+});
+
+/**
+ * UserCreate
+ */
+export const zUserCreate = z.object({
+    username: z.string(),
+    password: z.string()
+});
+
+/**
+ * SetupCreate
+ */
+export const zSetupCreate = z.object({
+    user: zUserCreate,
+    server_store: zServerStoreCreate
+});
+
+/**
  * TokenType
  */
 export const zTokenType = z.enum([
@@ -82,14 +112,6 @@ export const zTokenPair = z.object({
     access_token: z.string(),
     refresh_token: z.string(),
     token_type: z.optional(zTokenType)
-});
-
-/**
- * UserCreate
- */
-export const zUserCreate = z.object({
-    username: z.string(),
-    password: z.string()
 });
 
 /**
@@ -212,8 +234,19 @@ export const zCreateEmployeeData = z.object({
     query: z.optional(z.never())
 });
 
-export const zCanSetupSetupGetData = z.object({
+export const zGetSetupStatusData = z.object({
     body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zGetSetupStatusResponse = zGetSetupStatus;
+
+export const zSetupCreateData = z.object({
+    body: zSetupCreate,
     path: z.optional(z.never()),
     query: z.optional(z.never())
 });
