@@ -26,7 +26,6 @@ COPY --from=builder /app .
 
 ENV PORT=3000
 ENV HOST=0.0.0.0
-ENV ORIGIN=*
 
 EXPOSE 3000
 

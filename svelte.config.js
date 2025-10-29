@@ -1,10 +1,6 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-const originEnv = process.env.ORIGIN;
-const trustedOrigins =
-	originEnv && originEnv !== '*' ? [originEnv] : ['http://localhost:3000', 'http://127.0.0.1:3000'];
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -17,7 +13,7 @@ const config = {
 		adapter: adapter(),
 
 		csrf: {
-			trustedOrigins
+			trustedOrigins: ['*']
 		},
 
 		experimental: {
