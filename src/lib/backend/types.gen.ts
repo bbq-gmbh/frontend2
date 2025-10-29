@@ -37,6 +37,16 @@ export type EmployeeCreate = {
 };
 
 /**
+ * GetSetupStatus
+ */
+export type GetSetupStatus = {
+    /**
+     * Is Setup
+     */
+    is_setup: boolean;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -95,6 +105,24 @@ export type PasswordChangeRequest = {
      * New Password
      */
     new_password: string;
+};
+
+/**
+ * ServerStoreCreate
+ */
+export type ServerStoreCreate = {
+    /**
+     * Timezone
+     */
+    timezone: string;
+};
+
+/**
+ * SetupCreate
+ */
+export type SetupCreate = {
+    user: UserCreate;
+    server_store: ServerStoreCreate;
 };
 
 /**
@@ -402,18 +430,43 @@ export type CreateEmployeeResponses = {
     201: unknown;
 };
 
-export type CanSetupSetupGetData = {
+export type GetSetupStatusData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/__setup/';
 };
 
-export type CanSetupSetupGetResponses = {
+export type GetSetupStatusResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    201: GetSetupStatus;
+};
+
+export type GetSetupStatusResponse = GetSetupStatusResponses[keyof GetSetupStatusResponses];
+
+export type SetupCreateData = {
+    body: SetupCreate;
+    path?: never;
+    query?: never;
+    url: '/__setup/';
+};
+
+export type SetupCreateErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SetupCreateError = SetupCreateErrors[keyof SetupCreateErrors];
+
+export type SetupCreateResponses = {
+    /**
+     * Successful Response
+     */
+    201: unknown;
 };
 
 export type ReadRootGetData = {
