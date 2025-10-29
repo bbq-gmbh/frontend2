@@ -61,7 +61,7 @@
 						password,
 						timezone
 					});
-					toast.info('Application Einrichtung erfolgreich');
+					toast.success('Application Einrichtung erfolgreich');
 
           await goto("/login");
 				} catch (error: any) {
