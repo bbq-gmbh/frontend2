@@ -30,4 +30,4 @@ ENV ORIGIN=*
 
 EXPOSE 3000
 
-CMD ["npm", "run", "preview", "--", "--port", "3000", "--host", "0.0.0.0"]
+CMD ["sh", "-c", "exec npm run preview -- --port \"$PORT\" --host \"$HOST\""]
