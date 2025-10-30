@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
-  
+
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 
@@ -10,11 +10,15 @@
 
 	import { cn } from '$lib/utils.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-  
+
 	const timezones = Intl.supportedValuesOf('timeZone');
 
 	let open = $state(false);
-	let { value = $bindable(''), name, ...restProps }: { value?: string; name?: string; [key: string]: any } = $props();
+	let {
+		value = $bindable(''),
+		name,
+		...restProps
+	}: { value?: string; name?: string; [key: string]: any } = $props();
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	const selectedValue = $derived(timezones.find((f) => f === value));
@@ -42,7 +46,7 @@
 			<Button
 				{...props}
 				variant="outline"
-				class="w-[200px] justify-between"
+				class="w-[14rem] justify-between"
 				role="combobox"
 				aria-expanded={open}
 			>
@@ -51,7 +55,7 @@
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
-	<Popover.Content class="w-[200px] p-0">
+	<Popover.Content class="w-[14rem] p-0">
 		<Command.Root>
 			<Command.Input placeholder="Zeitzone suchen..." />
 			<Command.List>
