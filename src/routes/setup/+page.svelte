@@ -207,6 +207,9 @@
 						<div class="">Zeitzone</div>
 						<div class="font-bold">
 							{timezone}
+							{#if timezone.length > 0}
+								<span class="text-green-600 dark:text-green-400">&#x2713;</span>
+							{/if}
 						</div>
 					</div>
 					<div class="grid grid-cols-[10rem_auto]">
@@ -216,9 +219,9 @@
 								{username}
 							{/if}
 							{#if usernameOk && passwordRepeatOk}
-								<div class="text-green-600 dark:text-green-400">&#x2713;</div>
+								<span class="text-green-600 dark:text-green-400">&#x2713;</span>
 							{:else}
-								<div class="text-red-600 dark:text-red-400">&#x2715;</div>
+								<span class="text-red-600 dark:text-red-400">&#x2715;</span>
 							{/if}
 						</div>
 					</div>
