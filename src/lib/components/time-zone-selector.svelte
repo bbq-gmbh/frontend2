@@ -14,7 +14,7 @@
 	const timezones = Intl.supportedValuesOf('timeZone');
 
 	let open = $state(false);
-	let { value = $bindable('') }: { value?: string } = $props();
+	let { value = $bindable(''), name, ...restProps }: { value?: string; name?: string; [key: string]: any } = $props();
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	const selectedValue = $derived(timezones.find((f) => f === value));
@@ -32,7 +32,11 @@
 	}
 </script>
 
-<Popover.Root bind:open>
+{#if name}
+	<input type="hidden" {name} {value} />
+{/if}
+
+<Popover.Root bind:open {...restProps}>
 	<Popover.Trigger bind:ref={triggerRef}>
 		{#snippet child({ props })}
 			<Button
