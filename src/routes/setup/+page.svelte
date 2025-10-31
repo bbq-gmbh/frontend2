@@ -32,17 +32,23 @@
 	});
 	let usernameOk = $derived.by(() => {
 		if (username.length === 0) return null;
-		if (username.length < 4) return false;
 
 		return usernameZod.success;
 	});
 
 	let password = $state('');
+	let passwordZod = $derived.by(() => {
+		const passwordSchema = z
+			.string('Password is required')
+			.min(1, 'Password cannot be empty')
+			.min(8, 'Password must be at least 8 characters');
+
+		return passwordSchema.safeParse(password);
+	});
 	let passwordOk = $derived.by(() => {
 		if (password.length === 0) return null;
-		if (password.length < 8) return false;
 
-		return true;
+		return passwordZod.success;
 	});
 
 	let passwordRepeat = $state('');
@@ -91,9 +97,9 @@
 				<Card.Content class="flex grow flex-col gap-6">
 					<div class="flex flex-col gap-2">
 						<div class="flex flex-wrap justify-between gap-x-8 gap-y-2">
-							<Label for="timezone">Zeitzone</Label>
+							<Label for="timezone" class="text-base">Zeitzone</Label>
 							<div>
-								<TimeZoneSelector name="timezone" bind:value={timezone} />
+								<TimeZoneSelector id="timezone" name="timezone" bind:value={timezone} />
 							</div>
 						</div>
 						<p class="text-sm text-muted-foreground">
@@ -115,11 +121,11 @@
 				</Card.Header>
 				<Card.Content class="flex grow flex-col gap-6">
 					<div class="flex flex-wrap justify-between gap-x-8 gap-y-2">
-						<Label for="username">Username</Label>
+						<Label for="username" class="text-base">Username</Label>
 						<div class="max-w-[16rem] grow">
 							<InputGroup.Root>
 								<InputGroup.Root>
-									<InputGroup.Input name="username" bind:value={username} />
+									<InputGroup.Input id="username" name="username" bind:value={username} />
 									<InputGroup.Addon align="inline-end">
 										{#if username.length === 0}
 											<UserIcon />
@@ -148,11 +154,16 @@
 					</div>
 
 					<div class="flex flex-wrap justify-between gap-x-8 gap-y-2">
-						<Label for="password">Passwort</Label>
+						<Label for="password" class="text-base">Passwort</Label>
 						<div class="max-w-[16rem] grow">
 							<InputGroup.Root>
 								<InputGroup.Root>
-									<InputGroup.Input name="password" bind:value={password} type="password" />
+									<InputGroup.Input
+										id="password"
+										name="password"
+										bind:value={password}
+										type="password"
+									/>
 									<InputGroup.Addon align="inline-end">
 										{#if passwordOk === null}
 											<KeyRound />
@@ -168,11 +179,15 @@
 					</div>
 
 					<div class="flex flex-wrap justify-between gap-x-8 gap-y-2">
-						<Label for="password">Passwort Wiederholen</Label>
+						<Label for="password_repeat" class="text-base">Passwort Wiederholen</Label>
 						<div class="max-w-[16rem] grow">
 							<InputGroup.Root>
 								<InputGroup.Root>
-									<InputGroup.Input name="password" bind:value={passwordRepeat} type="password" />
+									<InputGroup.Input
+										id="password_repeat"
+										bind:value={passwordRepeat}
+										type="password"
+									/>
 									<InputGroup.Addon align="inline-end">
 										{#if passwordRepeatOk === null}
 											<KeyRound />
