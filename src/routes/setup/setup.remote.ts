@@ -1,24 +1,20 @@
-import { command } from '$app/server';
-import * as sdk from '@/backend/sdk.gen';
-import { error, redirect } from '@sveltejs/kit';
 import z from 'zod';
+import { form, getRequestEvent } from '$app/server';
+import { error, redirect } from '@sveltejs/kit';
 
-export const setupCreate = command(
+import * as sdk from '@/backend/sdk.gen';
+
+import { passwordSchema, usernameSchema } from '@/schemas/auth';
+import { login, setAuthCookies } from '@/server/auth';
+
+export const setupCreate = form(
 	z.object({
-		username: z.string(),
-		password: z.string(),
-		timezone: z.string()
+		timezone: z.string(),
+		username: usernameSchema,
+		password: passwordSchema
 	}),
 	async (data) => {
-		// await new Promise((resolve) => setTimeout(resolve, 1000));
-
-		// if (Math.random() < 0.5) {
-		// 	error(500, 'Random test failure');
-		// }
-
-		// return;
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
+		await new Promise((resolve) => setTimeout(resolve, 500));
 
 		const result = await sdk.setupCreate({
 			body: {
@@ -32,11 +28,20 @@ export const setupCreate = command(
 			}
 		});
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
 		if (result.error) {
-			console.log(result.error.detail?.toString());
 			error(400, result.error.detail?.toString() ?? 'Unknown error');
 		}
+
+		const loginResult = await login(data.username, data.password);
+
+		if (loginResult.success === false) {
+      redirect(303, "/login");
+		}
+
+    const { cookies } = getRequestEvent();
+
+    setAuthCookies(cookies, loginResult.tokens);
+
+    redirect(303, "/app")
 	}
 );

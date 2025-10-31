@@ -13,21 +13,16 @@
 	import TimeZoneSelector from '#/time-zone-selector.svelte';
 	import Spinner from '#/ui/spinner/spinner.svelte';
 	import Button from '#/ui/button/button.svelte';
-	import Input from '#/ui/input/input.svelte';
 	import Label from '#/ui/label/label.svelte';
 
+	import { passwordSchema, usernameSchema } from '@/schemas/auth';
 	import { setupCreate } from './setup.remote';
+	import { enhance } from '$app/forms';
 
 	let timezone = $state('');
 
 	let username = $state('');
 	let usernameZod = $derived.by(() => {
-		const usernameSchema = z
-			.string('Username is required')
-			.min(1, 'Username cannot be empty')
-			.min(4, 'Username must be at least 4 characters')
-			.regex(/^\S+$/, 'Username cannot contain spaces');
-
 		return usernameSchema.safeParse(username);
 	});
 	let usernameOk = $derived.by(() => {
@@ -38,11 +33,6 @@
 
 	let password = $state('');
 	let passwordZod = $derived.by(() => {
-		const passwordSchema = z
-			.string('Password is required')
-			.min(1, 'Password cannot be empty')
-			.min(8, 'Password must be at least 8 characters');
-
 		return passwordSchema.safeParse(password);
 	});
 	let passwordOk = $derived.by(() => {
@@ -66,13 +56,33 @@
 	let tabIndex = $state('0');
 </script>
 
-<form>
+<form
+	{...setupCreate.enhance(async ({ submit }) => {
+		try {
+			await submit();
+
+			if (setupCreate.result !== undefined) {
+				toast.success(`Erfolgreich eingerichtet`);
+				return;
+			}
+
+			const issues = setupCreate.fields.allIssues();
+			if (issues) {
+				toast.error(
+					`Fehler beim einrichten` + (!!issues.at(0) ? `: ${issues.at(0)?.message}` : '')
+				);
+			}
+		} catch (error: any) {
+			toast.error(`Fehler beim einrichten: ${error?.body?.message ?? 'Unknown Error'}`);
+		}
+	})}
+>
 	<Tabs.Root bind:value={tabIndex} class="min-h-[30rem]">
 		<Tabs.List>
-			<Tabs.Trigger value="0">Start</Tabs.Trigger>
-			<Tabs.Trigger value="1">Zeitzone</Tabs.Trigger>
-			<Tabs.Trigger value="2">Account</Tabs.Trigger>
-			<Tabs.Trigger value="3">Überprüfen</Tabs.Trigger>
+			<Tabs.Trigger value="0" disabled={!!setupCreate.pending}>Start</Tabs.Trigger>
+			<Tabs.Trigger value="1" disabled={!!setupCreate.pending}>Zeitzone</Tabs.Trigger>
+			<Tabs.Trigger value="2" disabled={!!setupCreate.pending}>Account</Tabs.Trigger>
+			<Tabs.Trigger value="3" disabled={!!setupCreate.pending}>Überprüfen</Tabs.Trigger>
 		</Tabs.List>
 
 		<Tabs.Content value="0" class="flex flex-col">
@@ -242,8 +252,20 @@
 					</div>
 				</Card.Content>
 				<Card.Footer>
-					<Button class="ml-auto self-end" type="submit" disabled={!submitOk}>
+					<!-- <Button class="ml-auto self-end" type="submit" disabled={!submitOk}>
 						<Check />
+						Jetzt abschließen
+					</Button> -->
+					<Button
+						class="ml-auto self-end"
+						type="submit"
+						disabled={!submitOk || !!setupCreate.pending}
+					>
+						{#if !!setupCreate.pending}
+							<Spinner />
+						{:else}
+							<Check />
+						{/if}
 						Jetzt abschließen
 					</Button>
 				</Card.Footer>
@@ -251,67 +273,3 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </form>
-
-<!-- <div class="hidden space-y-6">
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Zeitzone setzen</Card.Title>
-		</Card.Header>
-		<Card.Content class="flex flex-col gap-6">
-			<div class="grid gap-2">
-				<Label for="username">Zeitzone</Label>
-				<TimeZoneSelector bind:value={timezone} />
-			</div>
-		</Card.Content>
-	</Card.Root>
-
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Superuser einrichten</Card.Title>
-		</Card.Header>
-		<Card.Content class="flex flex-col gap-6">
-			<div class="grid gap-2">
-				<Label for="username">Username</Label>
-				<Input id="username" bind:value={username} disabled={!!setupCreate.pending} required />
-			</div>
-			<div class="grid gap-2">
-				<Label for="password">Password</Label>
-				<Input
-					id="password"
-					type="password"
-					bind:value={password}
-					disabled={!!setupCreate.pending}
-					required
-				/>
-			</div>
-		</Card.Content>
-	</Card.Root>
-
-	<div class="flex justify-end">
-		<Button
-			variant="default"
-			disabled={!!setupCreate.pending}
-			onclick={async () => {
-				try {
-					await setupCreate({
-						username,
-						password,
-						timezone
-					});
-					toast.success('Application Einrichtung erfolgreich');
-
-					await goto('/login');
-				} catch (error: any) {
-					console.log(JSON.stringify(error));
-					toast.error(`Fehler beim einrichten: ${error?.body?.message ?? 'Unbekannt'}`);
-					return;
-				}
-			}}
-		>
-			{#if !!setupCreate.pending}
-				<Spinner />
-			{/if}
-			Jetzt einrichten
-		</Button>
-	</div>
-</div> -->

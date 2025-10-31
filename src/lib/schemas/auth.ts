@@ -7,18 +7,40 @@ export const loginSchema = z.object({
 
 export type LoginSchema = z.infer<typeof loginSchema>;
 
+export const usernameSchema = z
+	.string('Username is required')
+	.min(1, 'Username cannot be empty')
+	.min(4, 'Username must be at least 4 characters')
+	.max(30, 'Username must be at most 30 characters')
+	.regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores');
+
+export const usernameSimpleSchema = z
+	.string('Username is required')
+	.min(1, 'Username cannot be empty')
+	.max(30, 'Username must be at most 30 characters')
+	.regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores');
+
+export const passwordSchema = z
+	.string('Password is required')
+	.min(1, 'Password cannot be empty')
+	.min(8, 'Password must be at least 8 characters')
+	.max(50, 'Password must be at most 50 characters');
+
+export const passwordSimpleSchema = z
+	.string('Password is required')
+	.min(1, 'Password cannot be empty')
+	.max(50, 'Password must be at most 50 characters');
+
+export const passwordConfirmSimpleSchema = z
+	.string()
+	.min(1, 'Please confirm your password')
+	.max(50, 'Confirmed password must be at most 50 characters');
+
 export const registerSchema = z
 	.object({
-		username: z
-			.string()
-			.min(4, 'Username must be at least 4 characters')
-			.max(50, 'Username must be at most 50 characters')
-			.regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
-		password: z
-			.string()
-			.min(8, 'Password must be at least 8 characters')
-			.max(100, 'Password must be at most 100 characters'),
-		confirmPassword: z.string().min(1, 'Please confirm your password')
+		username: usernameSchema,
+		password: passwordSchema,
+		confirmPassword: passwordConfirmSimpleSchema
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: "Passwords don't match",
@@ -29,12 +51,9 @@ export type RegisterSchema = z.infer<typeof registerSchema>;
 
 export const changePasswordSchema = z
 	.object({
-		currentPassword: z.string().min(1, 'Current password is required'),
-		newPassword: z
-			.string()
-			.min(8, 'New password must be at least 8 characters')
-			.max(100, 'New password must be at most 100 characters'),
-		confirmNewPassword: z.string().min(1, 'Please confirm your new password')
+		currentPassword: passwordSimpleSchema,
+		newPassword: passwordSchema,
+		confirmNewPassword: passwordConfirmSimpleSchema
 	})
 	.refine((data) => data.newPassword === data.confirmNewPassword, {
 		message: "Passwords don't match",
