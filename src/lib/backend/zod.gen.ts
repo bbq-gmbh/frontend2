@@ -115,13 +115,25 @@ export const zTokenPair = z.object({
 });
 
 /**
- * UserRead
+ * UserEmployeeOnly
  */
-export const zUserRead = z.object({
+export const zUserEmployeeOnly = z.object({
+    first_name: z.string(),
+    last_name: z.string()
+});
+
+/**
+ * UserInfo
+ */
+export const zUserInfo = z.object({
     id: z.uuid(),
     username: z.string(),
     is_superuser: z.boolean(),
-    created_at: z.iso.datetime()
+    created_at: z.iso.datetime(),
+    employee: z.union([
+        zUserEmployeeOnly,
+        z.null()
+    ])
 });
 
 export const zMeData = z.object({
@@ -138,15 +150,11 @@ export const zMeResponse = zMeUser;
 export const zListUsersData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
-    query: z.optional(z.never())
+    query: z.object({
+        page: z.int().gte(0),
+        page_size: z.int().gte(1).lte(200)
+    })
 });
-
-/**
- * Response Listusers
- *
- * Successful Response
- */
-export const zListUsersResponse = z.array(zUserRead);
 
 export const zCreateUserData = z.object({
     body: zUserCreate,
@@ -157,7 +165,7 @@ export const zCreateUserData = z.object({
 /**
  * Successful Response
  */
-export const zCreateUserResponse = zUserRead;
+export const zCreateUserResponse = zUserInfo;
 
 export const zRegisterUserData = z.object({
     body: zUserCreate,

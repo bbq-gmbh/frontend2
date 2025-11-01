@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeesData, GetEmployeesErrors, GetEmployeesResponses, GetSetupStatusData, GetSetupStatusResponses, ListUsersData, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, ReadRootGetData, ReadRootGetResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeesData, GetEmployeesErrors, GetEmployeesResponses, GetSetupStatusData, GetSetupStatusResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, ReadRootGetData, ReadRootGetResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -39,8 +39,8 @@ export const me = <ThrowOnError extends boolean = false>(options?: Options<MeDat
  *
  * Get a list of all users. Requires authentication.
  */
-export const listUsers = <ThrowOnError extends boolean = false>(options?: Options<ListUsersData, ThrowOnError>) => {
-    return (options?.client ?? client).get<ListUsersResponses, unknown, ThrowOnError>({
+export const listUsers = <ThrowOnError extends boolean = false>(options: Options<ListUsersData, ThrowOnError>) => {
+    return (options.client ?? client).get<ListUsersResponses, ListUsersErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',

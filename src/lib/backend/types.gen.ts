@@ -160,9 +160,23 @@ export type UserCreate = {
 };
 
 /**
- * UserRead
+ * UserEmployeeOnly
  */
-export type UserRead = {
+export type UserEmployeeOnly = {
+    /**
+     * First Name
+     */
+    first_name: string;
+    /**
+     * Last Name
+     */
+    last_name: string;
+};
+
+/**
+ * UserInfo
+ */
+export type UserInfo = {
     /**
      * Id
      */
@@ -179,6 +193,7 @@ export type UserRead = {
      * Created At
      */
     created_at: string;
+    employee: UserEmployeeOnly | null;
 };
 
 /**
@@ -218,20 +233,34 @@ export type MeResponse = MeResponses[keyof MeResponses];
 export type ListUsersData = {
     body?: never;
     path?: never;
-    query?: never;
+    query: {
+        /**
+         * Page
+         */
+        page: number;
+        /**
+         * Page Size
+         */
+        page_size: number;
+    };
     url: '/users/';
 };
 
-export type ListUsersResponses = {
+export type ListUsersErrors = {
     /**
-     * Response Listusers
-     *
-     * Successful Response
+     * Validation Error
      */
-    200: Array<UserRead>;
+    422: HttpValidationError;
 };
 
-export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
+export type ListUsersError = ListUsersErrors[keyof ListUsersErrors];
+
+export type ListUsersResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type CreateUserData = {
     body: UserCreate;
@@ -253,7 +282,7 @@ export type CreateUserResponses = {
     /**
      * Successful Response
      */
-    201: UserRead;
+    201: UserInfo;
 };
 
 export type CreateUserResponse = CreateUserResponses[keyof CreateUserResponses];
