@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
-	
-  import * as Table from '#/ui/table';
+
+	import * as Table from '#/ui/table';
 	import * as DropdownMenu from '#/ui/dropdown-menu';
 	import * as AlertDialog from '#/ui/alert-dialog';
 
@@ -12,7 +12,7 @@
 	import { goto } from '$app/navigation';
 	import { combinePaths } from '@/utils';
 	import { Spinner } from '#/ui/spinner';
-  
+
 	import type { UserInfo } from '@/backend';
 	import { deleteUser } from './users.remote';
 
@@ -48,7 +48,7 @@
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content align="end" side="bottom">
 						<DropdownMenu.Group>
-							<DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => goto(`/app/users/${user.id}?edit=true`)}>
 								<Pencil />
 								Anpassen
 							</DropdownMenu.Item>
