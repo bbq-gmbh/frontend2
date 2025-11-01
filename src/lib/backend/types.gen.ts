@@ -94,6 +94,20 @@ export type MeUser = {
 };
 
 /**
+ * PagedResult
+ */
+export type PagedResultListUserInfo = {
+    /**
+     * Page
+     */
+    page: Array<UserInfo>;
+    /**
+     * Total
+     */
+    total: number;
+};
+
+/**
  * PasswordChangeRequest
  */
 export type PasswordChangeRequest = {
@@ -259,8 +273,10 @@ export type ListUsersResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: PagedResultListUserInfo;
 };
+
+export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
 
 export type CreateUserData = {
     body: UserCreate;

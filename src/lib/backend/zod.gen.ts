@@ -68,6 +68,36 @@ export const zMeUser = z.object({
 });
 
 /**
+ * UserEmployeeOnly
+ */
+export const zUserEmployeeOnly = z.object({
+    first_name: z.string(),
+    last_name: z.string()
+});
+
+/**
+ * UserInfo
+ */
+export const zUserInfo = z.object({
+    id: z.uuid(),
+    username: z.string(),
+    is_superuser: z.boolean(),
+    created_at: z.iso.datetime(),
+    employee: z.union([
+        zUserEmployeeOnly,
+        z.null()
+    ])
+});
+
+/**
+ * PagedResult
+ */
+export const zPagedResultListUserInfo = z.object({
+    page: z.array(zUserInfo),
+    total: z.int()
+});
+
+/**
  * PasswordChangeRequest
  */
 export const zPasswordChangeRequest = z.object({
@@ -114,28 +144,6 @@ export const zTokenPair = z.object({
     token_type: z.optional(zTokenType)
 });
 
-/**
- * UserEmployeeOnly
- */
-export const zUserEmployeeOnly = z.object({
-    first_name: z.string(),
-    last_name: z.string()
-});
-
-/**
- * UserInfo
- */
-export const zUserInfo = z.object({
-    id: z.uuid(),
-    username: z.string(),
-    is_superuser: z.boolean(),
-    created_at: z.iso.datetime(),
-    employee: z.union([
-        zUserEmployeeOnly,
-        z.null()
-    ])
-});
-
 export const zMeData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
@@ -155,6 +163,11 @@ export const zListUsersData = z.object({
         page_size: z.int().gte(1).lte(200)
     })
 });
+
+/**
+ * Successful Response
+ */
+export const zListUsersResponse = zPagedResultListUserInfo;
 
 export const zCreateUserData = z.object({
     body: zUserCreate,
