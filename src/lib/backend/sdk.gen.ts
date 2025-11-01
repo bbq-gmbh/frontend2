@@ -53,26 +53,6 @@ export const listUsers = <ThrowOnError extends boolean = false>(options: Options
 };
 
 /**
- * Patch User
- */
-export const patchUser = <ThrowOnError extends boolean = false>(options: Options<PatchUserData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchUserResponses, PatchUserErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/users/',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
-
-/**
  * Create User
  *
  * Create a new user.
@@ -117,6 +97,26 @@ export const getUserById = <ThrowOnError extends boolean = false>(options: Optio
         ],
         url: '/users/{id}',
         ...options
+    });
+};
+
+/**
+ * Patch User
+ */
+export const patchUser = <ThrowOnError extends boolean = false>(options: Options<PatchUserData, ThrowOnError>) => {
+    return (options.client ?? client).patch<PatchUserResponses, PatchUserErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/users/{id}',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     });
 };
 

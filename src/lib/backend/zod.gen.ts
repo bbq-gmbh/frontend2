@@ -148,29 +148,28 @@ export const zTokenPair = z.object({
  * UserEmployeePatch
  */
 export const zUserEmployeePatch = z.object({
-    new_first_name: z.union([
+    new_first_name: z.optional(z.union([
         z.string(),
         z.null()
-    ]),
-    new_last_name: z.union([
+    ])),
+    new_last_name: z.optional(z.union([
         z.string(),
         z.null()
-    ])
+    ]))
 });
 
 /**
  * UserPatch
  */
 export const zUserPatch = z.object({
-    id: z.uuid(),
-    new_username: z.union([
+    new_username: z.optional(z.union([
         z.string(),
         z.null()
-    ]),
-    new_employee: z.union([
+    ])),
+    new_employee: z.optional(z.union([
         zUserEmployeePatch,
         z.null()
-    ])
+    ]))
 });
 
 export const zMeData = z.object({
@@ -197,12 +196,6 @@ export const zListUsersData = z.object({
  * Successful Response
  */
 export const zListUsersResponse = zPagedResultListUserInfo;
-
-export const zPatchUserData = z.object({
-    body: zUserPatch,
-    path: z.optional(z.never()),
-    query: z.optional(z.never())
-});
 
 export const zCreateUserData = z.object({
     body: zUserCreate,
@@ -235,6 +228,14 @@ export const zGetUserByIdData = z.object({
  * Successful Response
  */
 export const zGetUserByIdResponse = zUserInfo;
+
+export const zPatchUserData = z.object({
+    body: zUserPatch,
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
 
 export const zUserIdExistsData = z.object({
     body: z.optional(z.never()),
