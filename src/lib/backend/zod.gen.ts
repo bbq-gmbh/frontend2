@@ -144,6 +144,35 @@ export const zTokenPair = z.object({
     token_type: z.optional(zTokenType)
 });
 
+/**
+ * UserEmployeePatch
+ */
+export const zUserEmployeePatch = z.object({
+    new_first_name: z.union([
+        z.string(),
+        z.null()
+    ]),
+    new_last_name: z.union([
+        z.string(),
+        z.null()
+    ])
+});
+
+/**
+ * UserPatch
+ */
+export const zUserPatch = z.object({
+    id: z.uuid(),
+    new_username: z.union([
+        z.string(),
+        z.null()
+    ]),
+    new_employee: z.union([
+        zUserEmployeePatch,
+        z.null()
+    ])
+});
+
 export const zMeData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
@@ -168,6 +197,12 @@ export const zListUsersData = z.object({
  * Successful Response
  */
 export const zListUsersResponse = zPagedResultListUserInfo;
+
+export const zPatchUserData = z.object({
+    body: zUserPatch,
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
 
 export const zCreateUserData = z.object({
     body: zUserCreate,
