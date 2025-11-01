@@ -8,6 +8,7 @@ export const load: LayoutLoad = async ({ parent, url }) => {
 	let userId = z.uuidv4().safeParse(url.pathname.match(/\/users\/([^\/\?]+)/)?.[1] || '').data;
 
 	return {
-		breadcrumbs: [...parentData.breadcrumbs, { name: userId, path: userId }]
+		breadcrumbs: [...parentData.breadcrumbs, { name: userId ?? "...", path: userId }],
+		pathUserId: userId
 	};
 };

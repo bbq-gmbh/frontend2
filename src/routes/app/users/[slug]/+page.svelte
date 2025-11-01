@@ -9,7 +9,7 @@
 	import Button from '#/ui/button/button.svelte';
 	import { Input } from '#/ui/input';
 	import Label from '#/ui/label/label.svelte';
-	import type { PageData } from './$types';
+	import type { LayoutData, PageData } from './$types';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	import { editUser } from './user.remote';
@@ -17,8 +17,11 @@
 	import Switch from '#/ui/switch/switch.svelte';
 	import { Badge } from '#/ui/badge';
 
-	const { data }: { data: PageData } = $props();
+	const { data, ldata }: { data: PageData, ldata: LayoutData } = $props();
 	const { user } = data;
+  const { pathUserId } = ldata;
+
+  
 
 	let editing = $state(false);
 </script>
