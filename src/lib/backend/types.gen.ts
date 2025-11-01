@@ -331,6 +331,36 @@ export type DeleteUserResponses = {
     200: unknown;
 };
 
+export type GetUserData = {
+    body?: never;
+    path: {
+        /**
+         * Id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/users/{id}';
+};
+
+export type GetUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetUserError = GetUserErrors[keyof GetUserErrors];
+
+export type GetUserResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserInfo;
+};
+
+export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
+
 export type RegisterUserData = {
     body: UserCreate;
     path?: never;

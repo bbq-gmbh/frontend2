@@ -12,7 +12,6 @@ export const editUser = command(
 	}),
 	async ({ username }) => {
 		const { client } = withAuthClient({ superuser: true });
-		const { data } = await sdk.listUsers({ client });
 
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 

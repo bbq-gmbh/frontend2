@@ -188,6 +188,19 @@ export const zDeleteUserData = z.object({
     query: z.optional(z.never())
 });
 
+export const zGetUserData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zGetUserResponse = zUserInfo;
+
 export const zRegisterUserData = z.object({
     body: zUserCreate,
     path: z.optional(z.never()),
