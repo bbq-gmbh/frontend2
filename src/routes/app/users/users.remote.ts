@@ -6,26 +6,33 @@ import * as sdk from '@/backend/sdk.gen';
 
 import { z } from 'zod';
 
-export const getUsers = query(async () => {
-	const { client } = withAuthClient({ superuser: true });
-	const { data } = await sdk.listUsers({ client });
+export const getUsers = query(
+	z.object({
+		page: z.optional(z.int())
+	}),
+	async ({ page }) => {
+		const { client } = withAuthClient({ superuser: true });
+		const { data } = await sdk.listUsers({
+			client,
+			query: {
+				page: page ?? 0,
+				page_size: 25
+			}
+		});
 
-	if (!!data) {
-		return data;
+		if (!!data) {
+			return data;
+		}
+
+		error(404, 'Not found');
 	}
+);
 
-	error(404, 'Not found');
-});
-
-export const deleteUser = command(z.string(), async (id) => {
+export const deleteUser = command(z.uuidv4(), async (id) => {
 	const { client } = withAuthClient({ superuser: true });
-	const { data } = await sdk.listUsers({ client });
+	const result = await sdk.deleteUser({ client, path: { id } });
 
-	await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  if (Math.random() < 0.5) {
-    error(500, 'Random test failure');
-  }
-
-	await getUsers().refresh();
+	if (result.error) {
+		error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+	}
 });
