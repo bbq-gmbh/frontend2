@@ -35,6 +35,8 @@ export const convertToEmployee = form(
 		const { client } = withAuthClient({ superuser: true });
 		const result = await sdk.createEmployee({ client, body: data });
 
+		await new Promise((resolve) => setTimeout(resolve, 300));
+
 		if (result.error) {
 			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}
@@ -57,7 +59,7 @@ export const editUser = command(
 	async (data) => {
 		const { user, client } = withAuthClient({ superuser: true });
 
-		sdk.patchUser({
+		const result = await sdk.patchUser({
 			client,
 			path: {
 				id: data.id
@@ -81,10 +83,10 @@ export const editUser = command(
 			}
 		});
 
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await new Promise((resolve) => setTimeout(resolve, 300));
 
-		if (Math.random() < 0.5) {
-			error(500, 'Random test failure');
+		if (result.error) {
+			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}
 	}
 );
