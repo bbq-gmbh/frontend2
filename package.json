@@ -44,6 +44,7 @@
 		"vite": "^7.1.7"
 	},
 	"dependencies": {
+		"date-holidays": "^3.26.5",
 		"jose": "^6.1.0",
 		"lucide-svelte": "^0.548.0",
 		"mode-watcher": "^1.1.0",
