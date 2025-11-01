@@ -134,7 +134,12 @@
 						onclick={async () => {
 							try {
 								await editUser({
-									username: user.username
+									id: user.id,
+									username: editUsername,
+									employee: {
+										first_name: editEmployeeFirstName,
+										last_name: editEmployeeLastName
+									}
 								});
 								toast.success('Änderungen erfolgreich gespeichert');
 								editing = false;

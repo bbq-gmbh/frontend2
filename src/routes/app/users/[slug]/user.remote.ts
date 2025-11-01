@@ -51,8 +51,8 @@ export const editUser = command(
 		username: usernameSchema.optional(),
 		employee: z
 			.object({
-				first_name: z.string().min(1),
-				last_name: z.string().min(1)
+				first_name: z.string().min(1).optional(),
+				last_name: z.string().min(1).optional()
 			})
 			.optional()
 	}),
@@ -72,10 +72,12 @@ export const editUser = command(
 						? undefined
 						: {
 								new_first_name:
+									data.employee.first_name !== undefined &&
 									data.employee.first_name != user.employee.first_name
 										? data.employee.first_name
 										: undefined,
 								new_last_name:
+									data.employee.last_name !== undefined &&
 									data.employee.last_name != user.employee.last_name
 										? data.employee.last_name
 										: undefined
