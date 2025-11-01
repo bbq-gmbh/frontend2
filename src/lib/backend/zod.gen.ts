@@ -180,6 +180,14 @@ export const zCreateUserData = z.object({
  */
 export const zCreateUserResponse = zUserInfo;
 
+export const zDeleteUserData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
+
 export const zRegisterUserData = z.object({
     body: zUserCreate,
     path: z.optional(z.never()),
