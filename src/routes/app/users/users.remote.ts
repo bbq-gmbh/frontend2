@@ -20,9 +20,7 @@ export const getUsers = query(
 			}
 		});
 
-		if (!!data) {
-			return data;
-		}
+		if (!!data) return data;
 
 		error(404, 'Not found');
 	}
