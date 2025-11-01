@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { Star } from 'lucide-svelte';
 
+  import type { UserInfo } from '@/backend';
 	import type { User } from '@/types/auth';
+  
 	import { Badge } from '#/ui/badge';
 	import UserAvatar from '#/user-avatar.svelte';
 
-	let { user }: { user: User } = $props();
+	let { user }: { user: User | UserInfo } = $props();
 </script>
 
 <div class="flex items-center gap-2">

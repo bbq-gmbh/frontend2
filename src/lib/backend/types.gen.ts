@@ -361,6 +361,62 @@ export type GetUserByIdResponses = {
 
 export type GetUserByIdResponse = GetUserByIdResponses[keyof GetUserByIdResponses];
 
+export type UserIdExistsData = {
+    body?: never;
+    path: {
+        /**
+         * Id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/users/exists/{id}';
+};
+
+export type UserIdExistsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UserIdExistsError = UserIdExistsErrors[keyof UserIdExistsErrors];
+
+export type UserIdExistsResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UsernameExistsData = {
+    body?: never;
+    path: {
+        /**
+         * Name
+         */
+        name: string;
+    };
+    query?: never;
+    url: '/users/exists/username/{name}';
+};
+
+export type UsernameExistsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsernameExistsError = UsernameExistsErrors[keyof UsernameExistsErrors];
+
+export type UsernameExistsResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type RegisterUserData = {
     body: UserCreate;
     path?: never;

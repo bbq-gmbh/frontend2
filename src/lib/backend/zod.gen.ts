@@ -201,6 +201,22 @@ export const zGetUserByIdData = z.object({
  */
 export const zGetUserByIdResponse = zUserInfo;
 
+export const zUserIdExistsData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
+
+export const zUsernameExistsData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        name: z.string()
+    }),
+    query: z.optional(z.never())
+});
+
 export const zRegisterUserData = z.object({
     body: zUserCreate,
     path: z.optional(z.never()),

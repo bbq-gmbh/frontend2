@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Check, IdCardLanyard, Pen, Save, Star, UserIcon, X } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
 
 	import * as InputGroup from '#/ui/input-group';
 	import * as AlertDialog from '#/ui/alert-dialog';
@@ -9,19 +11,17 @@
 	import Button from '#/ui/button/button.svelte';
 	import { Input } from '#/ui/input';
 	import Label from '#/ui/label/label.svelte';
-	import type { LayoutData, PageData } from './$types';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
-
-	import { editUser } from './user.remote';
 	import { Spinner } from '#/ui/spinner';
 	import Switch from '#/ui/switch/switch.svelte';
 	import { Badge } from '#/ui/badge';
 
-	const { data, ldata }: { data: PageData, ldata: LayoutData } = $props();
-	const { user } = data;
-  const { pathUserId } = ldata;
+	import { editUser, getUserById } from './user.remote';
 
-  
+	const { data }: { data: PageData } = $props();
+	const userId = data.pathUserId;
+
+	const user = $derived(await getUserById(userId));
 
 	let editing = $state(false);
 </script>
@@ -59,7 +59,7 @@
 						onclick={async () => {
 							try {
 								await editUser({
-									username: 'snu_pingas'
+									username: user.username
 								});
 								toast.success('Änderungen erfolgreich gespeichert');
 								editing = false;
@@ -87,6 +87,9 @@
 			Abbrechen
 		</Button>
 	{/if}
+  <Button size="icon" variant="ghost" onclick={() => goto('/app/users')}>
+		<X />
+	</Button>
 </div>
 
 <div class="max-w-[40rem] space-y-4">
@@ -142,7 +145,7 @@
 					</InputGroup.Addon>
 				</InputGroup.Root> -->
 				<Switch disabled={editing} bind:checked={() => user.is_superuser, () => {}} />
-				<Label class="flex gap-1 items-center">
+				<Label class="flex items-center gap-1">
 					Superuser
 					<Badge variant="outline" class="px-0.5">
 						<Star />

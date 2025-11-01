@@ -1,8 +1,10 @@
 <script lang="ts">
-	import * as Avatar from '#/ui/avatar/index.js';
+  import type { UserInfo } from '@/backend';
 	import type { User } from '@/types/auth';
 
-	const { user }: { user: User } = $props();
+	import * as Avatar from '#/ui/avatar/index.js';
+
+	const { user }: { user: User | UserInfo } = $props();
 </script>
 
 <Avatar.Root class="size-8 rounded-full">

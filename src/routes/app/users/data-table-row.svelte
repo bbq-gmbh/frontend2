@@ -1,21 +1,22 @@
 <script lang="ts">
-	import * as Table from '#/ui/table';
+	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+	
+  import * as Table from '#/ui/table';
 	import * as DropdownMenu from '#/ui/dropdown-menu';
 	import * as AlertDialog from '#/ui/alert-dialog';
 
 	import { Checkbox } from '#/ui/checkbox';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
-	import type { User } from '@/types/auth';
-	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
 	import Button from '#/ui/button/button.svelte';
 	import { goto } from '$app/navigation';
 	import { combinePaths } from '@/utils';
 	import { Spinner } from '#/ui/spinner';
-
+  
+	import type { UserInfo } from '@/backend';
 	import { deleteUser } from './users.remote';
-	import { toast } from 'svelte-sonner';
 
-	const { user }: { user: User } = $props();
+	const { user }: { user: UserInfo } = $props();
 
 	let deleteDialogOpen = $state(false);
 </script>
