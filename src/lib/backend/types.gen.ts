@@ -331,7 +331,7 @@ export type DeleteUserResponses = {
     200: unknown;
 };
 
-export type GetUserData = {
+export type GetUserByIdData = {
     body?: never;
     path: {
         /**
@@ -343,23 +343,23 @@ export type GetUserData = {
     url: '/users/{id}';
 };
 
-export type GetUserErrors = {
+export type GetUserByIdErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetUserError = GetUserErrors[keyof GetUserErrors];
+export type GetUserByIdError = GetUserByIdErrors[keyof GetUserByIdErrors];
 
-export type GetUserResponses = {
+export type GetUserByIdResponses = {
     /**
      * Successful Response
      */
     200: UserInfo;
 };
 
-export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
+export type GetUserByIdResponse = GetUserByIdResponses[keyof GetUserByIdResponses];
 
 export type RegisterUserData = {
     body: UserCreate;

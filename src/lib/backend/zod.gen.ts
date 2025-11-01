@@ -188,7 +188,7 @@ export const zDeleteUserData = z.object({
     query: z.optional(z.never())
 });
 
-export const zGetUserData = z.object({
+export const zGetUserByIdData = z.object({
     body: z.optional(z.never()),
     path: z.object({
         id: z.uuid()
@@ -199,7 +199,7 @@ export const zGetUserData = z.object({
 /**
  * Successful Response
  */
-export const zGetUserResponse = zUserInfo;
+export const zGetUserByIdResponse = zUserInfo;
 
 export const zRegisterUserData = z.object({
     body: zUserCreate,
