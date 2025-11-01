@@ -35,8 +35,6 @@ export const convertToEmployee = form(
 		const { client } = withAuthClient({ superuser: true });
 		const result = await sdk.createEmployee({ client, body: data });
 
-		console.log('SUBMITTING');
-
 		if (result.error) {
 			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}

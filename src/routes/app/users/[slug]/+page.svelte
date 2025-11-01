@@ -60,6 +60,9 @@
 				<AlertDialog.Content class="gap-6">
 					<AlertDialog.Header>
 						<AlertDialog.Title>Zu einen Angestellten umwandeln?</AlertDialog.Title>
+						<AlertDialog.Description>
+							Diese Aktion kann nicht rückgängig gemacht werden.
+						</AlertDialog.Description>
 					</AlertDialog.Header>
 
 					<form {...convertToEmployee} class="flex flex-col gap-6">
