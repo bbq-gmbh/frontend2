@@ -45,10 +45,41 @@ export const convertToEmployee = form(
 
 export const editUser = command(
 	z.object({
-		username: z.string()
+		id: z.uuidv4(),
+		username: usernameSchema.optional(),
+		employee: z
+			.object({
+				first_name: z.string().min(1),
+				last_name: z.string().min(1)
+			})
+			.optional()
 	}),
-	async ({ username }) => {
-		const { client } = withAuthClient({ superuser: true });
+	async (data) => {
+		const { user, client } = withAuthClient({ superuser: true });
+
+		sdk.patchUser({
+			client,
+			path: {
+				id: data.id
+			},
+			body: {
+				new_username:
+					data.username !== undefined && data.username != user.username ? data.username : undefined,
+				new_employee:
+					data.employee === undefined || user.employee === undefined
+						? undefined
+						: {
+								new_first_name:
+									data.employee.first_name != user.employee.first_name
+										? data.employee.first_name
+										: undefined,
+								new_last_name:
+									data.employee.last_name != user.employee.last_name
+										? data.employee.last_name
+										: undefined
+							}
+			}
+		});
 
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 

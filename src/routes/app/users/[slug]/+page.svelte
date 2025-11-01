@@ -207,13 +207,6 @@
 				/>
 			</div>
 			<div class="flex items-center gap-x-4 gap-y-2">
-				<!-- <Label>Ist Superuser</Label>
-				<InputGroup.Root>
-					<InputGroup.Input value={user.is_superuser} disabled={editing} readonly />
-					<InputGroup.Addon align="inline-end">
-						<Star />
-					</InputGroup.Addon>
-				</InputGroup.Root> -->
 				<Switch disabled={editing} bind:checked={() => user.is_superuser, () => {}} />
 				<Label class="flex items-center gap-1">
 					Superuser
