@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Table from '#/ui/table';
-		
+
 	import { Checkbox } from '#/ui/checkbox';
 	import DataTableRow from './data-table-row.svelte';
 	import type { UserInfo } from '@/backend';
@@ -10,7 +10,7 @@
 
 <div class="overflow-hidden rounded-md border">
 	<Table.Root>
-		<Table.Header class="sticky top-0 z-10 bg-muted">
+		<Table.Header class="sticky top-0 z-10">
 			<Table.Row>
 				<Table.Head>
 					<div class="px-2">

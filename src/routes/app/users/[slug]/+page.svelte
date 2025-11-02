@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="mb-4 flex justify-end gap-2">
+<div class="mb-4 flex justify-end gap-2 mx-auto">
 	<div class="mr-auto">
 		<UserNameAvatar {user} />
 	</div>
@@ -114,7 +114,7 @@
 			}}
 		>
 			<Pen />
-			Edit
+			Bearbeiten
 		</Button>
 	{:else}
 		<AlertDialog.Root>
@@ -233,7 +233,7 @@
 	{#if user.employee}
 		<Card.Root class="bg-transparent">
 			<Card.Header>
-				<Card.Title>Angestellter</Card.Title>
+				<Card.Title>Person</Card.Title>
 			</Card.Header>
 			<Card.Content class="max-w-[40rem] space-y-6">
 				<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
