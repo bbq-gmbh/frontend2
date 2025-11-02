@@ -59,7 +59,7 @@
 				</AlertDialog.Trigger>
 				<AlertDialog.Content class="gap-6">
 					<AlertDialog.Header>
-						<AlertDialog.Title>Zu einen Angestellten umwandeln?</AlertDialog.Title>
+						<AlertDialog.Title>Zeiterfassung für diesen Nutzer aktivieren?</AlertDialog.Title>
 						<AlertDialog.Description>
 							Diese Aktion kann nicht rückgängig gemacht werden.
 						</AlertDialog.Description>
@@ -77,9 +77,11 @@
 								<Input {...convertToEmployee.fields.last_name.as('text')} />
 							</div>
 							{#if convertToEmployee.fields.allIssues()}
-								<div class="text-sm">
+								<div class="flex flex-col gap-0.5 text-sm">
 									{#each convertToEmployee.fields.allIssues() as issue}
-										{issue.message}
+										<div>
+											{issue.message}
+										</div>
 									{/each}
 								</div>
 							{/if}
@@ -136,15 +138,20 @@
 								await editUser({
 									id: user.id,
 									username: editUsername,
-									employee: {
-										first_name: editEmployeeFirstName,
-										last_name: editEmployeeLastName
-									}
+									employee:
+										user.employee !== undefined
+											? {
+													first_name: editEmployeeFirstName,
+													last_name: editEmployeeLastName
+												}
+											: undefined
 								});
 								toast.success('Änderungen erfolgreich gespeichert');
 								editing = false;
-							} catch (error) {
-								toast.error('Fehler beim Speichern der Änderungen');
+							} catch (error: any) {
+								toast.error(
+									`Fehler beim Speichern der Änderungen: ${error?.message ?? 'Unknown Error'}`
+								);
 							}
 						}}
 						disabled={!!editUser.pending}

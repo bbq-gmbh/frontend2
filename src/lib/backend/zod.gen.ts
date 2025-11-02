@@ -166,6 +166,10 @@ export const zUserPatch = z.object({
         z.string(),
         z.null()
     ])),
+    new_is_superuser: z.optional(z.union([
+        z.boolean(),
+        z.null()
+    ])),
     new_employee: z.optional(z.union([
         zUserEmployeePatch,
         z.null()

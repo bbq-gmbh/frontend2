@@ -41,7 +41,7 @@ export const convertToEmployee = form(
 			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}
 
-		getUserById(data.user_id).refresh();
+		await getUserById(data.user_id).refresh();
 	}
 );
 
@@ -57,7 +57,7 @@ export const editUser = command(
 			.optional()
 	}),
 	async (data) => {
-		const { user, client } = withAuthClient({ superuser: true });
+		const { client } = withAuthClient({ superuser: true });
 
 		const result = await sdk.patchUser({
 			client,
@@ -65,30 +65,24 @@ export const editUser = command(
 				id: data.id
 			},
 			body: {
-				new_username:
-					data.username !== undefined && data.username != user.username ? data.username : undefined,
+				new_username: data.username,
 				new_employee:
-					data.employee === undefined || user.employee === undefined
-						? undefined
-						: {
-								new_first_name:
-									data.employee.first_name !== undefined &&
-									data.employee.first_name != user.employee.first_name
-										? data.employee.first_name
-										: undefined,
-								new_last_name:
-									data.employee.last_name !== undefined &&
-									data.employee.last_name != user.employee.last_name
-										? data.employee.last_name
-										: undefined
+					data.employee !== undefined
+						? {
+								new_first_name: data.employee.first_name,
+								new_last_name: data.employee.last_name
 							}
+						: undefined
 			}
 		});
 
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (result.error) {
+      console.log(result.error.detail);
 			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}
+
+		await getUserById(data.id).refresh();
 	}
 );

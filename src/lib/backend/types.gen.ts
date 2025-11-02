@@ -232,6 +232,10 @@ export type UserPatch = {
      * New Username
      */
     new_username?: string | null;
+    /**
+     * New Is Superuser
+     */
+    new_is_superuser?: boolean | null;
     new_employee?: UserEmployeePatch | null;
 };
 
