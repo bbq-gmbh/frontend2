@@ -2,7 +2,7 @@
 	import type { PageServerData } from './$types';
 	import { goto } from '$app/navigation';
 
-	import { KeyRound, LogOut, SquarePen, UserIcon, X } from 'lucide-svelte';
+	import { KeyRound, LogOut, Pen, SquarePen, UserIcon, X } from 'lucide-svelte';
 
 	import * as InputGroup from '#/ui/input-group';
 	import * as Dialog from '#/ui/dialog';
@@ -25,8 +25,19 @@
 			<Card.Title>Account</Card.Title>
 		</Card.Header>
 		<Card.Content class="flex flex-col gap-6">
-			<div>
+			<div class="flex flex-wrap items-center gap-4">
 				<UserNameAvatar {user} />
+				{#if user.is_superuser}
+					<Button
+						variant="outline"
+						size="sm"
+						class="ml-auto"
+						onclick={() => goto(`/app/users/${user.id}`)}
+					>
+						<Pen />
+						Bearbeiten
+					</Button>
+				{/if}
 			</div>
 			<div class="flex flex-col gap-2">
 				<Label>Username</Label>
