@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { Search, X } from 'lucide-svelte';
 	import type { UserInfo } from '@/backend';
-	import UserNameAvatar from '#/user-name-avatar.svelte';
+
+	import Button from '#/ui/button/button.svelte';
+
 	import { Popover, PopoverContent, PopoverTrigger } from '#/ui/popover';
+	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	interface Props {
 		users: UserInfo[];
@@ -12,6 +15,7 @@
 		currentUser?: UserInfo;
 		disabled?: boolean;
 		isLoading?: boolean;
+		clearable?: boolean;
 	}
 
 	let {
@@ -21,7 +25,8 @@
 		onSearchChange,
 		currentUser,
 		disabled = false,
-		isLoading = false
+		isLoading = false,
+		clearable = true
 	}: Props = $props();
 
 	let searchInput = $state('');
@@ -64,7 +69,7 @@
 <Popover>
 	<div class="relative">
 		<PopoverTrigger
-			class="flex min-h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+			class="flex min-h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground disabled:opacity-50"
 			{disabled}
 		>
 			<div class="flex flex-1 items-center">
@@ -75,15 +80,12 @@
 				{/if}
 			</div>
 		</PopoverTrigger>
-		{#if value}
-			<button
-				class="absolute top-1/2 right-2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded hover:bg-accent"
-				onclick={handleClearSelection}
-				{disabled}
-				tabindex={disabled ? -1 : 0}
-			>
-				<X class="h-4 w-4" />
-			</button>
+		{#if value && clearable}
+			<div class="absolute top-0 right-0 bottom-0 flex flex-col justify-center px-2">
+				<Button variant="ghost" size="icon-sm" onclick={handleClearSelection} {disabled}>
+					<X />
+				</Button>
+			</div>
 		{/if}
 	</div>
 
