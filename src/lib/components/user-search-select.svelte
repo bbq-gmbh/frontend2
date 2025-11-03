@@ -13,9 +13,17 @@
 		remote: RemoteFunction;
 		currentUser?: UserInfo;
 		disabled?: boolean;
+		readonly?: boolean;
 	}
 
-	let { value = $bindable(), onChange, remote, currentUser, disabled = false }: Props = $props();
+	let {
+		value = $bindable(),
+		onChange,
+		remote,
+		currentUser,
+		disabled = false,
+		readonly = false
+	}: Props = $props();
 
 	let users = $state<UserInfo[]>([]);
 	let isLoading = $state(false);
@@ -84,5 +92,6 @@
 	onSearchChange={handleSearchChange}
 	{currentUser}
 	{disabled}
+	{readonly}
 	{isLoading}
 />

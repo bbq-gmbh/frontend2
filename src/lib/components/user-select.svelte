@@ -16,6 +16,7 @@
 		disabled?: boolean;
 		isLoading?: boolean;
 		clearable?: boolean;
+		readonly?: boolean;
 	}
 
 	let {
@@ -26,18 +27,21 @@
 		currentUser,
 		disabled = false,
 		isLoading = false,
-		clearable = true
+		clearable = true,
+		readonly = false
 	}: Props = $props();
 
 	let searchInput = $state('');
 
 	const handleSelectUser = (user: UserInfo) => {
+		if (readonly) return;
 		value = user.id;
 		onChange?.(user.id);
 		searchInput = '';
 	};
 
 	const handleClearSelection = (e: Event) => {
+		if (readonly) return;
 		e.stopPropagation();
 		e.preventDefault();
 		value = undefined;
@@ -45,6 +49,7 @@
 	};
 
 	const handleSearchInputChange = (newValue: string) => {
+		if (readonly) return;
 		searchInput = newValue;
 		onSearchChange?.(newValue);
 
@@ -70,7 +75,7 @@
 	<div class="relative">
 		<PopoverTrigger
 			class="flex min-h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground disabled:opacity-50"
-			{disabled}
+			disabled={disabled || readonly}
 		>
 			<div class="flex flex-1 items-center">
 				{#if currentUser}
@@ -80,7 +85,7 @@
 				{/if}
 			</div>
 		</PopoverTrigger>
-		{#if value && clearable}
+		{#if value && clearable && !readonly}
 			<div class="absolute top-0 right-0 bottom-0 flex flex-col justify-center px-2">
 				<Button variant="ghost" size="icon-sm" onclick={handleClearSelection} {disabled}>
 					<X />
@@ -89,8 +94,8 @@
 		{/if}
 	</div>
 
-	<PopoverContent class="w-[16rem] p-0">
-		<div class="flex h-[25rem] flex-col gap-2 p-2">
+	<PopoverContent class="w-[16rem] p-0" side="bottom" align="start">
+		<div class="flex h-[22rem] flex-col gap-2 p-2">
 			<div class="flex items-center gap-2 rounded-md border border-input px-3 py-2">
 				<Search class="h-4 w-4 text-muted-foreground" />
 				<input
