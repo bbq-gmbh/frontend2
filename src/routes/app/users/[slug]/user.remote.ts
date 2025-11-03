@@ -16,6 +16,15 @@ export const getUserById = query(z.uuidv4(), async (id) => {
 	error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 });
 
+export const getEmployeeById = query(z.uuidv4(), async (id) => {
+	const { client } = withAuthClient({ superuser: true });
+	const result = await sdk.getEmployeeByUserId({ client, path: { user_id: id } });
+
+	if (!!result.data) return result.data;
+
+	error(result.response.status, result.error?.detail?.at(0)?.msg ?? 'Unknown Error');
+});
+
 export const getUsernameExists = query(usernameSchema, async (username) => {
 	const { client } = withAuthClient({ superuser: true });
 	const result = await sdk.usernameExists({ client, path: { name: username } });
