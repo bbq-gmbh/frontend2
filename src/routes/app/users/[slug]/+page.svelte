@@ -36,6 +36,10 @@
 	function cancelEdit() {
 		editing = false;
 
+		updateEdits();
+	}
+
+	function updateEdits() {
 		editUsername = user.username;
 
 		editEmployeeFirstName = user.employee?.first_name;
@@ -43,7 +47,7 @@
 	}
 </script>
 
-<div class="mb-4 flex justify-end gap-2 mx-auto">
+<div class="mx-auto mb-4 flex justify-end gap-2">
 	<div class="mr-auto">
 		<UserNameAvatar {user} />
 	</div>
@@ -146,8 +150,8 @@
 												}
 											: undefined
 								});
-								toast.success('Änderungen erfolgreich gespeichert');
 								editing = false;
+								toast.success('Änderungen erfolgreich gespeichert');
 							} catch (error: any) {
 								toast.error(
 									`Fehler beim Speichern der Änderungen: ${error?.message ?? 'Unknown Error'}`
