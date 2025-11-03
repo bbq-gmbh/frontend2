@@ -46,6 +46,8 @@
 	let editEmployeeFirstName = $state('');
 	let editEmployeeLastName = $state('');
 
+	let editEmployeeSupervisor: string | null | undefined = $state(undefined);
+
 	async function cancelEdit() {
 		editing = false;
 
@@ -59,6 +61,10 @@
 
 		editEmployeeFirstName = user.employee?.first_name ?? '';
 		editEmployeeLastName = user.employee?.last_name ?? '';
+
+		const employee = await getEmployee;
+
+		editEmployeeSupervisor = employee?.supervisor_id;
 	}
 
 	onMount(updateEdits);
@@ -292,18 +298,16 @@
 
 					<svelte:boundary>
 						{#await getEmployee then employee}
-							{@const getSupervisorUser = async () =>
-								employee?.supervisor_id ? await getUserById(employee.supervisor_id) : undefined}
-							<!-- {@const supervisorUser = employee?.supervisor_id
-								? await getUserById(employee.supervisor_id)
-								: undefined} -->
 							{#if employee}
+								{@const getSupervisorUser = async () =>
+									editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
 								<div class="space-y-2">
 									<Label>Vorgesetzer</Label>
 									<UserSearchSelect
 										currentUser={await getSupervisorUser()}
-										value={employee?.supervisor_id}
+										bind:value={editEmployeeSupervisor}
 										remote={searchEmployeesRemote}
+										readonly={!editing}
 									/>
 								</div>
 							{/if}
