@@ -54,14 +54,18 @@
 			clearTimeout(searchTimeout);
 		}
 
+		// If search is empty, clear immediately
+		if (!newSearchValue.trim()) {
+			users = [];
+			return;
+		}
+
+		// Clear old results immediately when starting new search
+		users = [];
+		isLoading = true;
+
 		// Debounce search
 		searchTimeout = setTimeout(async () => {
-			if (!newSearchValue.trim()) {
-				users = [];
-				return;
-			}
-
-			isLoading = true;
 			try {
 				const result = await remote({ q: newSearchValue, page: 0 });
 				if (result?.page) {
