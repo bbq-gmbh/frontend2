@@ -42,6 +42,11 @@
 	const handleSearchInputChange = (newValue: string) => {
 		searchInput = newValue;
 		onSearchChange?.(newValue);
+
+		// Clear results when search input is empty
+		if (!newValue.trim()) {
+			users = [];
+		}
 	};
 
 	const filteredUsers = $derived.by(() => {

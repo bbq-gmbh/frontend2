@@ -116,17 +116,10 @@ export const searchEmployeesRemote = query(
 			}
 		});
 
-		console.log('called');
+    await new Promise((resolve) => setTimeout(resolve, 400));
 
 		if (!!result.data) {
-			console.log(result.data);
 			return result.data;
-		}
-
-		if (result.error) {
-			console.log(result.error.detail);
-			// error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
-			console.log(result.error);
 		}
 
 		return undefined;
