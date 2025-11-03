@@ -244,7 +244,6 @@
 						<InputGroup.Root>
 							<InputGroup.Input
 								bind:value={editEmployeeFirstName}
-								disabled={!user.employee}
 								placeholder="&ndash;"
 								readonly={!editing}
 							/>
@@ -260,7 +259,6 @@
 						<InputGroup.Root>
 							<InputGroup.Input
 								bind:value={editEmployeeLastName}
-								disabled={!user.employee}
 								placeholder="&ndash;"
 								readonly={!editing}
 							/>
