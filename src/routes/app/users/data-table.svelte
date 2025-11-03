@@ -5,7 +5,7 @@
 	import DataTableRow from './data-table-row.svelte';
 	import type { UserInfo } from '@/backend';
 
-	const { users }: { users: UserInfo[] } = $props();
+	let { users }: { users: UserInfo[] } = $props();
 </script>
 
 <div class="overflow-hidden rounded-md border">

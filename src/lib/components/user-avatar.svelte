@@ -4,7 +4,7 @@
 
 	import * as Avatar from '#/ui/avatar/index.js';
 
-	const { user }: { user: User | UserInfo } = $props();
+	let { user }: { user: User | UserInfo } = $props();
 </script>
 
 <Avatar.Root class="size-8 rounded-full">

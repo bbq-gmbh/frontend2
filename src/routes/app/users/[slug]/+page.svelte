@@ -18,10 +18,10 @@
 
 	import { convertToEmployee, editUser, getUserById, getUsernameExists } from './user.remote';
 
-	const { data }: { data: PageData } = $props();
-	const { pathUserId, edit } = data;
+	let { data }: { data: PageData } = $props();
+	let { pathUserId, edit } = data;
 
-	const user = $derived(await getUserById(pathUserId));
+	let user = $derived(await getUserById(pathUserId));
 
 	let editing = $state(edit);
 

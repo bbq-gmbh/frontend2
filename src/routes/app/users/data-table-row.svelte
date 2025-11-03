@@ -16,7 +16,7 @@
 	import type { UserInfo } from '@/backend';
 	import { deleteUser } from './users.remote';
 
-	const { user }: { user: UserInfo } = $props();
+	let { user }: { user: UserInfo } = $props();
 
 	let deleteDialogOpen = $state(false);
 </script>

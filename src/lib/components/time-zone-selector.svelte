@@ -21,7 +21,7 @@
 	}: { value?: string; name?: string; [key: string]: any } = $props();
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-	const selectedValue = $derived(timezones.find((f) => f === value));
+	let selectedValue = $derived(timezones.find((f) => f === value));
 
 	// Auto-detect timezone on client side
 	if (browser && !value) {
