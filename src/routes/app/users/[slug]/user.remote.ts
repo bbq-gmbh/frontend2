@@ -55,6 +55,7 @@ export const editUser = command(
 				last_name: z.string().min(1).optional()
 			})
 			.optional()
+			.nullable()
 	}),
 	async (data) => {
 		const { client } = withAuthClient({ superuser: true });
@@ -66,20 +67,19 @@ export const editUser = command(
 			},
 			body: {
 				new_username: data.username,
-				new_employee:
-					data.employee !== undefined
-						? {
-								new_first_name: data.employee.first_name,
-								new_last_name: data.employee.last_name
-							}
-						: undefined
+				new_employee: data.employee
+					? {
+							new_first_name: data.employee.first_name,
+							new_last_name: data.employee.last_name
+						}
+					: undefined
 			}
 		});
 
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (result.error) {
-      console.log(result.error.detail);
+			console.log(result.error.detail);
 			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}
 

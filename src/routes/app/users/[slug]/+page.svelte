@@ -25,13 +25,12 @@
 
 	let editing = $state(edit);
 
-	// svelte-ignore state_referenced_locally
-	let editUsername = $state(user.username);
+	let editUsername = $state('');
 
-	// svelte-ignore state_referenced_locally
-	let editEmployeeFirstName = $state(user.employee?.first_name);
-	// svelte-ignore state_referenced_locally
-	let editEmployeeLastName = $state(user.employee?.last_name);
+	let editEmployeeFirstName = $state('');
+	let editEmployeeLastName = $state('');
+  
+	$effect(updateEdits);
 
 	function cancelEdit() {
 		editing = false;
@@ -42,8 +41,8 @@
 	function updateEdits() {
 		editUsername = user.username;
 
-		editEmployeeFirstName = user.employee?.first_name;
-		editEmployeeLastName = user.employee?.last_name;
+		editEmployeeFirstName = user.employee?.first_name ?? '';
+		editEmployeeLastName = user.employee?.last_name ?? '';
 	}
 </script>
 
