@@ -5,20 +5,6 @@ export type ClientOptions = {
 };
 
 /**
- * Employee
- */
-export type Employee = {
-    /**
-     * First Name
-     */
-    first_name: string;
-    /**
-     * Last Name
-     */
-    last_name: string;
-};
-
-/**
  * EmployeeCreate
  */
 export type EmployeeCreate = {
@@ -180,7 +166,7 @@ export type MeUser = {
      * Created At
      */
     created_at: string;
-    employee: Employee | null;
+    employee: AppSchemasMeEmployee | null;
 };
 
 /**
@@ -351,6 +337,42 @@ export type ValidationError = {
     type: string;
 };
 
+/**
+ * Employee
+ */
+export type AppModelsEmployeeEmployee = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * First Name
+     */
+    first_name: string;
+    /**
+     * Last Name
+     */
+    last_name: string;
+    /**
+     * Supervisor Id
+     */
+    supervisor_id?: string | null;
+};
+
+/**
+ * Employee
+ */
+export type AppSchemasMeEmployee = {
+    /**
+     * First Name
+     */
+    first_name: string;
+    /**
+     * Last Name
+     */
+    last_name: string;
+};
+
 export type MeData = {
     body?: never;
     path?: never;
@@ -379,6 +401,10 @@ export type ListUsersData = {
          * Page Size
          */
         page_size: number;
+        /**
+         * Is Employee
+         */
+        is_employee?: boolean | null;
     };
     url: '/users/';
 };
@@ -442,6 +468,10 @@ export type SearchUsersData = {
          * Page Size
          */
         page_size: number;
+        /**
+         * Is Employee
+         */
+        is_employee?: boolean | null;
     };
     url: '/users/search';
 };
@@ -810,10 +840,14 @@ export type GetEmployeeByUserIdError = GetEmployeeByUserIdErrors[keyof GetEmploy
 
 export type GetEmployeeByUserIdResponses = {
     /**
+     * Response Getemployeebyuserid
+     *
      * Successful Response
      */
-    200: unknown;
+    200: AppModelsEmployeeEmployee | null;
 };
+
+export type GetEmployeeByUserIdResponse = GetEmployeeByUserIdResponses[keyof GetEmployeeByUserIdResponses];
 
 export type CreateEmployeeData = {
     body: EmployeeCreate;

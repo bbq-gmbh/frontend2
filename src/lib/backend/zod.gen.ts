@@ -3,14 +3,6 @@
 import { z } from 'zod';
 
 /**
- * Employee
- */
-export const zEmployee = z.object({
-    first_name: z.string(),
-    last_name: z.string()
-});
-
-/**
  * EmployeeCreate
  */
 export const zEmployeeCreate = z.object({
@@ -105,6 +97,14 @@ export const zLoginRequest = z.object({
 });
 
 /**
+ * Employee
+ */
+export const zAppSchemasMeEmployee = z.object({
+    first_name: z.string(),
+    last_name: z.string()
+});
+
+/**
  * MeUser
  */
 export const zMeUser = z.object({
@@ -113,7 +113,7 @@ export const zMeUser = z.object({
     is_superuser: z.boolean(),
     created_at: z.iso.datetime(),
     employee: z.union([
-        zEmployee,
+        zAppSchemasMeEmployee,
         z.null()
     ])
 });
@@ -231,6 +231,19 @@ export const zUserPatch = z.object({
     ]))
 });
 
+/**
+ * Employee
+ */
+export const zAppModelsEmployeeEmployee = z.object({
+    user_id: z.uuid(),
+    first_name: z.string(),
+    last_name: z.string(),
+    supervisor_id: z.optional(z.union([
+        z.uuid(),
+        z.null()
+    ]))
+});
+
 export const zMeData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
@@ -247,7 +260,11 @@ export const zListUsersData = z.object({
     path: z.optional(z.never()),
     query: z.object({
         page: z.int().gte(0),
-        page_size: z.int().gte(1).lte(200)
+        page_size: z.int().gte(1).lte(200),
+        is_employee: z.optional(z.union([
+            z.boolean(),
+            z.null()
+        ]))
     })
 });
 
@@ -273,7 +290,11 @@ export const zSearchUsersData = z.object({
     query: z.object({
         query: z.string().min(1),
         page: z.int().gte(0),
-        page_size: z.int().gte(1).lte(200)
+        page_size: z.int().gte(1).lte(200),
+        is_employee: z.optional(z.union([
+            z.boolean(),
+            z.null()
+        ]))
     })
 });
 
@@ -421,6 +442,16 @@ export const zGetEmployeeByUserIdData = z.object({
     }),
     query: z.optional(z.never())
 });
+
+/**
+ * Response Getemployeebyuserid
+ *
+ * Successful Response
+ */
+export const zGetEmployeeByUserIdResponse = z.union([
+    zAppModelsEmployeeEmployee,
+    z.null()
+]);
 
 export const zCreateEmployeeData = z.object({
     body: zEmployeeCreate,

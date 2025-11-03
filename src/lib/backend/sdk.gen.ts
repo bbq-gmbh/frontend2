@@ -37,7 +37,7 @@ export const me = <ThrowOnError extends boolean = false>(options?: Options<MeDat
 /**
  * List Users
  *
- * Get a list of all users. Requires authentication.
+ * Get a list of all users. Optional filter by employee status.
  */
 export const listUsers = <ThrowOnError extends boolean = false>(options: Options<ListUsersData, ThrowOnError>) => {
     return (options.client ?? client).get<ListUsersResponses, ListUsersErrors, ThrowOnError>({
@@ -71,9 +71,7 @@ export const createUser = <ThrowOnError extends boolean = false>(options: Option
 /**
  * Search Users
  *
- * Search users by username with paging. Requires authentication and superuser privileges.
- *
- * The search is case-insensitive and matches partial usernames.
+ * Search users by username. Optional filter by employee status. Superuser only.
  */
 export const searchUsers = <ThrowOnError extends boolean = false>(options: Options<SearchUsersData, ThrowOnError>) => {
     return (options.client ?? client).get<SearchUsersResponses, SearchUsersErrors, ThrowOnError>({
