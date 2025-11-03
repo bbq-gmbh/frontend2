@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -65,6 +65,26 @@ export const createUser = <ThrowOnError extends boolean = false>(options: Option
             'Content-Type': 'application/json',
             ...options.headers
         }
+    });
+};
+
+/**
+ * Search Users
+ *
+ * Search users by username with paging. Requires authentication and superuser privileges.
+ *
+ * The search is case-insensitive and matches partial usernames.
+ */
+export const searchUsers = <ThrowOnError extends boolean = false>(options: Options<SearchUsersData, ThrowOnError>) => {
+    return (options.client ?? client).get<SearchUsersResponses, SearchUsersErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/users/search',
+        ...options
     });
 };
 

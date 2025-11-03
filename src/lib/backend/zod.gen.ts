@@ -267,6 +267,21 @@ export const zCreateUserData = z.object({
  */
 export const zCreateUserResponse = zUserInfo;
 
+export const zSearchUsersData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.object({
+        query: z.string().min(1),
+        page: z.int().gte(0),
+        page_size: z.int().gte(1).lte(200)
+    })
+});
+
+/**
+ * Successful Response
+ */
+export const zSearchUsersResponse = zPagedResultListUserInfo;
+
 export const zDeleteUserData = z.object({
     body: z.optional(z.never()),
     path: z.object({

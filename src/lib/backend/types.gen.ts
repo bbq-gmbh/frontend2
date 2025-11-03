@@ -426,6 +426,44 @@ export type CreateUserResponses = {
 
 export type CreateUserResponse = CreateUserResponses[keyof CreateUserResponses];
 
+export type SearchUsersData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Query
+         */
+        query: string;
+        /**
+         * Page
+         */
+        page: number;
+        /**
+         * Page Size
+         */
+        page_size: number;
+    };
+    url: '/users/search';
+};
+
+export type SearchUsersErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SearchUsersError = SearchUsersErrors[keyof SearchUsersErrors];
+
+export type SearchUsersResponses = {
+    /**
+     * Successful Response
+     */
+    200: PagedResultListUserInfo;
+};
+
+export type SearchUsersResponse = SearchUsersResponses[keyof SearchUsersResponses];
+
 export type DeleteUserData = {
     body?: never;
     path: {
