@@ -1,32 +1,28 @@
 <script lang="ts">
-	import { Button } from '#/ui/button';
+  import { Button } from '#/ui/button';
+	import { Plus } from 'lucide-svelte';
+  
 	import DataTable from './data-table.svelte';
-
 	import { getUsers } from './users.remote';
+
+	let page = $state(0);
+
+	let users = $derived(await getUsers({ page }));
 </script>
 
-<h1 class="mb-2 text-3xl font-extrabold">User</h1>
+<!-- <h1 class="mb-2 text-3xl font-extrabold">User</h1> -->
 
-<div class="my-2 space-y-2">
-	<svelte:boundary>
-		<Button
-			onclick={async () => {
-				await getUsers().refresh();
-			}}
-			variant="outline"
-		>
-			refresh
-		</Button>
-		{#each await getUsers() as res}
-			<div>{res.username}</div>
-		{/each}
-
-		{#snippet failed(_error, reset)}
-			<button onclick={reset}>oops! try again</button>
-		{/snippet}
-	</svelte:boundary>
+<div class="flex flex-wrap gap-2">
+  <Button variant="outline" class="ml-auto">
+    <Plus />
+    Neu erstellen
+  </Button>
 </div>
 
 <div class="my-2 space-y-4">
-	<DataTable users={[{ username: "Jeff", id: "1234", is_superuser: false, created_at: "" }]} />
+  {#if users}
+  <DataTable
+		users={users.page}
+	/>
+  {/if}
 </div>

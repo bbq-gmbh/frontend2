@@ -144,6 +144,38 @@ export const zTokenPair = z.object({
     token_type: z.optional(zTokenType)
 });
 
+/**
+ * UserEmployeePatch
+ */
+export const zUserEmployeePatch = z.object({
+    new_first_name: z.optional(z.union([
+        z.string(),
+        z.null()
+    ])),
+    new_last_name: z.optional(z.union([
+        z.string(),
+        z.null()
+    ]))
+});
+
+/**
+ * UserPatch
+ */
+export const zUserPatch = z.object({
+    new_username: z.optional(z.union([
+        z.string(),
+        z.null()
+    ])),
+    new_is_superuser: z.optional(z.union([
+        z.boolean(),
+        z.null()
+    ])),
+    new_employee: z.optional(z.union([
+        zUserEmployeePatch,
+        z.null()
+    ]))
+});
+
 export const zMeData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
@@ -200,6 +232,30 @@ export const zGetUserByIdData = z.object({
  * Successful Response
  */
 export const zGetUserByIdResponse = zUserInfo;
+
+export const zPatchUserData = z.object({
+    body: zUserPatch,
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
+
+export const zUserIdExistsData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
+
+export const zUsernameExistsData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        name: z.string()
+    }),
+    query: z.optional(z.never())
+});
 
 export const zRegisterUserData = z.object({
     body: zUserCreate,

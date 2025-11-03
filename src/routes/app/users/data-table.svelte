@@ -1,23 +1,16 @@
 <script lang="ts">
 	import * as Table from '#/ui/table';
-	import * as DropdownMenu from '#/ui/dropdown-menu';
-	import * as AlertDialog from '#/ui/alert-dialog';
 
 	import { Checkbox } from '#/ui/checkbox';
-	import UserNameAvatar from '#/user-name-avatar.svelte';
-	import type { User } from '@/types/auth';
-	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
-	import Button from '#/ui/button/button.svelte';
-	import { goto } from '$app/navigation';
-	import { combinePaths } from '@/utils';
 	import DataTableRow from './data-table-row.svelte';
+	import type { UserInfo } from '@/backend';
 
-	const { users }: { users: User[] } = $props();
+	const { users }: { users: UserInfo[] } = $props();
 </script>
 
 <div class="overflow-hidden rounded-md border">
 	<Table.Root>
-		<Table.Header class="sticky top-0 z-10 bg-muted">
+		<Table.Header class="sticky top-0 z-10">
 			<Table.Row>
 				<Table.Head>
 					<div class="px-2">

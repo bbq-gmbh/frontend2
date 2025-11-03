@@ -1,21 +1,22 @@
 <script lang="ts">
+	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+
 	import * as Table from '#/ui/table';
 	import * as DropdownMenu from '#/ui/dropdown-menu';
 	import * as AlertDialog from '#/ui/alert-dialog';
 
 	import { Checkbox } from '#/ui/checkbox';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
-	import type { User } from '@/types/auth';
-	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
 	import Button from '#/ui/button/button.svelte';
 	import { goto } from '$app/navigation';
 	import { combinePaths } from '@/utils';
 	import { Spinner } from '#/ui/spinner';
 
+	import type { UserInfo } from '@/backend';
 	import { deleteUser } from './users.remote';
-	import { toast } from 'svelte-sonner';
 
-	const { user }: { user: User } = $props();
+	const { user }: { user: UserInfo } = $props();
 
 	let deleteDialogOpen = $state(false);
 </script>
@@ -27,7 +28,7 @@
 		</div>
 	</Table.Cell>
 	<Table.Cell>
-		<div class="flex justify-between px-2">
+		<div class="flex justify-between px-2 items-center">
 			<button
 				class="flex w-[16rem] flex-col justify-around rounded-md border-0 p-1 hover:bg-muted"
 				onclick={() => {
@@ -47,7 +48,7 @@
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content align="end" side="bottom">
 						<DropdownMenu.Group>
-							<DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => goto(`/app/users/${user.id}?edit=true`)}>
 								<Pencil />
 								Anpassen
 							</DropdownMenu.Item>

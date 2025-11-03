@@ -284,7 +284,7 @@ export async function validateSession(cookies: any): Promise<{
 
 export function requireAuth(locals: App.Locals, args: { superuser?: boolean } = {}) {
 	if (!locals.user || !locals.accessToken) {
-		redirect(302, '/login');
+		redirect(303, '/login');
 	}
 
 	if (args.superuser && !locals.user.is_superuser) {

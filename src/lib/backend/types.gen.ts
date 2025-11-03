@@ -188,6 +188,20 @@ export type UserEmployeeOnly = {
 };
 
 /**
+ * UserEmployeePatch
+ */
+export type UserEmployeePatch = {
+    /**
+     * New First Name
+     */
+    new_first_name?: string | null;
+    /**
+     * New Last Name
+     */
+    new_last_name?: string | null;
+};
+
+/**
  * UserInfo
  */
 export type UserInfo = {
@@ -208,6 +222,21 @@ export type UserInfo = {
      */
     created_at: string;
     employee: UserEmployeeOnly | null;
+};
+
+/**
+ * UserPatch
+ */
+export type UserPatch = {
+    /**
+     * New Username
+     */
+    new_username?: string | null;
+    /**
+     * New Is Superuser
+     */
+    new_is_superuser?: boolean | null;
+    new_employee?: UserEmployeePatch | null;
 };
 
 /**
@@ -360,6 +389,90 @@ export type GetUserByIdResponses = {
 };
 
 export type GetUserByIdResponse = GetUserByIdResponses[keyof GetUserByIdResponses];
+
+export type PatchUserData = {
+    body: UserPatch;
+    path: {
+        /**
+         * Id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/users/{id}';
+};
+
+export type PatchUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PatchUserError = PatchUserErrors[keyof PatchUserErrors];
+
+export type PatchUserResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UserIdExistsData = {
+    body?: never;
+    path: {
+        /**
+         * Id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/users/exists/{id}';
+};
+
+export type UserIdExistsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UserIdExistsError = UserIdExistsErrors[keyof UserIdExistsErrors];
+
+export type UserIdExistsResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UsernameExistsData = {
+    body?: never;
+    path: {
+        /**
+         * Name
+         */
+        name: string;
+    };
+    query?: never;
+    url: '/users/exists/username/{name}';
+};
+
+export type UsernameExistsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsernameExistsError = UsernameExistsErrors[keyof UsernameExistsErrors];
+
+export type UsernameExistsResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type RegisterUserData = {
     body: UserCreate;

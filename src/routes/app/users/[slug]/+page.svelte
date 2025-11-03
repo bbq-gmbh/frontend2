@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { Check, IdCardLanyard, Pen, Save, Star, UserIcon, X } from 'lucide-svelte';
+	import { Check, IdCardLanyard, Pen, Save, Star, UserCog, UserIcon, X } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
 
 	import * as InputGroup from '#/ui/input-group';
 	import * as AlertDialog from '#/ui/alert-dialog';
@@ -9,32 +11,110 @@
 	import Button from '#/ui/button/button.svelte';
 	import { Input } from '#/ui/input';
 	import Label from '#/ui/label/label.svelte';
-	import type { PageData } from './$types';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
-
-	import { editUser } from './user.remote';
 	import { Spinner } from '#/ui/spinner';
 	import Switch from '#/ui/switch/switch.svelte';
 	import { Badge } from '#/ui/badge';
 
-	const { data }: { data: PageData } = $props();
-	const { user } = data;
+	import { convertToEmployee, editUser, getUserById, getUsernameExists } from './user.remote';
 
-	let editing = $state(false);
+	const { data }: { data: PageData } = $props();
+	const { pathUserId, edit } = data;
+
+	const user = $derived(await getUserById(pathUserId));
+
+	let editing = $state(edit);
+
+	// svelte-ignore state_referenced_locally
+	let editUsername = $state(user.username);
+
+	// svelte-ignore state_referenced_locally
+	let editEmployeeFirstName = $state(user.employee?.first_name);
+	// svelte-ignore state_referenced_locally
+	let editEmployeeLastName = $state(user.employee?.last_name);
+
+	function cancelEdit() {
+		editing = false;
+
+		editUsername = user.username;
+
+		editEmployeeFirstName = user.employee?.first_name;
+		editEmployeeLastName = user.employee?.last_name;
+	}
 </script>
 
-<div class="mb-4 flex gap-2">
-	<UserNameAvatar {user} />
+<div class="mb-4 flex justify-end gap-2 mx-auto">
+	<div class="mr-auto">
+		<UserNameAvatar {user} />
+	</div>
 	{#if !editing}
+		{#if !user.employee}
+			<AlertDialog.Root>
+				<AlertDialog.Trigger>
+					{#snippet child({ props })}
+						<Button {...props} variant="outline">
+							<UserCog />
+						</Button>
+					{/snippet}
+				</AlertDialog.Trigger>
+				<AlertDialog.Content class="gap-6">
+					<AlertDialog.Header>
+						<AlertDialog.Title>Zeiterfassung für diesen Nutzer aktivieren?</AlertDialog.Title>
+						<AlertDialog.Description>
+							Diese Aktion kann nicht rückgängig gemacht werden.
+						</AlertDialog.Description>
+					</AlertDialog.Header>
+
+					<form {...convertToEmployee} class="flex flex-col gap-6">
+						<div class="flex flex-col gap-4">
+							<Input name="user_id" value={user.id} class="hidden" />
+							<div class="space-y-2">
+								<Label>Vorname</Label>
+								<Input {...convertToEmployee.fields.first_name.as('text')} />
+							</div>
+							<div class="space-y-2">
+								<Label>Nachname</Label>
+								<Input {...convertToEmployee.fields.last_name.as('text')} />
+							</div>
+							{#if convertToEmployee.fields.allIssues()}
+								<div class="flex flex-col gap-0.5 text-sm">
+									{#each convertToEmployee.fields.allIssues() as issue}
+										<div>
+											{issue.message}
+										</div>
+									{/each}
+								</div>
+							{/if}
+						</div>
+
+						<AlertDialog.Footer>
+							<AlertDialog.Cancel type="button">Abbrechen</AlertDialog.Cancel>
+							<AlertDialog.Action>
+								{#snippet child({ props })}
+									<Button {...props} type="submit" disabled={!!convertToEmployee.pending}>
+										{#if !!convertToEmployee.pending}
+											<Spinner />
+										{:else}
+											<UserCog />
+										{/if}
+										Umwandeln
+									</Button>
+								{/snippet}
+							</AlertDialog.Action>
+						</AlertDialog.Footer>
+					</form>
+				</AlertDialog.Content>
+			</AlertDialog.Root>
+		{/if}
+
 		<Button
 			variant="outline"
-			class="ml-auto"
 			onclick={() => {
 				editing = true;
 			}}
 		>
 			<Pen />
-			Edit
+			Bearbeiten
 		</Button>
 	{:else}
 		<AlertDialog.Root>
@@ -56,12 +136,22 @@
 						onclick={async () => {
 							try {
 								await editUser({
-									username: 'snu_pingas'
+									id: user.id,
+									username: editUsername,
+									employee:
+										user.employee !== undefined
+											? {
+													first_name: editEmployeeFirstName,
+													last_name: editEmployeeLastName
+												}
+											: undefined
 								});
 								toast.success('Änderungen erfolgreich gespeichert');
 								editing = false;
-							} catch (error) {
-								toast.error('Fehler beim Speichern der Änderungen');
+							} catch (error: any) {
+								toast.error(
+									`Fehler beim Speichern der Änderungen: ${error?.message ?? 'Unknown Error'}`
+								);
 							}
 						}}
 						disabled={!!editUser.pending}
@@ -74,16 +164,14 @@
 				</AlertDialog.Footer>
 			</AlertDialog.Content>
 		</AlertDialog.Root>
-		<Button
-			variant="outline"
-			onclick={() => {
-				editing = false;
-			}}
-		>
+		<Button variant="outline" onclick={cancelEdit}>
 			<X />
 			Abbrechen
 		</Button>
 	{/if}
+	<Button size="icon" variant="ghost" onclick={() => goto('/app/users')}>
+		<X />
+	</Button>
 </div>
 
 <div class="max-w-[40rem] space-y-4">
@@ -104,11 +192,11 @@
 			<div class="space-y-2">
 				<Label>Username</Label>
 				<InputGroup.Root>
-					<InputGroup.Input value={user.username} readonly={!editing} />
+					<InputGroup.Input bind:value={editUsername} readonly={!editing} />
 					<InputGroup.Addon align="inline-end">
-						{#if !editing}
+						{#if !editing || editUsername === user.username}
 							<UserIcon />
-						{:else if true}
+						{:else if (await getUsernameExists(editUsername)) === false}
 							<Check class="text-green-600 dark:text-green-400" />
 						{:else}
 							<X class="text-red-600 dark:text-red-400" />
@@ -131,15 +219,8 @@
 				/>
 			</div>
 			<div class="flex items-center gap-x-4 gap-y-2">
-				<!-- <Label>Ist Superuser</Label>
-				<InputGroup.Root>
-					<InputGroup.Input value={user.is_superuser} disabled={editing} readonly />
-					<InputGroup.Addon align="inline-end">
-						<Star />
-					</InputGroup.Addon>
-				</InputGroup.Root> -->
 				<Switch disabled={editing} bind:checked={() => user.is_superuser, () => {}} />
-				<Label class="flex gap-1 items-center">
+				<Label class="flex items-center gap-1">
 					Superuser
 					<Badge variant="outline" class="px-0.5">
 						<Star />
@@ -148,45 +229,48 @@
 			</div>
 		</Card.Content>
 	</Card.Root>
-	<Card.Root class="bg-transparent">
-		<Card.Header>
-			<Card.Title>Angestellter</Card.Title>
-		</Card.Header>
-		<Card.Content class="max-w-[40rem] space-y-6">
-			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-				<div class="space-y-2">
-					<Label>Vorname</Label>
-					<InputGroup.Root>
-						<InputGroup.Input
-							value={user.employee?.first_name}
-							disabled={!user.employee}
-							placeholder="&ndash;"
-							readonly={!editing}
-						/>
-						{#if editing && !!user.employee}
-							<InputGroup.Addon align="inline-start">
-								<Pen />
-							</InputGroup.Addon>
-						{/if}
-					</InputGroup.Root>
+
+	{#if user.employee}
+		<Card.Root class="bg-transparent">
+			<Card.Header>
+				<Card.Title>Person</Card.Title>
+			</Card.Header>
+			<Card.Content class="max-w-[40rem] space-y-6">
+				<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+					<div class="space-y-2">
+						<Label>Vorname</Label>
+						<InputGroup.Root>
+							<InputGroup.Input
+								bind:value={editEmployeeFirstName}
+								disabled={!user.employee}
+								placeholder="&ndash;"
+								readonly={!editing}
+							/>
+							{#if editing && !!user.employee}
+								<InputGroup.Addon align="inline-start">
+									<Pen />
+								</InputGroup.Addon>
+							{/if}
+						</InputGroup.Root>
+					</div>
+					<div class="space-y-2">
+						<Label>Nachname</Label>
+						<InputGroup.Root>
+							<InputGroup.Input
+								bind:value={editEmployeeLastName}
+								disabled={!user.employee}
+								placeholder="&ndash;"
+								readonly={!editing}
+							/>
+							{#if editing && !!user.employee}
+								<InputGroup.Addon align="inline-start">
+									<Pen />
+								</InputGroup.Addon>
+							{/if}
+						</InputGroup.Root>
+					</div>
 				</div>
-				<div class="space-y-2">
-					<Label>Nachname</Label>
-					<InputGroup.Root>
-						<InputGroup.Input
-							value={user.employee?.first_name}
-							disabled={!user.employee}
-							placeholder="&ndash;"
-							readonly={!editing}
-						/>
-						{#if editing && !!user.employee}
-							<InputGroup.Addon align="inline-start">
-								<Pen />
-							</InputGroup.Addon>
-						{/if}
-					</InputGroup.Root>
-				</div>
-			</div>
-		</Card.Content>
-	</Card.Root>
+			</Card.Content>
+		</Card.Root>
+	{/if}
 </div>
