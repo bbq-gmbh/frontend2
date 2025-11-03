@@ -8,7 +8,7 @@
 	) => Promise<PagedResultListUserInfo | undefined>;
 
 	interface Props {
-		value?: string;
+		value?: string | null;
 		onChange?: (userId: string) => void;
 		remote: RemoteFunction;
 		currentUser?: UserInfo;
@@ -62,7 +62,7 @@
 			} finally {
 				isLoading = false;
 			}
-		}, 300);
+		}, 100);
 	};
 
 	const handleSelectUser = (userId: string) => {

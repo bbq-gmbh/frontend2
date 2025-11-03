@@ -20,7 +20,10 @@ export const getEmployeeById = query(z.uuidv4(), async (id) => {
 	const { client } = withAuthClient({ superuser: true });
 	const result = await sdk.getEmployeeByUserId({ client, path: { user_id: id } });
 
-	if (!!result.data) return result.data;
+	if (!!result.data)
+		return result.data as {
+			supervisor_id?: string | null;
+		};
 
 	error(result.response.status, result.error?.detail?.at(0)?.msg ?? 'Unknown Error');
 });
@@ -93,5 +96,39 @@ export const editUser = command(
 		}
 
 		await getUserById(data.id).refresh();
+	}
+);
+
+export const searchEmployeesRemote = query(
+	z.object({
+		q: z.optional(z.string()),
+		page: z.optional(z.int())
+	}),
+	async ({ q, page }) => {
+		const { client } = withAuthClient({ superuser: true });
+		const result = await sdk.searchUsers({
+			client,
+			query: {
+				query: q ?? '',
+				page: page ?? 0,
+				page_size: 20,
+				is_employee: true
+			}
+		});
+
+		console.log('called');
+
+		if (!!result.data) {
+			console.log(result.data);
+			return result.data;
+		}
+
+		if (result.error) {
+			console.log(result.error.detail);
+			// error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+			console.log(result.error);
+		}
+
+		return undefined;
 	}
 );
