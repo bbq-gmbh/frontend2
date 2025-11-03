@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { UserInfo } from '@/backend';
+	import type { UserInfo } from '@/backend';
 	import type { User } from '@/types/auth';
 
 	import * as Avatar from '#/ui/avatar/index.js';

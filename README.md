@@ -4,7 +4,6 @@
 docker build -t frontend .
 ```
 
-
 ```bash
 docker run -p 3000:3000 \
   -e BACKEND_URL="http://localhost:3001" \

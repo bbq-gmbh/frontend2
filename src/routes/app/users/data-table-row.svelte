@@ -28,7 +28,7 @@
 		</div>
 	</Table.Cell>
 	<Table.Cell>
-		<div class="flex justify-between px-2 items-center">
+		<div class="flex items-center justify-between px-2">
 			<button
 				class="flex w-[16rem] flex-col justify-around rounded-md border-0 p-1 hover:bg-muted"
 				onclick={() => {

@@ -22,9 +22,9 @@
 			<div>{res.username}</div>
 		{/each}
 
-    {#snippet failed(_error, reset)}
-      <button onclick={reset}>oops! try again</button>
-    {/snippet}
+		{#snippet failed(_error, reset)}
+			<button onclick={reset}>oops! try again</button>
+		{/snippet}
 	</svelte:boundary>
 
 	<div class="rounded-lg bg-green-50 p-8 dark:bg-green-900/20">

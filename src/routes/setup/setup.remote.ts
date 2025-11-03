@@ -35,13 +35,13 @@ export const setupCreate = form(
 		const loginResult = await login(data.username, data.password);
 
 		if (loginResult.success === false) {
-      redirect(303, "/login");
+			redirect(303, '/login');
 		}
 
-    const { cookies } = getRequestEvent();
+		const { cookies } = getRequestEvent();
 
-    setAuthCookies(cookies, loginResult.tokens);
+		setAuthCookies(cookies, loginResult.tokens);
 
-    redirect(303, "/app")
+		redirect(303, '/app');
 	}
 );

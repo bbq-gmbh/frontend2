@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Star } from 'lucide-svelte';
 
-  import type { UserInfo } from '@/backend';
+	import type { UserInfo } from '@/backend';
 	import type { User } from '@/types/auth';
-  
+
 	import { Badge } from '#/ui/badge';
 	import UserAvatar from '#/user-avatar.svelte';
 

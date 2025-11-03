@@ -50,7 +50,8 @@
 {/snippet}
 
 <Sidebar.Provider>
-	<AppSidebar {user} /> <!-- [scrollbar-gutter:stable_both-edges] -->
+	<AppSidebar {user} />
+	<!-- [scrollbar-gutter:stable_both-edges] -->
 	<Sidebar.Inset class="">
 		<div class="flex min-h-full flex-col">
 			<header
@@ -65,7 +66,7 @@
 			</header>
 			<div class="flex grow">
 				<div class="mx-auto flex max-w-[80rem] grow flex-col">
-					<div class="w-full max-w-[80rem] grow p-4 space-y-4">
+					<div class="w-full max-w-[80rem] grow space-y-4 p-4">
 						{@render children?.()}
 					</div>
 				</div>

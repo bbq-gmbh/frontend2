@@ -8,6 +8,6 @@
 
 	"files.exclude": {
 		".svelte-kit/": true,
-    "src/lib/components/ui/": true,
+		"src/lib/components/ui/": true
 	}
 }
