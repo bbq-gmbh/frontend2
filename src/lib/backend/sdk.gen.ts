@@ -267,7 +267,7 @@ export const getEmployeeHierarchy = <ThrowOnError extends boolean = false>(optio
                 type: 'http'
             }
         ],
-        url: '/employees/hierarchy',
+        url: '/employees/{user_id}/hierarchy',
         ...options
     });
 };

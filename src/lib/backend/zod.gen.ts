@@ -375,10 +375,10 @@ export const zGetCurrentEmployeeData = z.object({
 
 export const zGetEmployeeHierarchyData = z.object({
     body: z.optional(z.never()),
-    path: z.optional(z.never()),
-    query: z.object({
+    path: z.object({
         user_id: z.uuid()
-    })
+    }),
+    query: z.optional(z.never())
 });
 
 /**

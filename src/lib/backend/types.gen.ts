@@ -691,14 +691,14 @@ export type GetCurrentEmployeeResponses = {
 
 export type GetEmployeeHierarchyData = {
     body?: never;
-    path?: never;
-    query: {
+    path: {
         /**
          * User Id
          */
         user_id: string;
     };
-    url: '/employees/hierarchy';
+    query?: never;
+    url: '/employees/{user_id}/hierarchy';
 };
 
 export type GetEmployeeHierarchyErrors = {
