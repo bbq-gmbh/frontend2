@@ -57,6 +57,96 @@ export type HttpValidationError = {
 };
 
 /**
+ * HierarchyNode
+ *
+ * Represents a node in the employee hierarchy.
+ */
+export type HierarchyNode = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * Username
+     */
+    username: string;
+    /**
+     * First Name
+     */
+    first_name: string;
+    /**
+     * Last Name
+     */
+    last_name: string;
+    /**
+     * Supervisor Id
+     */
+    supervisor_id?: string | null;
+    /**
+     * Depth
+     */
+    depth: number;
+};
+
+/**
+ * HierarchyRebuildResponse
+ *
+ * Response from hierarchy rebuild endpoint.
+ */
+export type HierarchyRebuildResponse = {
+    /**
+     * Success
+     */
+    success: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    stats: HierarchyRebuildStats;
+};
+
+/**
+ * HierarchyRebuildStats
+ *
+ * Statistics from a hierarchy rebuild operation.
+ */
+export type HierarchyRebuildStats = {
+    /**
+     * Records Deleted
+     */
+    records_deleted: number;
+    /**
+     * Records Created
+     */
+    records_created: number;
+    /**
+     * Employees Processed
+     */
+    employees_processed: number;
+    /**
+     * Duration Seconds
+     */
+    duration_seconds: number;
+};
+
+/**
+ * HierarchyResponse
+ *
+ * Response containing hierarchy information for an employee.
+ */
+export type HierarchyResponse = {
+    employee: HierarchyNode;
+    /**
+     * Supervisors
+     */
+    supervisors: Array<HierarchyNode>;
+    /**
+     * Subordinates
+     */
+    subordinates: Array<HierarchyNode>;
+};
+
+/**
  * LoginRequest
  */
 export type LoginRequest = {
@@ -199,6 +289,10 @@ export type UserEmployeePatch = {
      * New Last Name
      */
     new_last_name?: string | null;
+    /**
+     * New Supervisor Id
+     */
+    new_supervisor_id?: string | null;
 };
 
 /**
@@ -221,7 +315,7 @@ export type UserInfo = {
      * Created At
      */
     created_at: string;
-    employee: UserEmployeeOnly | null;
+    employee?: UserEmployeeOnly | null;
 };
 
 /**
@@ -595,7 +689,37 @@ export type GetCurrentEmployeeResponses = {
     200: unknown;
 };
 
-export type GetEmployeesData = {
+export type GetEmployeeHierarchyData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    url: '/employees/hierarchy';
+};
+
+export type GetEmployeeHierarchyErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetEmployeeHierarchyError = GetEmployeeHierarchyErrors[keyof GetEmployeeHierarchyErrors];
+
+export type GetEmployeeHierarchyResponses = {
+    /**
+     * Successful Response
+     */
+    200: HierarchyResponse;
+};
+
+export type GetEmployeeHierarchyResponse = GetEmployeeHierarchyResponses[keyof GetEmployeeHierarchyResponses];
+
+export type DeleteEmployeeData = {
     body?: never;
     path: {
         /**
@@ -607,16 +731,46 @@ export type GetEmployeesData = {
     url: '/employees/{user_id}';
 };
 
-export type GetEmployeesErrors = {
+export type DeleteEmployeeErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetEmployeesError = GetEmployeesErrors[keyof GetEmployeesErrors];
+export type DeleteEmployeeError = DeleteEmployeeErrors[keyof DeleteEmployeeErrors];
 
-export type GetEmployeesResponses = {
+export type DeleteEmployeeResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteEmployeeResponse = DeleteEmployeeResponses[keyof DeleteEmployeeResponses];
+
+export type GetEmployeeByUserIdData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/employees/{user_id}';
+};
+
+export type GetEmployeeByUserIdErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetEmployeeByUserIdError = GetEmployeeByUserIdErrors[keyof GetEmployeeByUserIdErrors];
+
+export type GetEmployeeByUserIdResponses = {
     /**
      * Successful Response
      */
@@ -645,6 +799,38 @@ export type CreateEmployeeResponses = {
      */
     201: unknown;
 };
+
+export type RebuildEmployeeHierarchyData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Force
+         *
+         * Force rebuild without pre-validation checks
+         */
+        force?: boolean;
+    };
+    url: '/employees/__rebuild_hierarchy';
+};
+
+export type RebuildEmployeeHierarchyErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RebuildEmployeeHierarchyError = RebuildEmployeeHierarchyErrors[keyof RebuildEmployeeHierarchyErrors];
+
+export type RebuildEmployeeHierarchyResponses = {
+    /**
+     * Successful Response
+     */
+    200: HierarchyRebuildResponse;
+};
+
+export type RebuildEmployeeHierarchyResponse = RebuildEmployeeHierarchyResponses[keyof RebuildEmployeeHierarchyResponses];
 
 export type GetSetupStatusData = {
     body?: never;

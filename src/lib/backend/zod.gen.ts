@@ -46,6 +46,57 @@ export const zHttpValidationError = z.object({
 });
 
 /**
+ * HierarchyNode
+ *
+ * Represents a node in the employee hierarchy.
+ */
+export const zHierarchyNode = z.object({
+    user_id: z.uuid(),
+    username: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+    supervisor_id: z.optional(z.union([
+        z.uuid(),
+        z.null()
+    ])),
+    depth: z.int()
+});
+
+/**
+ * HierarchyRebuildStats
+ *
+ * Statistics from a hierarchy rebuild operation.
+ */
+export const zHierarchyRebuildStats = z.object({
+    records_deleted: z.int(),
+    records_created: z.int(),
+    employees_processed: z.int(),
+    duration_seconds: z.number()
+});
+
+/**
+ * HierarchyRebuildResponse
+ *
+ * Response from hierarchy rebuild endpoint.
+ */
+export const zHierarchyRebuildResponse = z.object({
+    success: z.boolean(),
+    message: z.string(),
+    stats: zHierarchyRebuildStats
+});
+
+/**
+ * HierarchyResponse
+ *
+ * Response containing hierarchy information for an employee.
+ */
+export const zHierarchyResponse = z.object({
+    employee: zHierarchyNode,
+    supervisors: z.array(zHierarchyNode),
+    subordinates: z.array(zHierarchyNode)
+});
+
+/**
  * LoginRequest
  */
 export const zLoginRequest = z.object({
@@ -83,10 +134,10 @@ export const zUserInfo = z.object({
     username: z.string(),
     is_superuser: z.boolean(),
     created_at: z.iso.datetime(),
-    employee: z.union([
+    employee: z.optional(z.union([
         zUserEmployeeOnly,
         z.null()
-    ])
+    ]))
 });
 
 /**
@@ -154,6 +205,10 @@ export const zUserEmployeePatch = z.object({
     ])),
     new_last_name: z.optional(z.union([
         z.string(),
+        z.null()
+    ])),
+    new_supervisor_id: z.optional(z.union([
+        z.uuid(),
         z.null()
     ]))
 });
@@ -318,7 +373,33 @@ export const zGetCurrentEmployeeData = z.object({
     query: z.optional(z.never())
 });
 
-export const zGetEmployeesData = z.object({
+export const zGetEmployeeHierarchyData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.object({
+        user_id: z.uuid()
+    })
+});
+
+/**
+ * Successful Response
+ */
+export const zGetEmployeeHierarchyResponse = zHierarchyResponse;
+
+export const zDeleteEmployeeData = z.object({
+    body: z.optional(z.never()),
+    path: z.object({
+        user_id: z.uuid()
+    }),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zDeleteEmployeeResponse = z.void();
+
+export const zGetEmployeeByUserIdData = z.object({
     body: z.optional(z.never()),
     path: z.object({
         user_id: z.uuid()
@@ -331,6 +412,19 @@ export const zCreateEmployeeData = z.object({
     path: z.optional(z.never()),
     query: z.optional(z.never())
 });
+
+export const zRebuildEmployeeHierarchyData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.optional(z.object({
+        force: z.optional(z.boolean()).default(false)
+    }))
+});
+
+/**
+ * Successful Response
+ */
+export const zRebuildEmployeeHierarchyResponse = zHierarchyRebuildResponse;
 
 export const zGetSetupStatusData = z.object({
     body: z.optional(z.never()),

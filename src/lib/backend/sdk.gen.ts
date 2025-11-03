@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeesData, GetEmployeesErrors, GetEmployeesResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -240,8 +240,6 @@ export const changePassword = <ThrowOnError extends boolean = false>(options: Op
 
 /**
  * Get Current Employee
- *
- * Get the employee for the current user.
  */
 export const getCurrentEmployee = <ThrowOnError extends boolean = false>(options?: Options<GetCurrentEmployeeData, ThrowOnError>) => {
     return (options?.client ?? client).get<GetCurrentEmployeeResponses, unknown, ThrowOnError>({
@@ -257,12 +255,46 @@ export const getCurrentEmployee = <ThrowOnError extends boolean = false>(options
 };
 
 /**
- * Get Employees
+ * Get Employee Hierarchy
  *
- * Get employee for a specific user.
+ * Get hierarchy information for an employee including supervisors and subordinates.
  */
-export const getEmployees = <ThrowOnError extends boolean = false>(options: Options<GetEmployeesData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetEmployeesResponses, GetEmployeesErrors, ThrowOnError>({
+export const getEmployeeHierarchy = <ThrowOnError extends boolean = false>(options: Options<GetEmployeeHierarchyData, ThrowOnError>) => {
+    return (options.client ?? client).get<GetEmployeeHierarchyResponses, GetEmployeeHierarchyErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/employees/hierarchy',
+        ...options
+    });
+};
+
+/**
+ * Delete Employee
+ *
+ * Delete an employee and heal the hierarchy (superuser only).
+ */
+export const deleteEmployee = <ThrowOnError extends boolean = false>(options: Options<DeleteEmployeeData, ThrowOnError>) => {
+    return (options.client ?? client).delete<DeleteEmployeeResponses, DeleteEmployeeErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/employees/{user_id}',
+        ...options
+    });
+};
+
+/**
+ * Get Employee By User Id
+ */
+export const getEmployeeByUserId = <ThrowOnError extends boolean = false>(options: Options<GetEmployeeByUserIdData, ThrowOnError>) => {
+    return (options.client ?? client).get<GetEmployeeByUserIdResponses, GetEmployeeByUserIdErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
@@ -276,8 +308,6 @@ export const getEmployees = <ThrowOnError extends boolean = false>(options: Opti
 
 /**
  * Create Employee
- *
- * Create a new employee.
  */
 export const createEmployee = <ThrowOnError extends boolean = false>(options: Options<CreateEmployeeData, ThrowOnError>) => {
     return (options.client ?? client).post<CreateEmployeeResponses, CreateEmployeeErrors, ThrowOnError>({
@@ -293,6 +323,24 @@ export const createEmployee = <ThrowOnError extends boolean = false>(options: Op
             'Content-Type': 'application/json',
             ...options.headers
         }
+    });
+};
+
+/**
+ * Rebuild Employee Hierarchy
+ *
+ * Rebuild the entire employee hierarchy table (superuser only).
+ */
+export const rebuildEmployeeHierarchy = <ThrowOnError extends boolean = false>(options?: Options<RebuildEmployeeHierarchyData, ThrowOnError>) => {
+    return (options?.client ?? client).post<RebuildEmployeeHierarchyResponses, RebuildEmployeeHierarchyErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/employees/__rebuild_hierarchy',
+        ...options
     });
 };
 
