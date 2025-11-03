@@ -57,6 +57,7 @@
 		// If search is empty, clear immediately
 		if (!newSearchValue.trim()) {
 			users = [];
+			isLoading = false;
 			return;
 		}
 
@@ -68,9 +69,14 @@
 		searchTimeout = setTimeout(async () => {
 			try {
 				const result = await remote({ q: newSearchValue, page: 0 });
-				if (result?.page) {
+				if (result && 'page' in result) {
 					users = result.page;
+				} else {
+					users = [];
 				}
+			} catch (error) {
+				console.error('Error searching users:', error);
+				users = [];
 			} finally {
 				isLoading = false;
 			}
@@ -86,6 +92,9 @@
 		if (selected) {
 			currentUser = selected;
 		}
+		
+		// Clear search after selection
+		users = [];
 	};
 </script>
 

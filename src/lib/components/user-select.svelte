@@ -32,12 +32,15 @@
 	}: Props = $props();
 
 	let searchInput = $state('');
+	let isSelectingUser = $state(false);
 
 	const handleSelectUser = (user: UserInfo) => {
 		if (readonly) return;
+		isSelectingUser = true;
 		value = user.id;
 		onChange?.(user.id);
 		searchInput = '';
+		isSelectingUser = false;
 	};
 
 	const handleClearSelection = (e: Event) => {
@@ -51,6 +54,10 @@
 	const handleSearchInputChange = (newValue: string) => {
 		if (readonly) return;
 		searchInput = newValue;
+
+		// Skip onSearchChange callback when user is being selected (clearing search input as side effect)
+		if (isSelectingUser) return;
+
 		onSearchChange?.(newValue);
 
 		// Clear results when search input is empty
