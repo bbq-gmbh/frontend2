@@ -69,13 +69,20 @@
 				user.employee?.last_name?.toLowerCase().includes(query)
 		);
 	});
+
+	const handleTriggerClick = (e: Event) => {
+		if (readonly) {
+			e.preventDefault();
+		}
+	};
 </script>
 
 <Popover>
 	<div class="relative">
 		<PopoverTrigger
 			class="flex min-h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground disabled:opacity-50"
-			disabled={disabled || readonly}
+			{disabled}
+			onclick={handleTriggerClick}
 		>
 			<div class="flex flex-1 items-center">
 				{#if currentUser}
