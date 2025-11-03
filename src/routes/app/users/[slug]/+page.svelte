@@ -298,9 +298,9 @@
 
 					<svelte:boundary>
 						{#await getEmployee then employee}
-							{#if employee}
 								{@const getSupervisorUser = async () =>
 									editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
+							{#if employee}
 								<div class="space-y-2">
 									<Label>Vorgesetzer</Label>
 									<UserSearchSelect

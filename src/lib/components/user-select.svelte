@@ -33,14 +33,42 @@
 
 	let searchInput = $state('');
 	let isSelectingUser = $state(false);
+	let inputElement: HTMLInputElement | undefined = $state();
+	let popoverOpen = $state(false);
+
+	const closePopoverAndSelectUser = (user: UserInfo) => {
+		// CRITICAL: Set isSelectingUser FIRST before any state changes
+		// This prevents any pending events from triggering search
+		isSelectingUser = true;
+		
+		// Close popover
+		popoverOpen = false;
+		
+		// Then handle selection
+		handleSelectUser(user);
+	};
 
 	const handleSelectUser = (user: UserInfo) => {
 		if (readonly) return;
+		
+		// isSelectingUser should already be true from closePopoverAndSelectUser
+		// but set it again to be safe
 		isSelectingUser = true;
+		
+		// Update the selection
 		value = user.id;
 		onChange?.(user.id);
+		
+		// Clear search input
 		searchInput = '';
-		isSelectingUser = false;
+		if (inputElement) {
+			inputElement.value = '';
+		}
+		
+		// Reset flag after event loop so no pending events trigger search
+		setTimeout(() => {
+			isSelectingUser = false;
+		}, 0);
 	};
 
 	const handleClearSelection = (e: Event) => {
@@ -53,11 +81,13 @@
 
 	const handleSearchInputChange = (newValue: string) => {
 		if (readonly) return;
+		
+		// Skip all search logic when user is being selected
+		if (isSelectingUser) {
+			return;
+		}
+		
 		searchInput = newValue;
-
-		// Skip onSearchChange callback when user is being selected (clearing search input as side effect)
-		if (isSelectingUser) return;
-
 		onSearchChange?.(newValue);
 
 		// Clear results when search input is empty
@@ -84,21 +114,8 @@
 	};
 </script>
 
-<Popover>
+<Popover bind:open={popoverOpen}>
 	<div class="relative">
-		<!-- <PopoverTrigger
-			class="flex min-h-14 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground disabled:opacity-50"
-			{disabled}
-			onclick={handleTriggerClick}
-		>
-			<div class="flex flex-1 items-center">
-				{#if currentUser}
-					<UserNameAvatar user={currentUser} />
-				{:else}
-					<span class="text-muted-foreground">Select a user...</span>
-				{/if}
-			</div>
-		</PopoverTrigger> -->
 		<PopoverTrigger
 			onclick={handleTriggerClick}
 		>
@@ -131,12 +148,14 @@
 			<div class="flex items-center gap-2 rounded-md border border-input px-3 py-2">
 				<Search class="h-4 w-4 text-muted-foreground" />
 				<input
+					bind:this={inputElement}
 					type="text"
 					placeholder="Search users..."
 					value={searchInput}
 					onchange={(e) => handleSearchInputChange((e.target as HTMLInputElement).value)}
 					oninput={(e) => handleSearchInputChange((e.target as HTMLInputElement).value)}
-					class="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+					disabled={!popoverOpen}
+					class="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
 				/>
 			</div>
 
@@ -157,7 +176,7 @@
 					<div class="space-y-1 p-1">
 						{#each filteredUsers as user (user.id)}
 							<button
-								onclick={() => handleSelectUser(user)}
+								onclick={() => closePopoverAndSelectUser(user)}
 								class="flex w-full items-center gap-2 rounded px-2 py-2 text-left hover:bg-accent hover:text-accent-foreground"
 							>
 								<UserNameAvatar {user} />
