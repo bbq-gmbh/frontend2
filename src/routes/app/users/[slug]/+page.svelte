@@ -29,7 +29,7 @@
 
 	let editEmployeeFirstName = $state('');
 	let editEmployeeLastName = $state('');
-  
+
 	$effect(updateEdits);
 
 	function cancelEdit() {
@@ -141,13 +141,12 @@
 								await editUser({
 									id: user.id,
 									username: editUsername,
-									employee:
-										user.employee !== undefined
-											? {
-													first_name: editEmployeeFirstName,
-													last_name: editEmployeeLastName
-												}
-											: undefined
+									employee: user.employee
+										? {
+												first_name: editEmployeeFirstName,
+												last_name: editEmployeeLastName
+											}
+										: undefined
 								});
 								editing = false;
 								toast.success('Änderungen erfolgreich gespeichert');
