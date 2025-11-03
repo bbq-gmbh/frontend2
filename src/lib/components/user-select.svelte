@@ -79,7 +79,7 @@
 
 <Popover>
 	<div class="relative">
-		<PopoverTrigger
+		<!-- <PopoverTrigger
 			class="flex min-h-14 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground disabled:opacity-50"
 			{disabled}
 			onclick={handleTriggerClick}
@@ -91,6 +91,24 @@
 					<span class="text-muted-foreground">Select a user...</span>
 				{/if}
 			</div>
+		</PopoverTrigger> -->
+		<PopoverTrigger
+			onclick={handleTriggerClick}
+		>
+			{#snippet child({ props })}
+				<Button
+					{...props}
+					variant="outline"
+					class="flex min-h-14 w-full items-center justify-between p-2 text-sm"
+					{disabled}
+				>
+					{#if currentUser}
+						<UserNameAvatar user={currentUser} />
+					{:else}
+						<span class="text-muted-foreground">Select a user...</span>
+					{/if}
+				</Button>
+			{/snippet}
 		</PopoverTrigger>
 		{#if value && clearable && !readonly}
 			<div class="absolute top-0 right-0 bottom-0 flex flex-col justify-center px-2">
@@ -133,7 +151,7 @@
 						{#each filteredUsers as user (user.id)}
 							<button
 								onclick={() => handleSelectUser(user)}
-								class="flex w-full items-center gap-2 rounded px-2 py-2 text-left hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+								class="flex w-full items-center gap-2 rounded px-2 py-2 text-left hover:bg-accent hover:text-accent-foreground"
 							>
 								<UserNameAvatar {user} />
 							</button>
