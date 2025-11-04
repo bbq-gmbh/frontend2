@@ -198,6 +198,36 @@ export type PasswordChangeRequest = {
 };
 
 /**
+ * RemoteLogoutAllRequest
+ */
+export type RemoteLogoutAllRequest = {
+    /**
+     * User Id
+     */
+    user_id: string;
+};
+
+/**
+ * RemoteResetPasswordRequest
+ */
+export type RemoteResetPasswordRequest = {
+    /**
+     * User Id
+     */
+    user_id: string;
+};
+
+/**
+ * RemoteResetPasswordResponse
+ */
+export type RemoteResetPasswordResponse = {
+    /**
+     * New Password
+     */
+    new_password: string;
+};
+
+/**
  * ServerStoreCreate
  */
 export type ServerStoreCreate = {
@@ -742,6 +772,56 @@ export type ChangePasswordResponses = {
 };
 
 export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses];
+
+export type RemoteLogoutAllSessionsData = {
+    body: RemoteLogoutAllRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/remote-logout-all';
+};
+
+export type RemoteLogoutAllSessionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RemoteLogoutAllSessionsError = RemoteLogoutAllSessionsErrors[keyof RemoteLogoutAllSessionsErrors];
+
+export type RemoteLogoutAllSessionsResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type RemoteLogoutAllSessionsResponse = RemoteLogoutAllSessionsResponses[keyof RemoteLogoutAllSessionsResponses];
+
+export type RemoteResetPasswordData = {
+    body: RemoteResetPasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/remote-reset-password';
+};
+
+export type RemoteResetPasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RemoteResetPasswordError = RemoteResetPasswordErrors[keyof RemoteResetPasswordErrors];
+
+export type RemoteResetPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    200: RemoteResetPasswordResponse;
+};
+
+export type RemoteResetPasswordResponse2 = RemoteResetPasswordResponses[keyof RemoteResetPasswordResponses];
 
 export type GetCurrentEmployeeData = {
     body?: never;

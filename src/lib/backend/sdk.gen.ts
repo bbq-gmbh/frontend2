@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, RemoteLogoutAllSessionsData, RemoteLogoutAllSessionsErrors, RemoteLogoutAllSessionsResponses, RemoteResetPasswordData, RemoteResetPasswordErrors, RemoteResetPasswordResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -248,6 +248,48 @@ export const changePassword = <ThrowOnError extends boolean = false>(options: Op
             }
         ],
         url: '/auth/change-password',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Remote Logout All Sessions
+ *
+ * Logs out from all devices by rotating the token key (invalidates all tokens).
+ */
+export const remoteLogoutAllSessions = <ThrowOnError extends boolean = false>(options: Options<RemoteLogoutAllSessionsData, ThrowOnError>) => {
+    return (options.client ?? client).post<RemoteLogoutAllSessionsResponses, RemoteLogoutAllSessionsErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/auth/remote-logout-all',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Remote Reset Password
+ */
+export const remoteResetPassword = <ThrowOnError extends boolean = false>(options: Options<RemoteResetPasswordData, ThrowOnError>) => {
+    return (options.client ?? client).post<RemoteResetPasswordResponses, RemoteResetPasswordErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/auth/remote-reset-password',
         ...options,
         headers: {
             'Content-Type': 'application/json',

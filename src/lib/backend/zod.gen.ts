@@ -157,6 +157,27 @@ export const zPasswordChangeRequest = z.object({
 });
 
 /**
+ * RemoteLogoutAllRequest
+ */
+export const zRemoteLogoutAllRequest = z.object({
+    user_id: z.uuid()
+});
+
+/**
+ * RemoteResetPasswordRequest
+ */
+export const zRemoteResetPasswordRequest = z.object({
+    user_id: z.uuid()
+});
+
+/**
+ * RemoteResetPasswordResponse
+ */
+export const zRemoteResetPasswordResponse = z.object({
+    new_password: z.string()
+});
+
+/**
  * ServerStoreCreate
  */
 export const zServerStoreCreate = z.object({
@@ -402,6 +423,28 @@ export const zChangePasswordData = z.object({
  * Successful Response
  */
 export const zChangePasswordResponse = z.void();
+
+export const zRemoteLogoutAllSessionsData = z.object({
+    body: zRemoteLogoutAllRequest,
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zRemoteLogoutAllSessionsResponse = z.void();
+
+export const zRemoteResetPasswordData = z.object({
+    body: zRemoteResetPasswordRequest,
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zRemoteResetPasswordResponse2 = zRemoteResetPasswordResponse;
 
 export const zGetCurrentEmployeeData = z.object({
     body: z.optional(z.never()),
