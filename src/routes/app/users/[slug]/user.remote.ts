@@ -91,7 +91,6 @@ export const editUser = command(
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (result.error) {
-			console.log(result.error.detail);
 			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
 		}
 
@@ -116,7 +115,7 @@ export const searchEmployeesRemote = query(
 			}
 		});
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
+		await new Promise((resolve) => setTimeout(resolve, 400));
 
 		if (!!result.data) {
 			return result.data;
@@ -125,3 +124,29 @@ export const searchEmployeesRemote = query(
 		return undefined;
 	}
 );
+
+export const remoteLogoutAll = command(z.uuidv4(), async (id) => {
+	const { client } = withAuthClient({ superuser: true });
+	const result = await sdk.remoteLogoutAllSessions({ client, body: { user_id: id } });
+
+	await new Promise((resolve) => setTimeout(resolve, 200));
+
+	if (result.error) {
+		error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+	}
+});
+
+export const remoteResetPassword = command(z.uuidv4(), async (id): Promise<string> => {
+	const { client } = withAuthClient({ superuser: true });
+	const result = await sdk.remoteResetPassword({ client, body: { user_id: id } });
+
+	await new Promise((resolve) => setTimeout(resolve, 200));
+
+	if (!!result.data) return result.data.new_password;
+
+	if (result.error) {
+		error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+	}
+
+	error(500);
+});

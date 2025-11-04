@@ -3,7 +3,17 @@
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
-	import { Check, IdCardLanyard, Pen, Save, Star, UserCog, UserIcon, X } from 'lucide-svelte';
+	import {
+		Check,
+		IdCardLanyard,
+		LogOut,
+		Pen,
+		Save,
+		Star,
+		UserCog,
+		UserIcon,
+		X
+	} from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 
 	import * as InputGroup from '#/ui/input-group';
@@ -24,7 +34,9 @@
 		getEmployeeById,
 		getUserById,
 		getUsernameExists,
-		searchEmployeesRemote
+		searchEmployeesRemote,
+		remoteLogoutAll,
+		remoteResetPassword
 	} from './user.remote';
 	import UserSearchSelect from '#/user-search-select.svelte';
 
@@ -68,6 +80,9 @@
 	}
 
 	onMount(updateEdits);
+
+	let remoteLogoutAllDialogOpen = $state(false);
+	let resertPasswordDialogOpen = $state(false);
 </script>
 
 {#await getUser then user}
@@ -257,6 +272,104 @@
 			</Card.Content>
 		</Card.Root>
 
+		<Card.Root class="bg-transparent">
+			<Card.Header>
+				<Card.Title>Sessions</Card.Title>
+			</Card.Header>
+			<Card.Content class="flex flex-col gap-6">
+				<div class="flex flex-wrap gap-2">
+					<AlertDialog.Root bind:open={remoteLogoutAllDialogOpen}>
+						<AlertDialog.Trigger>
+							<Button variant="outline">
+								<LogOut />
+								Überall ausloggen
+							</Button>
+						</AlertDialog.Trigger>
+						<AlertDialog.Content>
+							<AlertDialog.Header>
+								<AlertDialog.Title>Nutzer von allen Geräten ausloggen?</AlertDialog.Title>
+								<AlertDialog.Description>
+									Nach dieser Aktion wird der Nutzer von allen Geräten ausgeloggt.
+								</AlertDialog.Description>
+							</AlertDialog.Header>
+							<AlertDialog.Footer>
+								<AlertDialog.Cancel>
+									<X />
+									Abbrechen
+								</AlertDialog.Cancel>
+								<AlertDialog.Action
+									onclick={async () => {
+										try {
+											await remoteLogoutAll(user.id);
+											remoteLogoutAllDialogOpen = false;
+
+											toast.success('Nutzer erfolgreich überall ausgeloggt');
+
+											if (data.user.id === user.id) goto('/logout');
+										} catch (error) {
+											toast.error('Nutzer konnte nicht ausgeloggt werden');
+										}
+									}}
+									disabled={!!remoteLogoutAll.pending}
+								>
+									{#if !!remoteLogoutAll.pending}
+										<Spinner />
+									{:else}
+										<LogOut />
+									{/if}
+									Ausloggen
+								</AlertDialog.Action>
+							</AlertDialog.Footer>
+						</AlertDialog.Content>
+					</AlertDialog.Root>
+
+					<AlertDialog.Root bind:open={resertPasswordDialogOpen}>
+						<AlertDialog.Trigger>
+							<Button variant="outline">
+								<LogOut />
+								Passwort zurücksetzen
+							</Button>
+						</AlertDialog.Trigger>
+						<AlertDialog.Content>
+							<AlertDialog.Header>
+								<AlertDialog.Title>Passwort für Nutzer zurücksetzen?</AlertDialog.Title>
+							</AlertDialog.Header>
+							<AlertDialog.Footer>
+								<AlertDialog.Cancel>
+									<X />
+									Abbrechen
+								</AlertDialog.Cancel>
+								<AlertDialog.Action
+									onclick={async () => {
+										try {
+											const new_password = await remoteResetPassword(user.id);
+											resertPasswordDialogOpen = false;
+
+											toast.success('Passwort für Nutzer erfolgreich zurückgesetzt');
+
+											alert(`Neues Passwort:\n\n${new_password}`);
+
+											if (data.user.id === user.id) goto('/logout');
+										} catch (error) {
+											toast.error('Passwort konnte nicht zurückgesetzt werden');
+										}
+									}}
+									disabled={!!remoteResetPassword.pending}
+								>
+									{#if !!remoteResetPassword.pending}
+										<Spinner />
+									{:else}
+										<LogOut />
+									{/if}
+									Passwort zurücksetzen
+								</AlertDialog.Action>
+							</AlertDialog.Footer>
+						</AlertDialog.Content>
+					</AlertDialog.Root>
+				</div>
+			</Card.Content>
+		</Card.Root>
+
 		{#if user.employee}
 			<Card.Root class="bg-transparent">
 				<Card.Header>
@@ -298,8 +411,8 @@
 
 					<svelte:boundary>
 						{#await getEmployee then employee}
-								{@const getSupervisorUser = async () =>
-									editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
+							{@const getSupervisorUser = async () =>
+								editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
 							{#if employee}
 								<div class="space-y-2">
 									<Label>Vorgesetzer</Label>
