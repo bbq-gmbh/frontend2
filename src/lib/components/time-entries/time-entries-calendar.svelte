@@ -1,0 +1,70 @@
+<script lang="ts">
+	import { getLocalTimeZone, today } from '@internationalized/date';
+
+	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
+	import { CalendarDate } from '@internationalized/date';
+
+	import { Button } from '#/ui/button';
+
+	import * as ButtonGroup from '#/ui/button-group';
+	import * as Card from '#/ui/card';
+
+	let { value = $bindable(today(getLocalTimeZone())) }: { value: CalendarDate } = $props();
+
+	let monthDateTimeFormat = new Intl.DateTimeFormat('de-DE', { month: 'long' });
+
+	let calendar;
+
+	// let value = $state(today(getLocalTimeZone()));
+
+	let todayDate = $state(today(getLocalTimeZone()));
+	let minDate = $derived(todayDate.set({ day: 1, month: 1 }));
+	let maxDate = $derived(todayDate);
+</script>
+
+<div class="flex flex-col gap-6">
+	<div>
+		<Card.Root class="bg-transparent">
+			<Card.Content class="flex justify-center">
+				<div class="flex flex-col gap-2">
+					<Calendar
+						bind:this={calendar}
+						type="single"
+						bind:value
+						class="rounded-lg border shadow-sm"
+						numberOfMonths={1}
+						captionLayout="dropdown"
+						fixedWeeks
+						minValue={minDate}
+						maxValue={maxDate}
+					/>
+
+					<div class="flex justify-end">
+						<ButtonGroup.Root>
+							<Button
+								variant="outline"
+								onclick={() => {
+									//
+								}}>Heute</Button
+							>
+							<Button variant="outline">Gestern</Button>
+						</ButtonGroup.Root>
+					</div>
+				</div>
+			</Card.Content>
+		</Card.Root>
+	</div>
+	<div>
+		<Card.Root class="bg-transparent">
+			<Card.Header>
+				{monthDateTimeFormat.format(value.toDate('Europe/Berlin'))}
+			</Card.Header>
+			<Card.Content>
+				<div class="flex flex-col gap-1">
+					<span> Studen </span>
+					<span class="text-lg font-bold"> 44/50 </span>
+				</div>
+			</Card.Content>
+		</Card.Root>
+	</div>
+</div>

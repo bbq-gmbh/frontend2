@@ -1,5 +1,7 @@
 <script lang="ts">
 	import '../app.css';
+	import './select.css';
+
 	import { ModeWatcher } from 'mode-watcher';
 
 	import favicon from '@/assets/favicon.svg';

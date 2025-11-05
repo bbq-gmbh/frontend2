@@ -115,6 +115,7 @@ export type EmployeeCreate = {
      * Birthday
      */
     birthday: string;
+    hour_model: HourModel;
 };
 
 /**
@@ -226,6 +227,11 @@ export type HierarchyResponse = {
      */
     subordinates: Array<HierarchyNode>;
 };
+
+/**
+ * HourModel
+ */
+export type HourModel = 6 | 7 | 8;
 
 /**
  * LoginRequest
@@ -577,6 +583,7 @@ export type AppModelsEmployeeEmployee = {
      * Birthday
      */
     birthday: string;
+    hour_model: HourModel;
 };
 
 /**
@@ -1208,33 +1215,6 @@ export type DeleteTimeEntryResponses = {
 
 export type DeleteTimeEntryResponse = DeleteTimeEntryResponses[keyof DeleteTimeEntryResponses];
 
-export type GetTimeEntriesData = {
-    body: TimeEntryGet;
-    path?: never;
-    query?: never;
-    url: '/time_entries/';
-};
-
-export type GetTimeEntriesErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetTimeEntriesError = GetTimeEntriesErrors[keyof GetTimeEntriesErrors];
-
-export type GetTimeEntriesResponses = {
-    /**
-     * Response Gettimeentries
-     *
-     * Successful Response
-     */
-    200: TimeEntry | Array<TimeEntry> | null;
-};
-
-export type GetTimeEntriesResponse = GetTimeEntriesResponses[keyof GetTimeEntriesResponses];
-
 export type CreateTimeEntryData = {
     body: TimeEntryCreate;
     path?: never;
@@ -1264,6 +1244,33 @@ export type CreateTimeEntryResponses = {
 };
 
 export type CreateTimeEntryResponse = CreateTimeEntryResponses[keyof CreateTimeEntryResponses];
+
+export type GetTimeEntriesData = {
+    body: TimeEntryGet;
+    path?: never;
+    query?: never;
+    url: '/time_entries/get';
+};
+
+export type GetTimeEntriesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetTimeEntriesError = GetTimeEntriesErrors[keyof GetTimeEntriesErrors];
+
+export type GetTimeEntriesResponses = {
+    /**
+     * Response Gettimeentries
+     *
+     * Successful Response
+     */
+    200: TimeEntry | Array<TimeEntry> | null;
+};
+
+export type GetTimeEntriesResponse = GetTimeEntriesResponses[keyof GetTimeEntriesResponses];
 
 export type DeleteAbsenceEntryData = {
     body: AbsenceEntryDelete;

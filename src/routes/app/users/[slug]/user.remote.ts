@@ -42,11 +42,27 @@ export const convertToEmployee = form(
 		user_id: z.uuidv4(),
 		first_name: z.string().min(1, 'First name required'),
 		last_name: z.string().min(1, 'Last name required'),
-		birthday: z.iso.date('Birthday required')
+		birthday: z.iso.date('Birthday required'),
+		hour_model: z.string()
 	}),
 	async (data) => {
+		const parsedHourModel = parseInt(data.hour_model);
+		if (![6, 7, 8].includes(parsedHourModel)) {
+			error(400, 'Invalid hour model. Must be 6, 7, or 8.');
+		}
+		const hour_model = parsedHourModel as 6 | 7 | 8;
+
 		const { client } = withAuthClient({ superuser: true });
-		const result = await sdk.createEmployee({ client, body: data });
+		const result = await sdk.createEmployee({
+			client,
+			body: {
+				user_id: data.user_id,
+				first_name: data.first_name,
+				last_name: data.last_name,
+				birthday: data.birthday,
+				hour_model: hour_model
+			}
+		});
 
 		await new Promise((resolve) => setTimeout(resolve, 300));
 

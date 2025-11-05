@@ -19,6 +19,7 @@
 	import * as InputGroup from '#/ui/input-group';
 	import * as AlertDialog from '#/ui/alert-dialog';
 	import * as Card from '#/ui/card';
+	import * as Tabs from '#/ui/tabs';
 
 	import Button from '#/ui/button/button.svelte';
 	import { Input } from '#/ui/input';
@@ -122,6 +123,14 @@
 								<div class="space-y-2">
 									<Label>Geburtsdatum</Label>
 									<Input {...convertToEmployee.fields.birthday.as('date')} />
+								</div>
+								<div class="space-y-2">
+									<Label>Wöchentliche Arbeitszeit</Label>
+									<select name="hour_model">
+                    <option value="6">30 Stunden Woche</option>
+                    <option value="7">35 Stunden Woche</option>
+                    <option value="8">40 Stunden Woche</option>
+                  </select>
 								</div>
 								{#if convertToEmployee.fields.allIssues()}
 									<div class="flex flex-col gap-0.5 text-sm">

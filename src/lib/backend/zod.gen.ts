@@ -59,13 +59,23 @@ export const zAbsenceEntryGet = z.object({
 });
 
 /**
+ * HourModel
+ */
+export const zHourModel = z.union([
+    z.literal(6),
+    z.literal(7),
+    z.literal(8)
+]);
+
+/**
  * EmployeeCreate
  */
 export const zEmployeeCreate = z.object({
     user_id: z.uuid(),
     first_name: z.string(),
     last_name: z.string(),
-    birthday: z.iso.date()
+    birthday: z.iso.date(),
+    hour_model: zHourModel
 });
 
 /**
@@ -379,7 +389,8 @@ export const zAppModelsEmployeeEmployee = z.object({
         z.uuid(),
         z.null()
     ])),
-    birthday: z.iso.date()
+    birthday: z.iso.date(),
+    hour_model: zHourModel
 });
 
 export const zMeData = z.object({
@@ -648,6 +659,19 @@ export const zDeleteTimeEntryData = z.object({
  */
 export const zDeleteTimeEntryResponse = z.void();
 
+export const zCreateTimeEntryData = z.object({
+    body: zTimeEntryCreate,
+    path: z.optional(z.never()),
+    query: z.optional(z.object({
+        force: z.optional(z.boolean()).default(false)
+    }))
+});
+
+/**
+ * Successful Response
+ */
+export const zCreateTimeEntryResponse = zTimeEntry;
+
 export const zGetTimeEntriesData = z.object({
     body: zTimeEntryGet,
     path: z.optional(z.never()),
@@ -664,19 +688,6 @@ export const zGetTimeEntriesResponse = z.union([
     z.array(zTimeEntry),
     z.null()
 ]);
-
-export const zCreateTimeEntryData = z.object({
-    body: zTimeEntryCreate,
-    path: z.optional(z.never()),
-    query: z.optional(z.object({
-        force: z.optional(z.boolean()).default(false)
-    }))
-});
-
-/**
- * Successful Response
- */
-export const zCreateTimeEntryResponse = zTimeEntry;
 
 export const zDeleteAbsenceEntryData = z.object({
     body: zAbsenceEntryDelete,

@@ -425,12 +425,12 @@ export const deleteTimeEntry = <ThrowOnError extends boolean = false>(options: O
 };
 
 /**
- * Get Time Entries
+ * Create Time Entry
  *
- * Get time entries for an employee by ID, date, or date range.
+ * Create a time entry for an employee.
  */
-export const getTimeEntries = <ThrowOnError extends boolean = false>(options: Options<GetTimeEntriesData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetTimeEntriesResponses, GetTimeEntriesErrors, ThrowOnError>({
+export const createTimeEntry = <ThrowOnError extends boolean = false>(options: Options<CreateTimeEntryData, ThrowOnError>) => {
+    return (options.client ?? client).post<CreateTimeEntryResponses, CreateTimeEntryErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
@@ -447,19 +447,19 @@ export const getTimeEntries = <ThrowOnError extends boolean = false>(options: Op
 };
 
 /**
- * Create Time Entry
+ * Get Time Entries
  *
- * Create a time entry for an employee.
+ * Get time entries for an employee by ID, date, or date range.
  */
-export const createTimeEntry = <ThrowOnError extends boolean = false>(options: Options<CreateTimeEntryData, ThrowOnError>) => {
-    return (options.client ?? client).post<CreateTimeEntryResponses, CreateTimeEntryErrors, ThrowOnError>({
+export const getTimeEntries = <ThrowOnError extends boolean = false>(options: Options<GetTimeEntriesData, ThrowOnError>) => {
+    return (options.client ?? client).post<GetTimeEntriesResponses, GetTimeEntriesErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
                 type: 'http'
             }
         ],
-        url: '/time_entries/',
+        url: '/time_entries/get',
         ...options,
         headers: {
             'Content-Type': 'application/json',
