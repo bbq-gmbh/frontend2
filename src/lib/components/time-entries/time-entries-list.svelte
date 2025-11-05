@@ -9,23 +9,162 @@
 
 	import * as Card from '#/ui/card';
 	import * as Table from '#/ui/table';
+	import * as Dialog from '#/ui/alert-dialog';
+	import * as Select from '#/ui/select';
+	import * as InputGroup from '#/ui/input-group';
 
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
-	import { getTimeEntriesForDay } from './time-entries.remote';
+	import { createTimeEntry, getTimeEntriesForDay } from './time-entries.remote';
+	import Label from '#/ui/label/label.svelte';
+	import { Input } from '#/ui/input';
+	import { toast } from 'svelte-sonner';
+
+	const dateFormatter = new Intl.DateTimeFormat('en-CA', {
+		timeZone: 'Europe/Berlin',
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit'
+	});
 
 	let { selectedDay = $bindable(undefined), user_id }: { selectedDay?: Date; user_id: string } =
 		$props();
+
+	let createNewDialog;
+
+	const allEntryTypes = [
+		{ value: 'arrival', label: 'Kommen', className: 'bg-green-600 dark:bg-green-400' },
+		{ value: 'departure', label: 'Gehen', className: 'bg-indigo-600 dark:bg-indigo-400' }
+	];
+	let createNewDialogEntryTypeSelected: string | undefined = $state(undefined);
+	let createNewDialogDate: string | undefined = $state(undefined);
+	let createNewDialogTime: string | undefined = $state(undefined);
+
+	let createNewDialogAllowAdd = $derived.by(() => {
+		if (
+			createNewDialogEntryTypeSelected === undefined ||
+			allEntryTypes.find((item) => item.value === createNewDialogEntryTypeSelected) === undefined
+		)
+			return false;
+
+		if (createNewDialogDate === undefined || createNewDialogDate === '') return false;
+		if (createNewDialogTime === undefined || createNewDialogTime === '') return false;
+
+		return true;
+	});
+
+	function createNewDialogResetDate() {
+		createNewDialogDate = selectedDay ? dateFormatter.format(selectedDay) : undefined;
+	}
+
+	function createNewDialogResetTime() {
+		createNewDialogTime = new Date().toLocaleString('en-US', {
+			timeZone: 'Europe/Berlin',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false
+		});
+	}
+
+	function createNewDialogOnClickReset() {
+		createNewDialogEntryTypeSelected = undefined;
+		createNewDialogResetDate();
+		createNewDialogResetTime();
+	}
+
+	$inspect(createNewDialogDate, createNewDialogTime);
 </script>
 
 <div class="flex flex-col gap-6">
 	<Card.Root class="bg-transparent p-4">
 		<Card.Content class="flex flex-col gap-4 p-0">
 			<div class="flex flex-wrap justify-end">
-				<Button variant="outline" class="ml-auto">
-					<Plus />
-					Neu erstellen
-				</Button>
+				<Dialog.Root
+					bind:this={createNewDialog}
+					onOpenChange={(_) => createNewDialogOnClickReset()}
+				>
+					<Dialog.Trigger>
+						{#snippet child({ props })}
+							<Button {...props} variant="outline" class="ml-auto">
+								<Plus />
+								Neu erstellen
+							</Button>
+						{/snippet}
+					</Dialog.Trigger>
+					<Dialog.Content interactOutsideBehavior="close" class="space-y-6">
+						<Dialog.Header>
+							<Dialog.Title>Neuen Zeiteintrag erstellen</Dialog.Title>
+						</Dialog.Header>
+
+						<div class="space-y-2">
+							<Label>Eintragsart</Label>
+							<Select.Root bind:value={createNewDialogEntryTypeSelected} type="single">
+								<Select.Trigger class="min-w-[14rem]">
+									{allEntryTypes.find((item) => item.value === createNewDialogEntryTypeSelected)
+										?.label ?? 'Eintragsart'}
+								</Select.Trigger>
+								<Select.Content>
+									{#each allEntryTypes as i}
+										<Select.Item value={i.value} label={i.label}>
+											{i.label}
+										</Select.Item>
+									{/each}
+								</Select.Content>
+							</Select.Root>
+						</div>
+
+						<div class="space-y-2">
+							<Label>Datum</Label>
+							<InputGroup.Root>
+								<InputGroup.Input bind:value={createNewDialogDate} type="date" />
+								<InputGroup.Addon align="inline-end">
+									<InputGroup.Button onclick={createNewDialogResetDate}>Heute</InputGroup.Button>
+								</InputGroup.Addon>
+							</InputGroup.Root>
+						</div>
+
+						<div class="space-y-2">
+							<Label>Uhrzeit</Label>
+							<InputGroup.Root>
+								<InputGroup.Input bind:value={createNewDialogTime} type="time" />
+								<InputGroup.Addon align="inline-end">
+									<InputGroup.Button onclick={createNewDialogResetTime}>Jetzt</InputGroup.Button>
+								</InputGroup.Addon>
+							</InputGroup.Root>
+						</div>
+
+						<Dialog.Footer>
+							<Dialog.Cancel>Abbrechen</Dialog.Cancel>
+							<Dialog.Action>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										disabled={!createNewDialogAllowAdd}
+										onclick={async () => {
+											try {
+												console.log(`${createNewDialogDate}T${createNewDialogTime}Z`);
+												await createTimeEntry({
+													user_id,
+													dateTime: `${createNewDialogDate}T${createNewDialogTime}Z`,
+													entryType: createNewDialogEntryTypeSelected as any
+												});
+											} catch (error) {
+												console.log(error);
+												console.log(JSON.stringify(error));
+												toast.error(
+													`Fehler beim erstellen vom Zeiteintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+												);
+											}
+										}}
+									>
+										<Plus />
+										Erstellen
+									</Button>
+								{/snippet}
+							</Dialog.Action>
+						</Dialog.Footer>
+					</Dialog.Content>
+				</Dialog.Root>
 			</div>
 			<div class="overflow-x-auto rounded-md border border-border whitespace-nowrap">
 				{#if selectedDay}

@@ -1,4 +1,4 @@
-import { query } from '$app/server';
+import { command, query } from '$app/server';
 import { error } from '@sveltejs/kit';
 
 import { z } from 'zod';
@@ -58,5 +58,34 @@ export const getTimeEntriesForDay = query(
 		}
 
 		error(response.response.status, JSON.stringify(response.error));
+	}
+);
+
+export const createTimeEntry = command(
+	z.object({
+		user_id: z.uuidv4(),
+		dateTime: z.iso.datetime(),
+		entryType: z.literal(['arrival', 'departure'])
+	}),
+	async ({ user_id, dateTime, entryType }) => {
+		const { client } = withAuthClient();
+
+		const res = await sdk.createTimeEntry({
+			client,
+			body: {
+				user_id,
+				date_time: dateTime,
+				entry_type: entryType
+			}
+		});
+
+		if (res.error) {
+			error(res.response.status, (res.error?.detail as string | undefined) ?? 'Unknown Error');
+		}
+
+		getTimeEntriesForDay({
+			user_id,
+			day: new Date(dateTime)
+		}).refresh();
 	}
 );
