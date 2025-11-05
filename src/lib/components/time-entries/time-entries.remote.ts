@@ -15,13 +15,20 @@ export const getTimeEntriesForDay = query(
 	async ({ user_id, day }) => {
 		const { client } = withAuthClient();
 
-    return [];
+		const body = {
+			user_id,
+			date: day.toISOString().slice(0, 10),
+			id: null,
+			from_date: null,
+			to_date: null
+		};
 
 		const response = await sdk.getTimeEntries({
-			client, body: {
-        user_id
-      }
+			client,
+			body
 		});
+
+		console.log(JSON.stringify(response));
 
 		if (response.data) {
 			let data = response.data as TimeEntry[];

@@ -44,7 +44,7 @@
 							<Button
 								variant="outline"
 								onclick={() => {
-									//
+									value = todayDate;
 								}}>Heute</Button
 							>
 							<Button variant="outline">Gestern</Button>

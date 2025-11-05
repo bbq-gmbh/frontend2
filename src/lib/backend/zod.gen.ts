@@ -313,13 +313,22 @@ export const zTimeEntryDelete = z.object({
  */
 export const zTimeEntryGet = z.object({
     user_id: z.uuid(),
-    id: z.optional(z.union([
+    id: z.union([
         z.int(),
         z.null()
-    ])),
-    date: z.optional(z.null()),
-    from_date: z.optional(z.null()),
-    to_date: z.optional(z.null())
+    ]),
+    date: z.union([
+        z.iso.date(),
+        z.null()
+    ]),
+    from_date: z.union([
+        z.iso.date(),
+        z.null()
+    ]),
+    to_date: z.union([
+        z.iso.date(),
+        z.null()
+    ])
 });
 
 /**
