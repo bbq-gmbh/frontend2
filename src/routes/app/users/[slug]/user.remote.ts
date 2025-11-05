@@ -41,7 +41,8 @@ export const convertToEmployee = form(
 	z.object({
 		user_id: z.uuidv4(),
 		first_name: z.string().min(1, 'First name required'),
-		last_name: z.string().min(1, 'Last name required')
+		last_name: z.string().min(1, 'Last name required'),
+		birthday: z.iso.date('Birthday required')
 	}),
 	async (data) => {
 		const { client } = withAuthClient({ superuser: true });

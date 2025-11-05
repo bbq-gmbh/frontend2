@@ -119,6 +119,10 @@
 									<Label>Nachname</Label>
 									<Input {...convertToEmployee.fields.last_name.as('text')} />
 								</div>
+								<div class="space-y-2">
+									<Label>Geburtsdatum</Label>
+									<Input {...convertToEmployee.fields.birthday.as('date')} />
+								</div>
 								{#if convertToEmployee.fields.allIssues()}
 									<div class="flex flex-col gap-0.5 text-sm">
 										{#each convertToEmployee.fields.allIssues() as issue}
@@ -407,6 +411,16 @@
 								{/if}
 							</InputGroup.Root>
 						</div>
+					</div>
+
+					<div class="space-y-2">
+						<Label>Geburtsdatum</Label>
+						<Input
+							value={new Date(user.employee.birthday).toLocaleDateString('de-DE')}
+							disabled={editing}
+							placeholder="&ndash;"
+							readonly
+						/>
 					</div>
 
 					<svelte:boundary>

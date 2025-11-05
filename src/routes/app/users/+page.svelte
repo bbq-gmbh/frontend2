@@ -10,8 +10,6 @@
 	let users = $derived(await getUsers({ page }));
 </script>
 
-<!-- <h1 class="mb-2 text-3xl font-extrabold">User</h1> -->
-
 <div class="flex flex-wrap gap-2">
 	<Button variant="outline" class="ml-auto">
 		<Plus />

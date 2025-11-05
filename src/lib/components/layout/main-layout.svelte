@@ -55,7 +55,7 @@
 	<Sidebar.Inset class="">
 		<div class="flex min-h-full flex-col">
 			<header
-				class="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4"
+				class="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 z-30"
 			>
 				<Sidebar.Trigger />
 				<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />

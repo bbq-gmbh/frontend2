@@ -58,7 +58,7 @@
 						readonly={true}
 					/>
 					<InputGroup.Addon align="inline-end">
-						<InputGroup.Button variant="secondary">
+						<InputGroup.Button variant="secondary" onclick={() => goto("/change-password")}>
 							<SquarePen />
 							Passwort ändern
 						</InputGroup.Button>

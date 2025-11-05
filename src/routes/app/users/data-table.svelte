@@ -13,11 +13,6 @@
 		<Table.Header class="sticky top-0 z-10">
 			<Table.Row>
 				<Table.Head>
-					<div class="px-2">
-						<Checkbox />
-					</div>
-				</Table.Head>
-				<Table.Head>
 					<div class="px-2">User</div>
 				</Table.Head>
 			</Table.Row>
