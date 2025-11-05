@@ -5,6 +5,97 @@ export type ClientOptions = {
 };
 
 /**
+ * AbsenceEntry
+ */
+export type AbsenceEntry = {
+    /**
+     * Id
+     */
+    id?: number | null;
+    /**
+     * User Id
+     */
+    user_id: string;
+    entry_type: AbsenceEntryType;
+    /**
+     * Date Begin
+     */
+    date_begin: string;
+    /**
+     * Date End
+     */
+    date_end: string;
+    /**
+     * Created By
+     */
+    created_by: string;
+    /**
+     * Created At
+     */
+    created_at?: string;
+};
+
+/**
+ * AbsenceEntryCreate
+ */
+export type AbsenceEntryCreate = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    entry_type: AbsenceEntryType;
+    /**
+     * Date Begin
+     */
+    date_begin: string;
+    /**
+     * Date End
+     */
+    date_end: string;
+};
+
+/**
+ * AbsenceEntryDelete
+ */
+export type AbsenceEntryDelete = {
+    /**
+     * Id
+     */
+    id: number;
+};
+
+/**
+ * AbsenceEntryGet
+ */
+export type AbsenceEntryGet = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * Id
+     */
+    id?: number | null;
+    /**
+     * Date
+     */
+    date?: null;
+    /**
+     * From Date
+     */
+    from_date?: null;
+    /**
+     * To Date
+     */
+    to_date?: null;
+};
+
+/**
+ * AbsenceEntryType
+ */
+export type AbsenceEntryType = 'sickness' | 'vacation' | 'other';
+
+/**
  * EmployeeCreate
  */
 export type EmployeeCreate = {
@@ -20,6 +111,10 @@ export type EmployeeCreate = {
      * Last Name
      */
     last_name: string;
+    /**
+     * Birthday
+     */
+    birthday: string;
 };
 
 /**
@@ -246,6 +341,89 @@ export type SetupCreate = {
 };
 
 /**
+ * TimeEntry
+ */
+export type TimeEntry = {
+    /**
+     * Id
+     */
+    id?: number | null;
+    /**
+     * User Id
+     */
+    user_id: string;
+    entry_type: TimeEntryType;
+    /**
+     * Date Time
+     */
+    date_time: string;
+    /**
+     * Created By
+     */
+    created_by: string;
+    /**
+     * Created At
+     */
+    created_at?: string;
+};
+
+/**
+ * TimeEntryCreate
+ */
+export type TimeEntryCreate = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    entry_type: TimeEntryType;
+    /**
+     * Date Time
+     */
+    date_time: string;
+};
+
+/**
+ * TimeEntryDelete
+ */
+export type TimeEntryDelete = {
+    /**
+     * Id
+     */
+    id: number;
+};
+
+/**
+ * TimeEntryGet
+ */
+export type TimeEntryGet = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * Id
+     */
+    id?: number | null;
+    /**
+     * Date
+     */
+    date?: null;
+    /**
+     * From Date
+     */
+    from_date?: null;
+    /**
+     * To Date
+     */
+    to_date?: null;
+};
+
+/**
+ * TimeEntryType
+ */
+export type TimeEntryType = 'arrival' | 'departure';
+
+/**
  * TokenPair
  */
 export type TokenPair = {
@@ -291,6 +469,10 @@ export type UserEmployeeOnly = {
      * Last Name
      */
     last_name: string;
+    /**
+     * Birthday
+     */
+    birthday: string;
 };
 
 /**
@@ -305,6 +487,10 @@ export type UserEmployeePatch = {
      * New Last Name
      */
     new_last_name?: string | null;
+    /**
+     * New Birthday
+     */
+    new_birthday?: string | null;
     /**
      * New Supervisor Id
      */
@@ -387,6 +573,10 @@ export type AppModelsEmployeeEmployee = {
      * Supervisor Id
      */
     supervisor_id?: string | null;
+    /**
+     * Birthday
+     */
+    birthday: string;
 };
 
 /**
@@ -401,6 +591,10 @@ export type AppSchemasMeEmployee = {
      * Last Name
      */
     last_name: string;
+    /**
+     * Birthday
+     */
+    birthday: string;
 };
 
 export type MeData = {
@@ -983,6 +1177,179 @@ export type RebuildEmployeeHierarchyResponses = {
 };
 
 export type RebuildEmployeeHierarchyResponse = RebuildEmployeeHierarchyResponses[keyof RebuildEmployeeHierarchyResponses];
+
+export type DeleteTimeEntryData = {
+    body: TimeEntryDelete;
+    path?: never;
+    query: {
+        /**
+         * Force
+         */
+        force: boolean | null;
+    };
+    url: '/time_entries/';
+};
+
+export type DeleteTimeEntryErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteTimeEntryError = DeleteTimeEntryErrors[keyof DeleteTimeEntryErrors];
+
+export type DeleteTimeEntryResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteTimeEntryResponse = DeleteTimeEntryResponses[keyof DeleteTimeEntryResponses];
+
+export type GetTimeEntriesData = {
+    body: TimeEntryGet;
+    path?: never;
+    query?: never;
+    url: '/time_entries/';
+};
+
+export type GetTimeEntriesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetTimeEntriesError = GetTimeEntriesErrors[keyof GetTimeEntriesErrors];
+
+export type GetTimeEntriesResponses = {
+    /**
+     * Response Gettimeentries
+     *
+     * Successful Response
+     */
+    200: TimeEntry | Array<TimeEntry> | null;
+};
+
+export type GetTimeEntriesResponse = GetTimeEntriesResponses[keyof GetTimeEntriesResponses];
+
+export type CreateTimeEntryData = {
+    body: TimeEntryCreate;
+    path?: never;
+    query?: {
+        /**
+         * Force
+         */
+        force?: boolean;
+    };
+    url: '/time_entries/';
+};
+
+export type CreateTimeEntryErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateTimeEntryError = CreateTimeEntryErrors[keyof CreateTimeEntryErrors];
+
+export type CreateTimeEntryResponses = {
+    /**
+     * Successful Response
+     */
+    201: TimeEntry;
+};
+
+export type CreateTimeEntryResponse = CreateTimeEntryResponses[keyof CreateTimeEntryResponses];
+
+export type DeleteAbsenceEntryData = {
+    body: AbsenceEntryDelete;
+    path?: never;
+    query?: never;
+    url: '/absence_entries/';
+};
+
+export type DeleteAbsenceEntryErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteAbsenceEntryError = DeleteAbsenceEntryErrors[keyof DeleteAbsenceEntryErrors];
+
+export type DeleteAbsenceEntryResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteAbsenceEntryResponse = DeleteAbsenceEntryResponses[keyof DeleteAbsenceEntryResponses];
+
+export type GetAbsenceEntriesData = {
+    body: AbsenceEntryGet;
+    path?: never;
+    query?: never;
+    url: '/absence_entries/';
+};
+
+export type GetAbsenceEntriesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetAbsenceEntriesError = GetAbsenceEntriesErrors[keyof GetAbsenceEntriesErrors];
+
+export type GetAbsenceEntriesResponses = {
+    /**
+     * Response Getabsenceentries
+     *
+     * Successful Response
+     */
+    200: AbsenceEntry | Array<AbsenceEntry> | null;
+};
+
+export type GetAbsenceEntriesResponse = GetAbsenceEntriesResponses[keyof GetAbsenceEntriesResponses];
+
+export type CreateAbsenceEntryData = {
+    body: AbsenceEntryCreate;
+    path?: never;
+    query?: {
+        /**
+         * Force
+         */
+        force?: boolean;
+        /**
+         * Dry
+         */
+        dry?: boolean;
+    };
+    url: '/absence_entries/';
+};
+
+export type CreateAbsenceEntryErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateAbsenceEntryError = CreateAbsenceEntryErrors[keyof CreateAbsenceEntryErrors];
+
+export type CreateAbsenceEntryResponses = {
+    /**
+     * Successful Response
+     */
+    201: AbsenceEntry;
+};
+
+export type CreateAbsenceEntryResponse = CreateAbsenceEntryResponses[keyof CreateAbsenceEntryResponses];
 
 export type GetSetupStatusData = {
     body?: never;

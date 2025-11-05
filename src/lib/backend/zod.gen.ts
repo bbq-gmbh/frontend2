@@ -3,12 +3,69 @@
 import { z } from 'zod';
 
 /**
+ * AbsenceEntryType
+ */
+export const zAbsenceEntryType = z.enum([
+    'sickness',
+    'vacation',
+    'other'
+]);
+
+/**
+ * AbsenceEntry
+ */
+export const zAbsenceEntry = z.object({
+    id: z.optional(z.union([
+        z.int(),
+        z.null()
+    ])),
+    user_id: z.uuid(),
+    entry_type: zAbsenceEntryType,
+    date_begin: z.iso.date(),
+    date_end: z.iso.date(),
+    created_by: z.uuid(),
+    created_at: z.optional(z.iso.datetime())
+});
+
+/**
+ * AbsenceEntryCreate
+ */
+export const zAbsenceEntryCreate = z.object({
+    user_id: z.uuid(),
+    entry_type: zAbsenceEntryType,
+    date_begin: z.iso.date(),
+    date_end: z.iso.date()
+});
+
+/**
+ * AbsenceEntryDelete
+ */
+export const zAbsenceEntryDelete = z.object({
+    id: z.int()
+});
+
+/**
+ * AbsenceEntryGet
+ */
+export const zAbsenceEntryGet = z.object({
+    user_id: z.uuid(),
+    id: z.optional(z.union([
+        z.int(),
+        z.null()
+    ])),
+    date: z.optional(z.null()),
+    from_date: z.optional(z.null()),
+    to_date: z.optional(z.null())
+});
+
+/**
  * EmployeeCreate
  */
 export const zEmployeeCreate = z.object({
     user_id: z.uuid(),
     first_name: z.string(),
-    last_name: z.string()
+    last_name: z.string(),
+    birthday: z.iso.date()
 });
 
 /**
@@ -101,7 +158,8 @@ export const zLoginRequest = z.object({
  */
 export const zAppSchemasMeEmployee = z.object({
     first_name: z.string(),
-    last_name: z.string()
+    last_name: z.string(),
+    birthday: z.iso.date()
 });
 
 /**
@@ -123,7 +181,8 @@ export const zMeUser = z.object({
  */
 export const zUserEmployeeOnly = z.object({
     first_name: z.string(),
-    last_name: z.string()
+    last_name: z.string(),
+    birthday: z.iso.date()
 });
 
 /**
@@ -201,6 +260,59 @@ export const zSetupCreate = z.object({
 });
 
 /**
+ * TimeEntryType
+ */
+export const zTimeEntryType = z.enum([
+    'arrival',
+    'departure'
+]);
+
+/**
+ * TimeEntry
+ */
+export const zTimeEntry = z.object({
+    id: z.optional(z.union([
+        z.int(),
+        z.null()
+    ])),
+    user_id: z.uuid(),
+    entry_type: zTimeEntryType,
+    date_time: z.iso.datetime(),
+    created_by: z.uuid(),
+    created_at: z.optional(z.iso.datetime())
+});
+
+/**
+ * TimeEntryCreate
+ */
+export const zTimeEntryCreate = z.object({
+    user_id: z.uuid(),
+    entry_type: zTimeEntryType,
+    date_time: z.iso.datetime()
+});
+
+/**
+ * TimeEntryDelete
+ */
+export const zTimeEntryDelete = z.object({
+    id: z.int()
+});
+
+/**
+ * TimeEntryGet
+ */
+export const zTimeEntryGet = z.object({
+    user_id: z.uuid(),
+    id: z.optional(z.union([
+        z.int(),
+        z.null()
+    ])),
+    date: z.optional(z.null()),
+    from_date: z.optional(z.null()),
+    to_date: z.optional(z.null())
+});
+
+/**
  * TokenType
  */
 export const zTokenType = z.enum([
@@ -226,6 +338,10 @@ export const zUserEmployeePatch = z.object({
     ])),
     new_last_name: z.optional(z.union([
         z.string(),
+        z.null()
+    ])),
+    new_birthday: z.optional(z.union([
+        z.iso.date(),
         z.null()
     ])),
     new_supervisor_id: z.optional(z.union([
@@ -262,7 +378,8 @@ export const zAppModelsEmployeeEmployee = z.object({
     supervisor_id: z.optional(z.union([
         z.uuid(),
         z.null()
-    ]))
+    ])),
+    birthday: z.iso.date()
 });
 
 export const zMeData = z.object({
@@ -514,6 +631,94 @@ export const zRebuildEmployeeHierarchyData = z.object({
  * Successful Response
  */
 export const zRebuildEmployeeHierarchyResponse = zHierarchyRebuildResponse;
+
+export const zDeleteTimeEntryData = z.object({
+    body: zTimeEntryDelete,
+    path: z.optional(z.never()),
+    query: z.object({
+        force: z.union([
+            z.boolean(),
+            z.null()
+        ])
+    })
+});
+
+/**
+ * Successful Response
+ */
+export const zDeleteTimeEntryResponse = z.void();
+
+export const zGetTimeEntriesData = z.object({
+    body: zTimeEntryGet,
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Response Gettimeentries
+ *
+ * Successful Response
+ */
+export const zGetTimeEntriesResponse = z.union([
+    zTimeEntry,
+    z.array(zTimeEntry),
+    z.null()
+]);
+
+export const zCreateTimeEntryData = z.object({
+    body: zTimeEntryCreate,
+    path: z.optional(z.never()),
+    query: z.optional(z.object({
+        force: z.optional(z.boolean()).default(false)
+    }))
+});
+
+/**
+ * Successful Response
+ */
+export const zCreateTimeEntryResponse = zTimeEntry;
+
+export const zDeleteAbsenceEntryData = z.object({
+    body: zAbsenceEntryDelete,
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zDeleteAbsenceEntryResponse = z.void();
+
+export const zGetAbsenceEntriesData = z.object({
+    body: zAbsenceEntryGet,
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Response Getabsenceentries
+ *
+ * Successful Response
+ */
+export const zGetAbsenceEntriesResponse = z.union([
+    zAbsenceEntry,
+    z.array(zAbsenceEntry),
+    z.null()
+]);
+
+export const zCreateAbsenceEntryData = z.object({
+    body: zAbsenceEntryCreate,
+    path: z.optional(z.never()),
+    query: z.optional(z.object({
+        force: z.optional(z.boolean()).default(false),
+        dry: z.optional(z.boolean()).default(false)
+    }))
+});
+
+/**
+ * Successful Response
+ */
+export const zCreateAbsenceEntryResponse = zAbsenceEntry;
 
 export const zGetSetupStatusData = z.object({
     body: z.optional(z.never()),

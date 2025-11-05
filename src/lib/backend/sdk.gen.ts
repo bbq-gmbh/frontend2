@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, RemoteLogoutAllSessionsData, RemoteLogoutAllSessionsErrors, RemoteLogoutAllSessionsResponses, RemoteResetPasswordData, RemoteResetPasswordErrors, RemoteResetPasswordResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateAbsenceEntryData, CreateAbsenceEntryErrors, CreateAbsenceEntryResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateTimeEntryData, CreateTimeEntryErrors, CreateTimeEntryResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAbsenceEntryData, DeleteAbsenceEntryErrors, DeleteAbsenceEntryResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteTimeEntryData, DeleteTimeEntryErrors, DeleteTimeEntryResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetAbsenceEntriesData, GetAbsenceEntriesErrors, GetAbsenceEntriesResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetSetupStatusData, GetSetupStatusResponses, GetTimeEntriesData, GetTimeEntriesErrors, GetTimeEntriesResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, RemoteLogoutAllSessionsData, RemoteLogoutAllSessionsErrors, RemoteLogoutAllSessionsResponses, RemoteResetPasswordData, RemoteResetPasswordErrors, RemoteResetPasswordResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -401,6 +401,134 @@ export const rebuildEmployeeHierarchy = <ThrowOnError extends boolean = false>(o
         ],
         url: '/employees/__rebuild_hierarchy',
         ...options
+    });
+};
+
+/**
+ * Delete Time Entry
+ */
+export const deleteTimeEntry = <ThrowOnError extends boolean = false>(options: Options<DeleteTimeEntryData, ThrowOnError>) => {
+    return (options.client ?? client).delete<DeleteTimeEntryResponses, DeleteTimeEntryErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/time_entries/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Get Time Entries
+ *
+ * Get time entries for an employee by ID, date, or date range.
+ */
+export const getTimeEntries = <ThrowOnError extends boolean = false>(options: Options<GetTimeEntriesData, ThrowOnError>) => {
+    return (options.client ?? client).get<GetTimeEntriesResponses, GetTimeEntriesErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/time_entries/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Create Time Entry
+ *
+ * Create a time entry for an employee.
+ */
+export const createTimeEntry = <ThrowOnError extends boolean = false>(options: Options<CreateTimeEntryData, ThrowOnError>) => {
+    return (options.client ?? client).post<CreateTimeEntryResponses, CreateTimeEntryErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/time_entries/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Delete Absence Entry
+ */
+export const deleteAbsenceEntry = <ThrowOnError extends boolean = false>(options: Options<DeleteAbsenceEntryData, ThrowOnError>) => {
+    return (options.client ?? client).delete<DeleteAbsenceEntryResponses, DeleteAbsenceEntryErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/absence_entries/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Get Absence Entries
+ *
+ * Get absence entries for an employee by ID, date, or date range.
+ */
+export const getAbsenceEntries = <ThrowOnError extends boolean = false>(options: Options<GetAbsenceEntriesData, ThrowOnError>) => {
+    return (options.client ?? client).get<GetAbsenceEntriesResponses, GetAbsenceEntriesErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/absence_entries/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+};
+
+/**
+ * Create Absence Entry
+ *
+ * Create an absence entry for an employee.
+ */
+export const createAbsenceEntry = <ThrowOnError extends boolean = false>(options: Options<CreateAbsenceEntryData, ThrowOnError>) => {
+    return (options.client ?? client).post<CreateAbsenceEntryResponses, CreateAbsenceEntryErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/absence_entries/',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     });
 };
 
