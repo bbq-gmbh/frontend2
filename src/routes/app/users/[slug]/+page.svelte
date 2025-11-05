@@ -127,10 +127,18 @@
 								<div class="space-y-2">
 									<Label>Wöchentliche Arbeitszeit</Label>
 									<select name="hour_model">
-                    <option value="6">30 Stunden Woche</option>
-                    <option value="7">35 Stunden Woche</option>
-                    <option value="8">40 Stunden Woche</option>
-                  </select>
+										<option value="6">30 Stunden Woche</option>
+										<option value="7">35 Stunden Woche</option>
+										<option value="8">40 Stunden Woche</option>
+									</select>
+								</div>
+								<div class="space-y-2">
+									<Label>Pausenzeit</Label>
+									<Input {...convertToEmployee.fields.pause_time_minutes.as('number')} />
+								</div>
+								<div class="space-y-2">
+									<Label>Beginnt von...</Label>
+									<Input {...convertToEmployee.fields.start_from.as('date')} />
 								</div>
 								{#if convertToEmployee.fields.allIssues()}
 									<div class="flex flex-col gap-0.5 text-sm">

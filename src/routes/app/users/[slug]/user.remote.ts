@@ -43,7 +43,9 @@ export const convertToEmployee = form(
 		first_name: z.string().min(1, 'First name required'),
 		last_name: z.string().min(1, 'Last name required'),
 		birthday: z.iso.date('Birthday required'),
-		hour_model: z.string()
+		hour_model: z.string(),
+		pause_time_minutes: z.int('Pause time required').min(30),
+		start_from: z.iso.date('Begin from date required')
 	}),
 	async (data) => {
 		const parsedHourModel = parseInt(data.hour_model);
@@ -60,7 +62,9 @@ export const convertToEmployee = form(
 				first_name: data.first_name,
 				last_name: data.last_name,
 				birthday: data.birthday,
-				hour_model: hour_model
+				hour_model: hour_model,
+				pause_time_minutes: data.pause_time_minutes,
+				start_from: data.start_from
 			}
 		});
 

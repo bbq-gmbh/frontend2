@@ -7,6 +7,13 @@ import { withAuthClient } from '@/server/auth';
 import * as sdk from '@/backend/sdk.gen';
 import type { TimeEntry, UserInfo } from '@/backend';
 
+const dateFormatter = new Intl.DateTimeFormat('en-CA', {
+	timeZone: 'Europe/Berlin',
+	year: 'numeric',
+	month: '2-digit',
+	day: '2-digit'
+});
+
 export const getTimeEntriesForDay = query(
 	z.object({
 		user_id: z.uuidv4(),
@@ -17,7 +24,7 @@ export const getTimeEntriesForDay = query(
 
 		const body = {
 			user_id,
-			date: day.toISOString().slice(0, 10),
+			date: dateFormatter.format(day),
 			id: null,
 			from_date: null,
 			to_date: null
@@ -27,8 +34,6 @@ export const getTimeEntriesForDay = query(
 			client,
 			body
 		});
-
-		console.log(JSON.stringify(response));
 
 		if (response.data) {
 			let data = response.data as TimeEntry[];
@@ -65,9 +70,10 @@ export const createTimeEntry = command(
 	z.object({
 		user_id: z.uuidv4(),
 		dateTime: z.iso.datetime(),
-		entryType: z.literal(['arrival', 'departure'])
+		entryType: z.literal(['arrival', 'departure']),
+		asSuperuser: z.boolean().optional()
 	}),
-	async ({ user_id, dateTime, entryType }) => {
+	async ({ user_id, dateTime, entryType, asSuperuser }) => {
 		const { client } = withAuthClient();
 
 		const res = await sdk.createTimeEntry({
@@ -76,16 +82,46 @@ export const createTimeEntry = command(
 				user_id,
 				date_time: dateTime,
 				entry_type: entryType
+			},
+			query: {
+				force: asSuperuser
 			}
 		});
+
+		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (res.error) {
 			error(res.response.status, (res.error?.detail as string | undefined) ?? 'Unknown Error');
 		}
 
-		getTimeEntriesForDay({
+		await getTimeEntriesForDay({
 			user_id,
 			day: new Date(dateTime)
 		}).refresh();
+	}
+);
+
+export const deleteTimeEntry = command(
+	z.object({ id: z.int(), asSuperuser: z.boolean().optional() }),
+	async ({ id, asSuperuser }) => {
+		const { client } = withAuthClient();
+
+		const res = await sdk.deleteTimeEntry({
+			client,
+			body: {
+				id
+			},
+			query: {
+				force: asSuperuser ? asSuperuser : false
+			}
+		});
+
+    console.log(JSON.stringify(res))
+
+		await new Promise((resolve) => setTimeout(resolve, 300));
+
+		if (res.error) {
+			error(res.response.status, (res.error?.detail as string | undefined) ?? 'Unknown Error');
+		}
 	}
 );

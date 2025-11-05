@@ -54,17 +54,4 @@
 			</Card.Content>
 		</Card.Root>
 	</div>
-	<div>
-		<Card.Root class="bg-transparent">
-			<Card.Header>
-				{monthDateTimeFormat.format(value.toDate('Europe/Berlin'))}
-			</Card.Header>
-			<Card.Content>
-				<div class="flex flex-col gap-1">
-					<span> Studen </span>
-					<span class="text-lg font-bold"> 44/50 </span>
-				</div>
-			</Card.Content>
-		</Card.Root>
-	</div>
 </div>

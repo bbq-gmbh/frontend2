@@ -75,7 +75,9 @@ export const zEmployeeCreate = z.object({
     first_name: z.string(),
     last_name: z.string(),
     birthday: z.iso.date(),
-    hour_model: zHourModel
+    hour_model: zHourModel,
+    pause_time_minutes: z.int(),
+    start_from: z.iso.date()
 });
 
 /**
@@ -399,7 +401,9 @@ export const zAppModelsEmployeeEmployee = z.object({
         z.null()
     ])),
     birthday: z.iso.date(),
-    hour_model: zHourModel
+    hour_model: zHourModel,
+    pause_time_minutes: z.int(),
+    start_from: z.iso.date()
 });
 
 export const zMeData = z.object({
@@ -655,12 +659,12 @@ export const zRebuildEmployeeHierarchyResponse = zHierarchyRebuildResponse;
 export const zDeleteTimeEntryData = z.object({
     body: zTimeEntryDelete,
     path: z.optional(z.never()),
-    query: z.object({
-        force: z.union([
+    query: z.optional(z.object({
+        force: z.optional(z.union([
             z.boolean(),
             z.null()
-        ])
-    })
+        ]))
+    }))
 });
 
 /**

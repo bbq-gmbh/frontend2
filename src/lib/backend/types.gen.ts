@@ -116,6 +116,14 @@ export type EmployeeCreate = {
      */
     birthday: string;
     hour_model: HourModel;
+    /**
+     * Pause Time Minutes
+     */
+    pause_time_minutes: number;
+    /**
+     * Start From
+     */
+    start_from: string;
 };
 
 /**
@@ -584,6 +592,14 @@ export type AppModelsEmployeeEmployee = {
      */
     birthday: string;
     hour_model: HourModel;
+    /**
+     * Pause Time Minutes
+     */
+    pause_time_minutes: number;
+    /**
+     * Start From
+     */
+    start_from: string;
 };
 
 /**
@@ -1188,11 +1204,11 @@ export type RebuildEmployeeHierarchyResponse = RebuildEmployeeHierarchyResponses
 export type DeleteTimeEntryData = {
     body: TimeEntryDelete;
     path?: never;
-    query: {
+    query?: {
         /**
          * Force
          */
-        force: boolean | null;
+        force?: boolean | null;
     };
     url: '/time_entries/';
 };

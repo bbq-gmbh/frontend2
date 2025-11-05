@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CalendarDate } from '@internationalized/date';
 
-	import { Plus } from 'lucide-svelte';
+	import { Plus, X } from 'lucide-svelte';
 
 	import { Button } from '#/ui/button';
 	import { ScrollArea } from '#/ui/scroll-area';
@@ -15,10 +15,12 @@
 
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
-	import { createTimeEntry, getTimeEntriesForDay } from './time-entries.remote';
+	import { createTimeEntry, deleteTimeEntry, getTimeEntriesForDay } from './time-entries.remote';
 	import Label from '#/ui/label/label.svelte';
 	import { Input } from '#/ui/input';
 	import { toast } from 'svelte-sonner';
+	import { Spinner } from '#/ui/spinner';
+	import type { User } from '@/types/auth';
 
 	const dateFormatter = new Intl.DateTimeFormat('en-CA', {
 		timeZone: 'Europe/Berlin',
@@ -27,10 +29,14 @@
 		day: '2-digit'
 	});
 
-	let { selectedDay = $bindable(undefined), user_id }: { selectedDay?: Date; user_id: string } =
-		$props();
+	let {
+		selectedDay = $bindable(undefined),
+		user_id,
+		asSuperuser = false
+	}: { selectedDay?: Date; user_id: string; actor: User; asSuperuser: boolean } = $props();
 
 	let createNewDialog;
+	let createNewDialogOpen = $state(false);
 
 	const allEntryTypes = [
 		{ value: 'arrival', label: 'Kommen', className: 'bg-green-600 dark:bg-green-400' },
@@ -78,10 +84,14 @@
 <div class="flex flex-col gap-6">
 	<Card.Root class="bg-transparent p-4">
 		<Card.Content class="flex flex-col gap-4 p-0">
-			<div class="flex flex-wrap justify-end">
+			<div class="flex flex-wrap items-center justify-end">
+				<span class="mr-auto">
+					{selectedDay?.toLocaleDateString('de-DE')}
+				</span>
 				<Dialog.Root
 					bind:this={createNewDialog}
 					onOpenChange={(_) => createNewDialogOnClickReset()}
+					bind:open={createNewDialogOpen}
 				>
 					<Dialog.Trigger>
 						{#snippet child({ props })}
@@ -98,7 +108,11 @@
 
 						<div class="space-y-2">
 							<Label>Eintragsart</Label>
-							<Select.Root bind:value={createNewDialogEntryTypeSelected} type="single">
+							<Select.Root
+								bind:value={createNewDialogEntryTypeSelected}
+								type="single"
+								disabled={!!createTimeEntry.pending}
+							>
 								<Select.Trigger class="min-w-[14rem]">
 									{allEntryTypes.find((item) => item.value === createNewDialogEntryTypeSelected)
 										?.label ?? 'Eintragsart'}
@@ -116,9 +130,18 @@
 						<div class="space-y-2">
 							<Label>Datum</Label>
 							<InputGroup.Root>
-								<InputGroup.Input bind:value={createNewDialogDate} type="date" />
+								<InputGroup.Input
+									bind:value={createNewDialogDate}
+									type="date"
+									disabled={!!createTimeEntry.pending}
+								/>
 								<InputGroup.Addon align="inline-end">
-									<InputGroup.Button onclick={createNewDialogResetDate}>Heute</InputGroup.Button>
+									<InputGroup.Button
+										onclick={createNewDialogResetDate}
+										disabled={!!createTimeEntry.pending}
+									>
+										Heute
+									</InputGroup.Button>
 								</InputGroup.Addon>
 							</InputGroup.Root>
 						</div>
@@ -126,9 +149,18 @@
 						<div class="space-y-2">
 							<Label>Uhrzeit</Label>
 							<InputGroup.Root>
-								<InputGroup.Input bind:value={createNewDialogTime} type="time" />
+								<InputGroup.Input
+									bind:value={createNewDialogTime}
+									type="time"
+									disabled={!!createTimeEntry.pending}
+								/>
 								<InputGroup.Addon align="inline-end">
-									<InputGroup.Button onclick={createNewDialogResetTime}>Jetzt</InputGroup.Button>
+									<InputGroup.Button
+										onclick={createNewDialogResetTime}
+										disabled={!!createTimeEntry.pending}
+									>
+										Jetzt
+									</InputGroup.Button>
 								</InputGroup.Addon>
 							</InputGroup.Root>
 						</div>
@@ -139,25 +171,37 @@
 								{#snippet child({ props })}
 									<Button
 										{...props}
-										disabled={!createNewDialogAllowAdd}
+										disabled={!createNewDialogAllowAdd || !!createTimeEntry.pending}
 										onclick={async () => {
 											try {
-												console.log(`${createNewDialogDate}T${createNewDialogTime}Z`);
 												await createTimeEntry({
 													user_id,
 													dateTime: `${createNewDialogDate}T${createNewDialogTime}Z`,
-													entryType: createNewDialogEntryTypeSelected as any
+													entryType: createNewDialogEntryTypeSelected as any,
+													asSuperuser
 												});
+												createNewDialogOpen = false;
+
+												toast.success('Zeiteintrag erfolgreich erstellt');
+
+												if (selectedDay) {
+													await getTimeEntriesForDay({
+														day: selectedDay,
+														user_id: user_id
+													}).refresh();
+												}
 											} catch (error) {
-												console.log(error);
-												console.log(JSON.stringify(error));
 												toast.error(
-													`Fehler beim erstellen vom Zeiteintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+													`Fehler beim Erstellen vom Zeiteintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
 												);
 											}
 										}}
 									>
-										<Plus />
+										{#if !!createTimeEntry.pending}
+											<Spinner />
+										{:else}
+											<Plus />
+										{/if}
 										Erstellen
 									</Button>
 								{/snippet}
@@ -178,6 +222,7 @@
 									<Table.Head class="px-2">Zeit</Table.Head>
 									<Table.Head class="pr-2 pl-4">Erstellt am</Table.Head>
 									<Table.Head class="px-2">Erstellt von</Table.Head>
+									<Table.Head class="px-4"></Table.Head>
 								</Table.Row>
 							</Table.Header>
 							<Table.Body class="**:data-[slot=table-cell]:first:w-8">
@@ -185,7 +230,14 @@
 									{@const timeEntry = timeEntryPair.timeEntry}
 									<Table.Row class="h-12">
 										<Table.Cell class="px-4">
-											<Badge class="bg-green-600 dark:bg-green-400">{timeEntry.entry_type}</Badge>
+											{@const entryType = allEntryTypes.find(
+												(item) => item.value === timeEntry.entry_type
+											)}
+											{#if entryType}
+												<Badge class={entryType.className}>
+													{entryType.label}
+												</Badge>
+											{/if}
 										</Table.Cell>
 										<Table.Cell class="px-2">
 											<span class="font-bold">
@@ -197,19 +249,55 @@
 											</span>
 										</Table.Cell>
 										<Table.Cell class="pr-2 pl-4">
-											<span class="font-normal"> 10:30 </span>
+											{#if timeEntry.created_at}
+												<span class="font-normal">
+													{new Date(timeEntry.created_at).toLocaleTimeString('de-DE', {
+														hour: '2-digit',
+														minute: '2-digit',
+														hour12: false
+													})}
+												</span>
+											{/if}
 										</Table.Cell>
 										<Table.Cell class="w-full px-2">
 											<div>
-												<UserNameAvatar
-													user={{
-														created_at: '',
-														id: '',
-														is_superuser: false,
-														username: 'eric_cartman'
-													}}
-												/>
+												{#if timeEntryPair.createdBy}
+													<UserNameAvatar user={timeEntryPair.createdBy} />
+												{/if}
 											</div>
+										</Table.Cell>
+
+										<Table.Cell class="px-4">
+											{#if timeEntry.id}
+												<Button
+													size="icon-sm" variant="ghost"
+													onclick={async () => {
+														try {
+															if (timeEntry.id === undefined || timeEntry.id === null) return;
+
+															await deleteTimeEntry({
+																id: timeEntry.id,
+																asSuperuser
+															});
+
+															toast.success('Zeiteintrag erfolgreich gelöscht');
+
+															if (selectedDay) {
+																await getTimeEntriesForDay({
+																	day: selectedDay,
+																	user_id: user_id
+																}).refresh();
+															}
+														} catch (error) {
+															toast.error(
+																`Fehler beim Löschen vom Zeiteintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+															);
+														}
+													}}
+												>
+													<X />
+												</Button>
+											{/if}
 										</Table.Cell>
 									</Table.Row>
 								{/each}
