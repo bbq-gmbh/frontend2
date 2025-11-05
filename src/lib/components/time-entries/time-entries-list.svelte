@@ -33,7 +33,7 @@
 		selectedDay = $bindable(undefined),
 		user_id,
 		asSuperuser = false
-	}: { selectedDay?: Date; user_id: string; actor: User; asSuperuser: boolean } = $props();
+	}: { selectedDay?: Date; user_id: string; asSuperuser: boolean } = $props();
 
 	let createNewDialog;
 	let createNewDialogOpen = $state(false);
@@ -78,7 +78,7 @@
 		createNewDialogResetTime();
 	}
 
-	$inspect(createNewDialogDate, createNewDialogTime);
+	//$inspect(createNewDialogDate, createNewDialogTime);
 </script>
 
 <div class="flex flex-col gap-6">

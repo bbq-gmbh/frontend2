@@ -116,8 +116,6 @@ export const deleteTimeEntry = command(
 			}
 		});
 
-    console.log(JSON.stringify(res))
-
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (res.error) {
