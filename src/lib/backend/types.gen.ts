@@ -75,19 +75,19 @@ export type AbsenceEntryGet = {
     /**
      * Id
      */
-    id?: number | null;
+    id: number | null;
     /**
      * Date
      */
-    date?: null;
+    date: string | null;
     /**
      * From Date
      */
-    from_date?: null;
+    from_date: string | null;
     /**
      * To Date
      */
-    to_date?: null;
+    to_date: string | null;
 };
 
 /**
