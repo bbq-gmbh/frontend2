@@ -17,7 +17,8 @@ export const getUsers = query(
 			client,
 			query: {
 				page: page ?? 0,
-				page_size: 25
+				page_size: 25,
+        superuser: true
 			}
 		});
 
