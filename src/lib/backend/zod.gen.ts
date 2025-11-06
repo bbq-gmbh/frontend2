@@ -258,6 +258,22 @@ export const zRemoteResetPasswordResponse = z.object({
 });
 
 /**
+ * ServerStore
+ */
+export const zServerStore = z.object({
+    id: z.optional(z.int()).default(1),
+    timezone: z.string(),
+    gleitzeit_warnung_gelb: z.optional(z.union([
+        z.int(),
+        z.null()
+    ])),
+    gleitzeit_warnung_rot: z.optional(z.union([
+        z.int(),
+        z.null()
+    ]))
+});
+
+/**
  * ServerStoreCreate
  */
 export const zServerStoreCreate = z.object({
@@ -774,6 +790,17 @@ export const zSetupCreateData = z.object({
     path: z.optional(z.never()),
     query: z.optional(z.never())
 });
+
+export const zGetServerStoreData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.optional(z.never())
+});
+
+/**
+ * Successful Response
+ */
+export const zGetServerStoreResponse = zServerStore;
 
 export const zReadRootGetData = z.object({
     body: z.optional(z.never()),

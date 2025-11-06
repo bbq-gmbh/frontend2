@@ -337,6 +337,28 @@ export type RemoteResetPasswordResponse = {
 };
 
 /**
+ * ServerStore
+ */
+export type ServerStore = {
+    /**
+     * Id
+     */
+    id?: number;
+    /**
+     * Timezone
+     */
+    timezone: string;
+    /**
+     * Gleitzeit Warnung Gelb
+     */
+    gleitzeit_warnung_gelb?: number | null;
+    /**
+     * Gleitzeit Warnung Rot
+     */
+    gleitzeit_warnung_rot?: number | null;
+};
+
+/**
  * ServerStoreCreate
  */
 export type ServerStoreCreate = {
@@ -1417,6 +1439,22 @@ export type SetupCreateResponses = {
      */
     201: unknown;
 };
+
+export type GetServerStoreData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/__server_store/';
+};
+
+export type GetServerStoreResponses = {
+    /**
+     * Successful Response
+     */
+    200: ServerStore;
+};
+
+export type GetServerStoreResponse = GetServerStoreResponses[keyof GetServerStoreResponses];
 
 export type ReadRootGetData = {
     body?: never;
