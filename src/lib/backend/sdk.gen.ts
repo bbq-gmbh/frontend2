@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateAbsenceEntryData, CreateAbsenceEntryErrors, CreateAbsenceEntryResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateTimeEntryData, CreateTimeEntryErrors, CreateTimeEntryResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAbsenceEntryData, DeleteAbsenceEntryErrors, DeleteAbsenceEntryResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteTimeEntryData, DeleteTimeEntryErrors, DeleteTimeEntryResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetAbsenceEntriesData, GetAbsenceEntriesErrors, GetAbsenceEntriesResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetServerStoreData, GetServerStoreResponses, GetSetupStatusData, GetSetupStatusResponses, GetTimeEntriesData, GetTimeEntriesErrors, GetTimeEntriesResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, RemoteLogoutAllSessionsData, RemoteLogoutAllSessionsErrors, RemoteLogoutAllSessionsResponses, RemoteResetPasswordData, RemoteResetPasswordErrors, RemoteResetPasswordResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
+import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CreateAbsenceEntryData, CreateAbsenceEntryErrors, CreateAbsenceEntryResponses, CreateEmployeeData, CreateEmployeeErrors, CreateEmployeeResponses, CreateTimeEntryData, CreateTimeEntryErrors, CreateTimeEntryResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAbsenceEntryData, DeleteAbsenceEntryErrors, DeleteAbsenceEntryResponses, DeleteEmployeeData, DeleteEmployeeErrors, DeleteEmployeeResponses, DeleteTimeEntryData, DeleteTimeEntryErrors, DeleteTimeEntryResponses, DeleteUserData, DeleteUserErrors, DeleteUserResponses, GetAbsenceEntriesData, GetAbsenceEntriesErrors, GetAbsenceEntriesResponses, GetCurrentEmployeeData, GetCurrentEmployeeResponses, GetEmployeeByUserIdData, GetEmployeeByUserIdErrors, GetEmployeeByUserIdResponses, GetEmployeeHierarchyData, GetEmployeeHierarchyErrors, GetEmployeeHierarchyResponses, GetServerStoreData, GetServerStoreResponses, GetSetupStatusData, GetSetupStatusResponses, GetTimeEntriesData, GetTimeEntriesErrors, GetTimeEntriesResponses, GetUserByIdData, GetUserByIdErrors, GetUserByIdResponses, ListUsersData, ListUsersErrors, ListUsersResponses, LoginUserData, LoginUserErrors, LoginUserResponses, LogoutAllSessionsData, LogoutAllSessionsResponses, MeData, MeResponses, PatchServerStoreGleitzeitWarnungenData, PatchServerStoreGleitzeitWarnungenErrors, PatchServerStoreGleitzeitWarnungenResponses, PatchUserData, PatchUserErrors, PatchUserResponses, ReadRootGetData, ReadRootGetResponses, RebuildEmployeeHierarchyData, RebuildEmployeeHierarchyErrors, RebuildEmployeeHierarchyResponses, RefreshTokensData, RefreshTokensResponses, RegisterUserData, RegisterUserErrors, RegisterUserResponses, RemoteLogoutAllSessionsData, RemoteLogoutAllSessionsErrors, RemoteLogoutAllSessionsResponses, RemoteResetPasswordData, RemoteResetPasswordErrors, RemoteResetPasswordResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, SetupCreateData, SetupCreateErrors, SetupCreateResponses, UserIdExistsData, UserIdExistsErrors, UserIdExistsResponses, UsernameExistsData, UsernameExistsErrors, UsernameExistsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -561,6 +561,22 @@ export const setupCreate = <ThrowOnError extends boolean = false>(options: Optio
  */
 export const getServerStore = <ThrowOnError extends boolean = false>(options?: Options<GetServerStoreData, ThrowOnError>) => {
     return (options?.client ?? client).get<GetServerStoreResponses, unknown, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/__server_store/',
+        ...options
+    });
+};
+
+/**
+ * Patch Server Store Gleitzeit Warnungen
+ */
+export const patchServerStoreGleitzeitWarnungen = <ThrowOnError extends boolean = false>(options?: Options<PatchServerStoreGleitzeitWarnungenData, ThrowOnError>) => {
+    return (options?.client ?? client).patch<PatchServerStoreGleitzeitWarnungenResponses, PatchServerStoreGleitzeitWarnungenErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',

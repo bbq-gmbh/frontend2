@@ -1456,6 +1456,40 @@ export type GetServerStoreResponses = {
 
 export type GetServerStoreResponse = GetServerStoreResponses[keyof GetServerStoreResponses];
 
+export type PatchServerStoreGleitzeitWarnungenData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Gleitzeit Warnung Gelb
+         */
+        gleitzeit_warnung_gelb?: number | null;
+        /**
+         * Gleitzeit Warnung Rot
+         */
+        gleitzeit_warnung_rot?: number | null;
+    };
+    url: '/__server_store/';
+};
+
+export type PatchServerStoreGleitzeitWarnungenErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PatchServerStoreGleitzeitWarnungenError = PatchServerStoreGleitzeitWarnungenErrors[keyof PatchServerStoreGleitzeitWarnungenErrors];
+
+export type PatchServerStoreGleitzeitWarnungenResponses = {
+    /**
+     * Successful Response
+     */
+    200: ServerStore;
+};
+
+export type PatchServerStoreGleitzeitWarnungenResponse = PatchServerStoreGleitzeitWarnungenResponses[keyof PatchServerStoreGleitzeitWarnungenResponses];
+
 export type ReadRootGetData = {
     body?: never;
     path?: never;

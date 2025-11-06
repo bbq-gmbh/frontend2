@@ -802,6 +802,26 @@ export const zGetServerStoreData = z.object({
  */
 export const zGetServerStoreResponse = zServerStore;
 
+export const zPatchServerStoreGleitzeitWarnungenData = z.object({
+    body: z.optional(z.never()),
+    path: z.optional(z.never()),
+    query: z.optional(z.object({
+        gleitzeit_warnung_gelb: z.optional(z.union([
+            z.int(),
+            z.null()
+        ])),
+        gleitzeit_warnung_rot: z.optional(z.union([
+            z.int(),
+            z.null()
+        ]))
+    }))
+});
+
+/**
+ * Successful Response
+ */
+export const zPatchServerStoreGleitzeitWarnungenResponse = zServerStore;
+
 export const zReadRootGetData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
