@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 
-	import { Calendar, Clock, House, Settings, Users } from 'lucide-svelte';
+	import { Calendar, CircleUser, Clock, House, ListChecks, Settings, Users } from 'lucide-svelte';
 
 	import NavUser from './nav-user.svelte';
 	import * as Sidebar from '#/ui/sidebar';
@@ -57,6 +57,18 @@
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
 					{/if}
+					{#if user.employee}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a {...props} href="/app/time-overview">
+										<ListChecks />
+										Zeitübersicht
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/if}
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
@@ -90,7 +102,7 @@
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
 									<a {...props} href="/app/users">
-										<Users />
+										<CircleUser />
 										Nutzer
 									</a>
 								{/snippet}

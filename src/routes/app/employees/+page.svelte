@@ -54,10 +54,10 @@
 									<ButtonGroup.Root>
 										<Button
 											variant="outline"
-											onclick={() => goto(`/app/employees/${user.id}/time-eval`)}
+											onclick={() => goto(`/app/time-overview?user_id=${user.id}`)}
 										>
 											<ListChecks />
-											Zeitevaluierung
+											Zeitübersicht
 										</Button>
 									</ButtonGroup.Root>
 								</Table.Cell>
