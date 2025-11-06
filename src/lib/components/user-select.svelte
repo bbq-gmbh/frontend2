@@ -4,7 +4,7 @@
 
 	import Button from '#/ui/button/button.svelte';
 
-	import { Popover, PopoverContent, PopoverTrigger } from '#/ui/popover';
+	import * as Popover from '#/ui/popover';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	interface Props {
@@ -114,9 +114,9 @@
 	};
 </script>
 
-<Popover bind:open={popoverOpen}>
+<Popover.Root bind:open={popoverOpen}>
 	<div class="relative">
-		<PopoverTrigger
+		<Popover.Trigger
 			onclick={handleTriggerClick}
 		>
 			{#snippet child({ props })}
@@ -133,7 +133,7 @@
 					{/if}
 				</Button>
 			{/snippet}
-		</PopoverTrigger>
+		</Popover.Trigger>
 		{#if value && clearable && !readonly}
 			<div class="absolute top-0 right-0 bottom-0 flex flex-col justify-center px-2">
 				<Button variant="ghost" size="icon-sm" onclick={handleClearSelection} {disabled}>
@@ -143,7 +143,7 @@
 		{/if}
 	</div>
 
-	<PopoverContent class="w-[16rem] p-0" side="bottom" align="start">
+	<Popover.Content class="w-[16rem] p-0" side="bottom" align="start">
 		<div class="flex h-[22rem] flex-col gap-2 p-2">
 			<div class="flex items-center gap-2 rounded-md border border-input px-3 py-2">
 				<Search class="h-4 w-4 text-muted-foreground" />
@@ -186,5 +186,5 @@
 				{/if}
 			</div>
 		</div>
-	</PopoverContent>
-</Popover>
+	</Popover.Content>
+</Popover.Root>
