@@ -718,6 +718,20 @@ export const zDeleteAbsenceEntryData = z.object({
  */
 export const zDeleteAbsenceEntryResponse = z.void();
 
+export const zCreateAbsenceEntryData = z.object({
+    body: zAbsenceEntryCreate,
+    path: z.optional(z.never()),
+    query: z.optional(z.object({
+        force: z.optional(z.boolean()).default(false),
+        dry: z.optional(z.boolean()).default(false)
+    }))
+});
+
+/**
+ * Successful Response
+ */
+export const zCreateAbsenceEntryResponse = zAbsenceEntry;
+
 export const zGetAbsenceEntriesData = z.object({
     body: zAbsenceEntryGet,
     path: z.optional(z.never()),
@@ -734,20 +748,6 @@ export const zGetAbsenceEntriesResponse = z.union([
     z.array(zAbsenceEntry),
     z.null()
 ]);
-
-export const zCreateAbsenceEntryData = z.object({
-    body: zAbsenceEntryCreate,
-    path: z.optional(z.never()),
-    query: z.optional(z.object({
-        force: z.optional(z.boolean()).default(false),
-        dry: z.optional(z.boolean()).default(false)
-    }))
-});
-
-/**
- * Successful Response
- */
-export const zCreateAbsenceEntryResponse = zAbsenceEntry;
 
 export const zGetSetupStatusData = z.object({
     body: z.optional(z.never()),

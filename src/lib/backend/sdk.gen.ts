@@ -489,12 +489,12 @@ export const deleteAbsenceEntry = <ThrowOnError extends boolean = false>(options
 };
 
 /**
- * Get Absence Entries
+ * Create Absence Entry
  *
- * Get absence entries for an employee by ID, date, or date range.
+ * Create an absence entry for an employee.
  */
-export const getAbsenceEntries = <ThrowOnError extends boolean = false>(options: Options<GetAbsenceEntriesData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetAbsenceEntriesResponses, GetAbsenceEntriesErrors, ThrowOnError>({
+export const createAbsenceEntry = <ThrowOnError extends boolean = false>(options: Options<CreateAbsenceEntryData, ThrowOnError>) => {
+    return (options.client ?? client).post<CreateAbsenceEntryResponses, CreateAbsenceEntryErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
@@ -511,19 +511,19 @@ export const getAbsenceEntries = <ThrowOnError extends boolean = false>(options:
 };
 
 /**
- * Create Absence Entry
+ * Get Absence Entries
  *
- * Create an absence entry for an employee.
+ * Get absence entries for an employee by ID, date, or date range.
  */
-export const createAbsenceEntry = <ThrowOnError extends boolean = false>(options: Options<CreateAbsenceEntryData, ThrowOnError>) => {
-    return (options.client ?? client).post<CreateAbsenceEntryResponses, CreateAbsenceEntryErrors, ThrowOnError>({
+export const getAbsenceEntries = <ThrowOnError extends boolean = false>(options: Options<GetAbsenceEntriesData, ThrowOnError>) => {
+    return (options.client ?? client).post<GetAbsenceEntriesResponses, GetAbsenceEntriesErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
                 type: 'http'
             }
         ],
-        url: '/absence_entries/',
+        url: '/absence_entries/get',
         ...options,
         headers: {
             'Content-Type': 'application/json',

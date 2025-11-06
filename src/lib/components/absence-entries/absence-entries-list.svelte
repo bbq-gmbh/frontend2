@@ -15,7 +15,7 @@
 
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
-	import { createTimeEntry, deleteTimeEntry, getTimeEntriesForDay } from './absence-entries.remote';
+	import { createTimeEntry, deleteAbsenceEntry, getTimeEntriesForDay } from './absence-entries.remote';
 	import Label from '#/ui/label/label.svelte';
 	import { Input } from '#/ui/input';
 	import { toast } from 'svelte-sonner';
@@ -204,9 +204,9 @@
 			</div>
 			<div class="overflow-x-auto rounded-md border border-border whitespace-nowrap">
 				{#if selectedDay}
-					{#await getTimeEntriesForDay({ day: selectedDay, user_id: user_id })}
+					{#await getAbsenceEntriesForDay({ day: selectedDay, user_id: user_id })}
 						<div class="p-4 text-muted-foreground">Loading...</div>
-					{:then timeEntries}
+					{:then absenceEntries}
 						<Table.Root>
 							<Table.Header>
 								<Table.Row class="h-12">
@@ -283,7 +283,7 @@
 																asSuperuser
 															});
 
-															toast.success('Zeiteintrag erfolgreich gelöscht');
+															toast.success('Abwesendheitseintrag erfolgreich gelöscht');
 
 															if (selectedDay) {
 																await getTimeEntriesForDay({
@@ -293,7 +293,7 @@
 															}
 														} catch (error) {
 															toast.error(
-																`Fehler beim Löschen vom Zeiteintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+																`Fehler beim Löschen vom Abwesendheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
 															);
 														}
 													}}

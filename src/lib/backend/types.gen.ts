@@ -1318,33 +1318,6 @@ export type DeleteAbsenceEntryResponses = {
 
 export type DeleteAbsenceEntryResponse = DeleteAbsenceEntryResponses[keyof DeleteAbsenceEntryResponses];
 
-export type GetAbsenceEntriesData = {
-    body: AbsenceEntryGet;
-    path?: never;
-    query?: never;
-    url: '/absence_entries/';
-};
-
-export type GetAbsenceEntriesErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetAbsenceEntriesError = GetAbsenceEntriesErrors[keyof GetAbsenceEntriesErrors];
-
-export type GetAbsenceEntriesResponses = {
-    /**
-     * Response Getabsenceentries
-     *
-     * Successful Response
-     */
-    200: AbsenceEntry | Array<AbsenceEntry> | null;
-};
-
-export type GetAbsenceEntriesResponse = GetAbsenceEntriesResponses[keyof GetAbsenceEntriesResponses];
-
 export type CreateAbsenceEntryData = {
     body: AbsenceEntryCreate;
     path?: never;
@@ -1378,6 +1351,33 @@ export type CreateAbsenceEntryResponses = {
 };
 
 export type CreateAbsenceEntryResponse = CreateAbsenceEntryResponses[keyof CreateAbsenceEntryResponses];
+
+export type GetAbsenceEntriesData = {
+    body: AbsenceEntryGet;
+    path?: never;
+    query?: never;
+    url: '/absence_entries/get';
+};
+
+export type GetAbsenceEntriesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetAbsenceEntriesError = GetAbsenceEntriesErrors[keyof GetAbsenceEntriesErrors];
+
+export type GetAbsenceEntriesResponses = {
+    /**
+     * Response Getabsenceentries
+     *
+     * Successful Response
+     */
+    200: AbsenceEntry | Array<AbsenceEntry> | null;
+};
+
+export type GetAbsenceEntriesResponse = GetAbsenceEntriesResponses[keyof GetAbsenceEntriesResponses];
 
 export type GetSetupStatusData = {
     body?: never;

@@ -14,7 +14,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-CA', {
 	day: '2-digit'
 });
 
-export const getTimeEntriesForDay = query(
+export const getAbsenceEntriesForDay = query(
 	z.object({
 		user_id: z.uuidv4(),
 		day: z.date()
@@ -30,7 +30,7 @@ export const getTimeEntriesForDay = query(
 			to_date: null
 		};
 
-		const response = await sdk.getTimeEntries({
+		const response = await sdk.getAbsenceEntries({
 			client,
 			body
 		});
@@ -69,18 +69,20 @@ export const getTimeEntriesForDay = query(
 export const createTimeEntry = command(
 	z.object({
 		user_id: z.uuidv4(),
-		dateTime: z.iso.datetime(),
-		entryType: z.literal(['arrival', 'departure']),
+		date_begin: z.iso.date(),
+		date_end: z.iso.date(),
+		entryType: z.literal(['vacation', 'sickness', 'other']),
 		asSuperuser: z.boolean().optional()
 	}),
-	async ({ user_id, dateTime, entryType, asSuperuser }) => {
+	async ({ user_id, date_begin, date_end, entryType, asSuperuser }) => {
 		const { client } = withAuthClient();
 
-		const res = await sdk.createTimeEntry({
+		const res = await sdk.createAbsenceEntry({
 			client,
 			body: {
 				user_id,
-				date_time: dateTime,
+				date_begin,
+				date_end,
 				entry_type: entryType
 			},
 			query: {
@@ -93,11 +95,6 @@ export const createTimeEntry = command(
 		if (res.error) {
 			error(res.response.status, (res.error?.detail as string | undefined) ?? 'Unknown Error');
 		}
-
-		await getTimeEntriesForDay({
-			user_id,
-			day: new Date(dateTime)
-		}).refresh();
 	}
 );
 
