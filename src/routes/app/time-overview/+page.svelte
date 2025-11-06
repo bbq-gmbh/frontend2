@@ -6,5 +6,7 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<TimeOverviewCalendar />
-<TimeOverview user_id={data.userId} />
+<div class="flex flex-col gap-8">
+	<TimeOverviewCalendar />
+	<TimeOverview user_id={data.userId} />
+</div>
