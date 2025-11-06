@@ -107,25 +107,29 @@
 		);
 	});
 
-	const handleTriggerClick = (e: Event) => {
-		if (readonly) {
-			e.preventDefault();
+	const handleOpenChange = (open: boolean) => {
+		// Prevent opening when readonly or disabled
+		if ((readonly || disabled) && open) {
+			return;
 		}
+		popoverOpen = open;
 	};
 </script>
 
-<Popover.Root bind:open={popoverOpen}>
+<Popover.Root open={popoverOpen} onOpenChange={handleOpenChange}>
 	<div class="relative">
-		<Popover.Trigger onclick={handleTriggerClick}>
+		<Popover.Trigger>
 			{#snippet child({ props })}
 				<Button
 					{...props}
 					variant="outline"
 					class="flex min-h-14 w-full items-center justify-between p-2 text-sm"
-					{disabled}
+					disabled={disabled || readonly}
 				>
 					{#if currentUser}
+          <div>
 						<UserNameAvatar user={currentUser} />
+          </div>
 					{:else}
 						<span class="text-muted-foreground">Select a user...</span>
 					{/if}
