@@ -22,6 +22,15 @@
 	import { Spinner } from '#/ui/spinner';
 	import type { User } from '@/types/auth';
 
+	const dateTimeFormatted = new Intl.DateTimeFormat('de-DE', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false
+	});
+
 	const dateFormatter = new Intl.DateTimeFormat('en-CA', {
 		timeZone: 'Europe/Berlin',
 		year: 'numeric',
@@ -254,11 +263,7 @@
 										<Table.Cell class="pr-2 pl-4">
 											{#if timeEntry.created_at}
 												<span class="font-normal">
-													{new Date(timeEntry.created_at).toLocaleTimeString('de-DE', {
-														hour: '2-digit',
-														minute: '2-digit',
-														hour12: false
-													})}
+													{dateTimeFormatted.format(new Date(timeEntry.created_at))}
 												</span>
 											{/if}
 										</Table.Cell>

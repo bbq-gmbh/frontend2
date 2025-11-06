@@ -15,12 +15,25 @@
 
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
-	import { createTimeEntry, deleteAbsenceEntry, getTimeEntriesForDay } from './absence-entries.remote';
+	import {
+		createTimeEntry,
+		deleteAbsenceEntry,
+		getAbsenceEntriesForDay
+	} from './absence-entries.remote';
 	import Label from '#/ui/label/label.svelte';
 	import { Input } from '#/ui/input';
 	import { toast } from 'svelte-sonner';
 	import { Spinner } from '#/ui/spinner';
 	import type { User } from '@/types/auth';
+
+	const dateTimeFormatted = new Intl.DateTimeFormat('de-DE', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false
+	});
 
 	const dateFormatter = new Intl.DateTimeFormat('en-CA', {
 		timeZone: 'Europe/Berlin',
@@ -176,7 +189,7 @@
 													toast.success('Abwesendheitseintrag erfolgreich erstellt');
 
 													if (selectedDay) {
-														await getTimeEntriesForDay({
+														await getAbsenceEntriesForDay({
 															day: selectedDay,
 															user_id: user_id
 														}).refresh();
@@ -234,37 +247,25 @@
 										</Table.Cell>
 										<Table.Cell class="px-2">
 											<span class="font-bold">
-												{new Date(absenceEntry.date_time).toLocaleTimeString('de-DE', {
-													hour: '2-digit',
-													minute: '2-digit',
-													hour12: false
-												})}
+												{new Date(absenceEntry.date_begin).toLocaleDateString('de-DE')}
 											</span>
 										</Table.Cell>
-                    <Table.Cell class="px-2">
+										<Table.Cell class="px-2">
 											<span class="font-bold">
-												{new Date(absenceEntry.date_time).toLocaleTimeString('de-DE', {
-													hour: '2-digit',
-													minute: '2-digit',
-													hour12: false
-												})}
+												{new Date(absenceEntry.date_end).toLocaleDateString('de-DE')}
 											</span>
 										</Table.Cell>
 										<Table.Cell class="pr-2 pl-4">
 											{#if absenceEntry.created_at}
 												<span class="font-normal">
-													{new Date(absenceEntry.created_at).toLocaleTimeString('de-DE', {
-														hour: '2-digit',
-														minute: '2-digit',
-														hour12: false
-													})}
+													{dateTimeFormatted.format(new Date(absenceEntry.created_at))}
 												</span>
 											{/if}
 										</Table.Cell>
 										<Table.Cell class="w-full px-2">
 											<div>
-												{#if absenceEntry.createdBy}
-													<UserNameAvatar user={absenceEntry.createdBy} />
+												{#if absenceEntryPair.createdBy}
+													<UserNameAvatar user={absenceEntryPair.createdBy} />
 												{/if}
 											</div>
 										</Table.Cell>
@@ -286,7 +287,7 @@
 															toast.success('Abwesendheitseintrag erfolgreich gelöscht');
 
 															if (selectedDay) {
-																await getTimeEntriesForDay({
+																await getAbsenceEntriesForDay({
 																	day: selectedDay,
 																	user_id: user_id
 																}).refresh();
