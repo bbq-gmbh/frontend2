@@ -95,9 +95,7 @@
 	<Card.Root class="bg-transparent p-4">
 		<Card.Content class="flex flex-col gap-4 p-0">
 			<div class="flex flex-wrap items-center justify-end gap-4">
-        <span class="font-bold">
-          Zeiteinträge
-        </span>
+				<span class="font-bold"> Zeiteinträge </span>
 				<span class="mr-auto">
 					{selectedDay?.toLocaleDateString('de-DE')}
 				</span>
@@ -270,7 +268,7 @@
 												</span>
 											{/if}
 										</Table.Cell>
-										<Table.Cell class="w-full px-2">
+										<Table.Cell class="w-full min-w-[10rem] px-2">
 											<div>
 												{#if timeEntryPair.createdBy}
 													<UserNameAvatar user={timeEntryPair.createdBy} />

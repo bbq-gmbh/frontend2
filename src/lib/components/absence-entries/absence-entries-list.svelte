@@ -293,7 +293,7 @@
 												</span>
 											{/if}
 										</Table.Cell>
-										<Table.Cell class="w-full px-2">
+										<Table.Cell class="w-full min-w-[10rem] px-2">
 											<div>
 												{#if absenceEntryPair.createdBy}
 													<UserNameAvatar user={absenceEntryPair.createdBy} />

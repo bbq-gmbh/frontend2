@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 
-	import { Clock, House, Settings, Users } from 'lucide-svelte';
+	import { Calendar, Clock, House, Settings, Users } from 'lucide-svelte';
 
 	import NavUser from './nav-user.svelte';
 	import * as Sidebar from '#/ui/sidebar';
@@ -45,12 +45,12 @@
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
 					{/if}
-          {#if user.employee}
+					{#if user.employee}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
 									<a {...props} href="/app/absence-entries">
-										<Clock />
+										<Calendar />
 										Abwesendheit
 									</a>
 								{/snippet}
