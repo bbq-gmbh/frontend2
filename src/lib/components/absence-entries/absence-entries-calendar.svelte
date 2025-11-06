@@ -34,8 +34,8 @@
 
 <div class="flex flex-col gap-6">
 	<div>
-		<Card.Root class="bg-transparent">
-			<Card.Content class="flex justify-center">
+		<Card.Root class="bg-transparent border-0 p-0">
+			<Card.Content class="flex justify-start">
 				<div class="flex flex-col gap-2">
 					<Calendar
 						bind:this={calendar}
