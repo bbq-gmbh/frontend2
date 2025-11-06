@@ -29,7 +29,7 @@
 		year: 'numeric',
 		hour: '2-digit',
 		minute: '2-digit',
-		hour12: false
+		hour12: false,
 	});
 
 	const dateFormatter = new Intl.DateTimeFormat('en-CA', {
@@ -286,7 +286,7 @@
 										<Table.Cell class="pr-2 pl-4">
 											{#if timeEntry.created_at}
 												<span class="font-normal">
-													{dateTimeFormatted.format(new Date(timeEntry.created_at))}
+													{dateTimeFormatted.format(new Date(timeEntry.created_at + 'Z'))}
 												</span>
 											{/if}
 										</Table.Cell>

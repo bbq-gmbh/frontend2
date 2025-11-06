@@ -312,7 +312,7 @@
 										<Table.Cell class="pr-2 pl-4">
 											{#if absenceEntry.created_at}
 												<span class="font-normal">
-													{dateTimeFormatted.format(new Date(absenceEntry.created_at))}
+													{dateTimeFormatted.format(new Date(absenceEntry.created_at + 'Z'))}
 												</span>
 											{/if}
 										</Table.Cell>
