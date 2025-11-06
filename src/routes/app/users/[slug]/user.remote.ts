@@ -6,6 +6,7 @@ import { error } from '@sveltejs/kit';
 import { withAuthClient } from '@/server/auth';
 import * as sdk from '@/backend/sdk.gen';
 import { usernameSchema } from '@/schemas/auth';
+import type { AppModelsEmployeeEmployee } from '@/backend/types.gen';
 
 export const getUserById = query(z.uuidv4(), async (id) => {
 	const { client } = withAuthClient({ superuser: true });
@@ -20,10 +21,7 @@ export const getEmployeeById = query(z.uuidv4(), async (id) => {
 	const { client } = withAuthClient({ superuser: true });
 	const result = await sdk.getEmployeeByUserId({ client, path: { user_id: id } });
 
-	if (!!result.data)
-		return result.data as {
-			supervisor_id?: string | null;
-		};
+	if (!!result.data) return result.data as AppModelsEmployeeEmployee;
 
 	error(result.response.status, result.error?.detail?.at(0)?.msg ?? 'Unknown Error');
 });

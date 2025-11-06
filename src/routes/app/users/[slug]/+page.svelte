@@ -445,11 +445,11 @@
 						/>
 					</div>
 
-					<svelte:boundary>
-						{#await getEmployee then employee}
-							{@const getSupervisorUser = async () =>
-								editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
-							{#if employee}
+					{#await getEmployee then employee}
+						{#if employee}
+							<svelte:boundary>
+								{@const getSupervisorUser = async () =>
+									editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
 								<div class="space-y-2">
 									<Label>Vorgesetzer</Label>
 									<UserSearchSelect
@@ -459,11 +459,50 @@
 										readonly={!editing}
 									/>
 								</div>
-							{/if}
-						{/await}
-					</svelte:boundary>
+							</svelte:boundary>
+						{/if}
+					{/await}
 				</Card.Content>
 			</Card.Root>
+
+			{#await getEmployee then employee}
+				{#if employee}
+					<Card.Root class="bg-transparent">
+						<Card.Header>
+							<Card.Title>Arbeitszeit</Card.Title>
+						</Card.Header>
+						<Card.Content class="max-w-[40rem] space-y-6">
+							<div class="space-y-2">
+								<Label>Erfassung Beginn seit</Label>
+								<Input
+									value={new Date(employee.start_from).toLocaleDateString('de-DE')}
+									disabled={editing}
+									placeholder="&ndash;"
+									readonly
+								/>
+							</div>
+              <div class="space-y-2">
+								<Label>Studenmodell</Label>
+								<Input
+									value={`${employee.hour_model * 5} Stunden pro Woche`}
+									disabled={editing}
+									placeholder="&ndash;"
+									readonly
+								/>
+							</div>
+              <div class="space-y-2">
+								<Label>Pausenzeit</Label>
+								<Input
+									value={`${employee.pause_time_minutes}min`}
+									disabled={editing}
+									placeholder="&ndash;"
+									readonly
+								/>
+							</div>
+						</Card.Content>
+					</Card.Root>
+				{/if}
+			{/await}
 		{/if}
 	</div>
 {/await}
