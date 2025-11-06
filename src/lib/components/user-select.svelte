@@ -40,31 +40,31 @@
 		// CRITICAL: Set isSelectingUser FIRST before any state changes
 		// This prevents any pending events from triggering search
 		isSelectingUser = true;
-		
+
 		// Close popover
 		popoverOpen = false;
-		
+
 		// Then handle selection
 		handleSelectUser(user);
 	};
 
 	const handleSelectUser = (user: UserInfo) => {
 		if (readonly) return;
-		
+
 		// isSelectingUser should already be true from closePopoverAndSelectUser
 		// but set it again to be safe
 		isSelectingUser = true;
-		
+
 		// Update the selection
 		value = user.id;
 		onChange?.(user.id);
-		
+
 		// Clear search input
 		searchInput = '';
 		if (inputElement) {
 			inputElement.value = '';
 		}
-		
+
 		// Reset flag after event loop so no pending events trigger search
 		setTimeout(() => {
 			isSelectingUser = false;
@@ -81,12 +81,12 @@
 
 	const handleSearchInputChange = (newValue: string) => {
 		if (readonly) return;
-		
+
 		// Skip all search logic when user is being selected
 		if (isSelectingUser) {
 			return;
 		}
-		
+
 		searchInput = newValue;
 		onSearchChange?.(newValue);
 
@@ -116,9 +116,7 @@
 
 <Popover.Root bind:open={popoverOpen}>
 	<div class="relative">
-		<Popover.Trigger
-			onclick={handleTriggerClick}
-		>
+		<Popover.Trigger onclick={handleTriggerClick}>
 			{#snippet child({ props })}
 				<Button
 					{...props}
