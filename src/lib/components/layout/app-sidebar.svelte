@@ -61,6 +61,26 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 
+		{#if user.employee}
+			<Sidebar.Group>
+				<Sidebar.GroupLabel>Mitarbeiter</Sidebar.GroupLabel>
+				<Sidebar.GroupContent>
+					<Sidebar.Menu>
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a {...props} href="/app/employees">
+										<Users />
+										Mitarbeiter
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					</Sidebar.Menu>
+				</Sidebar.GroupContent>
+			</Sidebar.Group>
+		{/if}
+
 		{#if user.is_superuser}
 			<Sidebar.Group>
 				<Sidebar.GroupLabel>Administration</Sidebar.GroupLabel>
@@ -71,7 +91,7 @@
 								{#snippet child({ props })}
 									<a {...props} href="/app/users">
 										<Users />
-										Benutzer
+										Nutzer
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
@@ -81,23 +101,26 @@
 			</Sidebar.Group>
 		{/if}
 	</Sidebar.Content>
-	<Sidebar.Footer>
-		<Sidebar.Group>
-			<Sidebar.GroupLabel>Einstellungen</Sidebar.GroupLabel>
-			<Sidebar.GroupContent>
-				<Sidebar.Menu>
-					<Sidebar.MenuItem>
-						<Sidebar.MenuButton>
-							{#snippet child({ props })}
-								<a {...props} href="/app/settings">
-									<Settings />
-									Einstellungen
-								</a>
-							{/snippet}
-						</Sidebar.MenuButton>
-					</Sidebar.MenuItem>
-				</Sidebar.Menu>
-			</Sidebar.GroupContent>
-		</Sidebar.Group>
-	</Sidebar.Footer>
+
+	{#if user.is_superuser}
+		<Sidebar.Footer>
+			<Sidebar.Group>
+				<Sidebar.GroupLabel>Einstellungen</Sidebar.GroupLabel>
+				<Sidebar.GroupContent>
+					<Sidebar.Menu>
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a {...props} href="/app/settings">
+										<Settings />
+										Einstellungen
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					</Sidebar.Menu>
+				</Sidebar.GroupContent>
+			</Sidebar.Group>
+		</Sidebar.Footer>
+	{/if}
 </Sidebar.Root>
