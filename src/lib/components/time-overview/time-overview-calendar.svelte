@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
 
-	import { X } from 'lucide-svelte';
+	import { ListChecks, X } from 'lucide-svelte';
 
 	import Button from '#/ui/button/button.svelte';
 	import RangeCalendar from '#/ui/range-calendar/range-calendar.svelte';
@@ -21,13 +21,10 @@
 		};
 	} = $props();
 
-	const start = todayDate.set({ day: 1 });
-	const end = todayDate;
-
 	$inspect(dateRange);
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-6">
 	<div class="flex flex-col items-start gap-2">
 		<RangeCalendar
 			bind:value={dateRange}
@@ -68,5 +65,24 @@
 				</Button>
 			</ButtonGroup.Root>
 		</div>
+	</div>
+
+	<svelte:boundary>
+		{@const fmtDate = (cd: CalendarDate) => `${cd.day}.${cd.month}.${cd.year}`}
+		<div>
+			<b>{dateRange.start !== undefined ? fmtDate(dateRange.start) : 'XX.XX.XXXX'}</b> &ndash;
+			<b>{dateRange.end !== undefined ? fmtDate(dateRange.end) : 'XX.XX.XXXX'}</b>
+		</div>
+	</svelte:boundary>
+
+	<div class="flex">
+		<Button
+			onclick={() => {
+				dateRange = { start: undefined, end: undefined };
+			}}
+		>
+			<ListChecks />
+			Auswerten
+		</Button>
 	</div>
 </div>

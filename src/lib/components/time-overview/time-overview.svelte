@@ -3,7 +3,7 @@
 
   import * as Card from "#/ui/card";
 
-  let { user_id, dateRange }: { user_id: string; dateRange: { from: CalendarDate; to:CalendarDate;  } | undefined } = $props();
+  let { user_id, dateRange }: { user_id: string; dateRange: { start: CalendarDate; end:CalendarDate;  } | undefined } = $props();
 </script>
 
 <div class="flex flex-col gap-2">
