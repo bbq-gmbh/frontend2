@@ -3,6 +3,8 @@
 
 	import { Plus, X } from 'lucide-svelte';
 
+	import Holidays from 'date-holidays';
+
 	import { Button } from '#/ui/button';
 	import { ScrollArea } from '#/ui/scroll-area';
 	import { Badge } from '#/ui/badge';
@@ -48,6 +50,19 @@
 		asSuperuser = false,
 		readonly = false
 	}: { selectedDay?: Date; user_id: string; asSuperuser: boolean; readonly: boolean } = $props();
+
+	let holidays = new Holidays('DE', 'BW', {
+		timezone: 'Europe/Berlin',
+		types: ['public'],
+		languages: 'DE'
+	});
+
+	let selectedDayIsHoliday = $derived.by(() => {
+		if (selectedDay === undefined) return undefined;
+		const h = holidays.isHoliday(selectedDay);
+		if (h === false) return false;
+		return h.at(0)?.name ?? 'Feiertag';
+	});
 
 	let createNewDialog;
 	let createNewDialogOpen = $state(false);
@@ -246,6 +261,14 @@
 					</Dialog.Root>
 				{/if}
 			</div>
+			{#if selectedDayIsHoliday !== undefined && selectedDayIsHoliday !== false}
+				<div>
+					<span class="font-bold"> Feiertag: </span>
+					<i>
+						{selectedDayIsHoliday}
+					</i>
+				</div>
+			{/if}
 			<div class="overflow-x-auto rounded-md border border-border whitespace-nowrap">
 				{#if selectedDay}
 					{#await getAbsenceEntriesForDay({ day: selectedDay, user_id: user_id })}

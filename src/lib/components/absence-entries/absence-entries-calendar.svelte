@@ -37,6 +37,7 @@
 						fixedWeeks
 						minValue={minDate}
 						maxValue={maxDate}
+						locale="de-DE"
 					/>
 
 					<div class="flex justify-end">

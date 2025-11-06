@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
+	import { Calendar, Clock, Ellipsis, Pencil, Trash2 } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 
 	import * as Table from '#/ui/table';
@@ -43,6 +43,17 @@
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content align="end" side="bottom">
 						<DropdownMenu.Group>
+              {#if user.employee}
+                <DropdownMenu.Item onclick={() => goto(`/app/time-entries?user_id=${user.id}&edit=true`)}>
+                  <Clock />
+                  Zeiteinträge Bearbeiten
+                </DropdownMenu.Item>
+                <DropdownMenu.Item onclick={() => goto(`/app/absence-entries?user_id=${user.id}&edit=true`)}>
+                  <Calendar />
+                  Abwesendheitseinträge Bearbeiten
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator />
+              {/if}
 							<DropdownMenu.Item onclick={() => goto(`/app/users/${user.id}?edit=true`)}>
 								<Pencil />
 								Anpassen
