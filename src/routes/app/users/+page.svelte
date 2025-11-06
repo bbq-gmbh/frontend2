@@ -56,7 +56,7 @@
 				</Button>
 			{/snippet}
 		</AlertDialog.Trigger>
-		<AlertDialog.Content class="gap-6">
+		<AlertDialog.Content class="gap-6" interactOutsideBehavior="close">
 			<AlertDialog.Header>
 				<AlertDialog.Title>Nutzer erstellen</AlertDialog.Title>
 			</AlertDialog.Header>

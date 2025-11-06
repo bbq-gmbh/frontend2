@@ -6,7 +6,7 @@ import * as sdk from '@/backend/sdk.gen';
 
 import { z } from 'zod';
 
-export const getUserByIdRemote = query(z.string().uuid(), async (userId) => {
+export const getUserByIdRemote = query(z.uuidv4(), async (userId) => {
 	const { client } = withAuthClient({ superuser: true });
 	const { data, error: err } = await sdk.getUserById({
 		client,

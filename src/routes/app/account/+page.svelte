@@ -14,6 +14,7 @@
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	import { logoutFromAllDevices } from './account.remote';
+	import { Input } from '#/ui/input';
 
 	let { data }: { data: PageServerData } = $props();
 	let { user } = data;
@@ -98,6 +99,14 @@
 							/>
 						</InputGroup.Root>
 					</div>
+				</div>
+				<div class="space-y-2">
+					<Label>Geburtsdatum</Label>
+					<Input
+						value={new Date(user.employee.birthday).toLocaleDateString('de-DE')}
+						placeholder="&ndash;"
+						readonly
+					/>
 				</div>
 			</Card.Content>
 		</Card.Root>

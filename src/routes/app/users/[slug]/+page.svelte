@@ -445,8 +445,7 @@
 						/>
 					</div>
 
-          
-					<!-- <svelte:boundary> -->
+					<svelte:boundary>
 						{#await getEmployee then employee}
 							{@const getSupervisorUser = async () =>
 								editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
@@ -462,7 +461,7 @@
 								</div>
 							{/if}
 						{/await}
-					<!-- </svelte:boundary> -->
+					</svelte:boundary>
 				</Card.Content>
 			</Card.Root>
 		{/if}
