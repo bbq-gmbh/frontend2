@@ -31,22 +31,22 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
 
 	const [, startDateStr, endDateStr] = match;
 
-	let dateRange: { start: CalendarDate; end: CalendarDate };
+	let dateRangeStr: { start: string; end: string };
 	try {
-		dateRange = {
-			start: parseDate(startDateStr),
-			end: parseDate(endDateStr)
+		dateRangeStr = {
+			start: parseDate(startDateStr).toString(),
+			end: parseDate(endDateStr).toString()
 		};
 	} catch (e) {
 		error(400, 'Invalid date format in range');
 	}
 
-	if (dateRange.start > dateRange.end) error(400, 'Date start is after date end');
+	if (dateRangeStr.start > dateRangeStr.end) error(400, 'Date start is after date end');
 
 	return {
 		user: locals.user!!,
 		accessToken: locals.accessToken!!,
 		userId,
-		dateRange
+		dateRangeStr
 	};
 };
