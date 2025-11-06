@@ -21,11 +21,7 @@
 		asSuperuser
 	}: { value: CalendarDate; asSuperuser: boolean } = $props();
 
-	let monthDateTimeFormat = new Intl.DateTimeFormat('de-DE', { month: 'long' });
-
 	let calendar;
-
-	// let value = $state(today(getLocalTimeZone()));
 
 	let todayDate = $state(today(getLocalTimeZone()));
 	let minDate = $derived(todayDate.set({ day: 1, month: 1 }));
@@ -34,8 +30,8 @@
 
 <div class="flex flex-col gap-6">
 	<div>
-		<Card.Root class="bg-transparent border-0 p-0">
-			<Card.Content class="flex justify-start">
+		<div>
+			<div class="flex justify-start">
 				<div class="flex flex-col gap-2">
 					<Calendar
 						bind:this={calendar}
@@ -66,7 +62,7 @@
 						</ButtonGroup.Root>
 					</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
+			</div>
+		</div>
 	</div>
 </div>
