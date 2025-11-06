@@ -446,23 +446,23 @@
 					</div>
 
           
-					<!-- <svelte:boundary> -->
-						{#await getEmployee then employee}
-							{@const getSupervisorUser = async () =>
-								editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
-							{#if employee}
+				<!-- <svelte:boundary> -->
+					{#await getEmployee then employee}
+						{#if employee}
+							{#await (async () => editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined)() then supervisorUser}
 								<div class="space-y-2">
 									<Label>Vorgesetzer</Label>
 									<UserSearchSelect
-										currentUser={await getSupervisorUser()}
+										currentUser={supervisorUser}
 										bind:value={editEmployeeSupervisor}
 										remote={searchEmployeesRemote}
 										readonly={!editing}
 									/>
 								</div>
-							{/if}
-						{/await}
-					<!-- </svelte:boundary> -->
+							{/await}
+						{/if}
+					{/await}
+				<!-- </svelte:boundary> -->
 				</Card.Content>
 			</Card.Root>
 		{/if}
