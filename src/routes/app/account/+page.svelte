@@ -58,7 +58,7 @@
 						readonly={true}
 					/>
 					<InputGroup.Addon align="inline-end">
-						<InputGroup.Button variant="secondary" onclick={() => goto("/change-password")}>
+						<InputGroup.Button variant="secondary" onclick={() => goto('/change-password')}>
 							<SquarePen />
 							Passwort ändern
 						</InputGroup.Button>
@@ -111,10 +111,12 @@
 			<div class="flex flex-wrap gap-2">
 				<Dialog.Root>
 					<Dialog.Trigger>
-						<Button variant="outline">
-							<LogOut />
-							Ausloggen
-						</Button>
+						{#snippet child({ props })}
+							<Button {...props} variant="outline">
+								<LogOut />
+								Ausloggen
+							</Button>
+						{/snippet}
 					</Dialog.Trigger>
 					<Dialog.Content>
 						<Dialog.Header>
@@ -137,10 +139,12 @@
 
 				<Dialog.Root>
 					<Dialog.Trigger>
-						<Button variant="outline">
-							<LogOut />
-							Überall ausloggen
-						</Button>
+						{#snippet child({ props })}
+							<Button {...props} variant="outline">
+								<LogOut />
+								Überall ausloggen
+							</Button>
+						{/snippet}
 					</Dialog.Trigger>
 					<Dialog.Content>
 						<Dialog.Header>

@@ -302,10 +302,12 @@
 				<div class="flex flex-wrap gap-2">
 					<AlertDialog.Root bind:open={remoteLogoutAllDialogOpen}>
 						<AlertDialog.Trigger>
-							<Button variant="outline">
-								<LogOut />
-								Überall ausloggen
-							</Button>
+							{#snippet child({ props })}
+								<Button {...props} variant="outline">
+									<LogOut />
+									Überall ausloggen
+								</Button>
+							{/snippet}
 						</AlertDialog.Trigger>
 						<AlertDialog.Content>
 							<AlertDialog.Header>
@@ -347,10 +349,12 @@
 
 					<AlertDialog.Root bind:open={resertPasswordDialogOpen}>
 						<AlertDialog.Trigger>
-							<Button variant="outline">
-								<LogOut />
-								Passwort zurücksetzen
-							</Button>
+							{#snippet child({ props })}
+								<Button {...props} variant="outline">
+									<LogOut />
+									Passwort zurücksetzen
+								</Button>
+							{/snippet}
 						</AlertDialog.Trigger>
 						<AlertDialog.Content>
 							<AlertDialog.Header>
