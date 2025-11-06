@@ -186,7 +186,7 @@
 					{#snippet child({ props })}
 						<Button {...props} variant="outline">
 							<Save />
-							Speichen
+							Speichern
 						</Button>
 					{/snippet}
 				</AlertDialog.Trigger>
@@ -205,7 +205,8 @@
 										employee: user.employee
 											? {
 													first_name: editEmployeeFirstName,
-													last_name: editEmployeeLastName
+													last_name: editEmployeeLastName,
+													supervisor: editEmployeeSupervisor
 												}
 											: undefined
 									});
@@ -213,7 +214,7 @@
 									toast.success('Änderungen erfolgreich gespeichert');
 								} catch (error: any) {
 									toast.error(
-										`Fehler beim Speichern der Änderungen: ${error?.message ?? 'Unknown Error'}`
+										`Fehler beim Speichern der Änderungen: ${error.body?.message ?? 'Unknown Error'}`
 									);
 								}
 							}}

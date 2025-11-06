@@ -85,7 +85,8 @@ export const editUser = command(
 		employee: z
 			.object({
 				first_name: z.string().min(1).optional(),
-				last_name: z.string().min(1).optional()
+				last_name: z.string().min(1).optional(),
+				supervisor: z.uuidv4().optional().nullable()
 			})
 			.optional()
 			.nullable()
@@ -103,7 +104,8 @@ export const editUser = command(
 				new_employee: data.employee
 					? {
 							new_first_name: data.employee.first_name,
-							new_last_name: data.employee.last_name
+							new_last_name: data.employee.last_name,
+							new_supervisor_id: data.employee.supervisor
 						}
 					: undefined
 			}
@@ -112,7 +114,12 @@ export const editUser = command(
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (result.error) {
-			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+			error(
+				result.response.status,
+				result.error.detail?.at(0)?.msg ??
+					(result.error.detail as string | undefined) ??
+					'Unknown Error'
+			);
 		}
 
 		await getUserById(data.id).refresh();
@@ -135,8 +142,6 @@ export const searchEmployeesRemote = query(
 				is_employee: true
 			}
 		});
-
-		await new Promise((resolve) => setTimeout(resolve, 400));
 
 		if (!!result.data) {
 			return result.data;
