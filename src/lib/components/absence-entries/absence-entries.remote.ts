@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { withAuthClient } from '@/server/auth';
 import * as sdk from '@/backend/sdk.gen';
-import type { TimeEntry, UserInfo } from '@/backend';
+import type { AbsenceEntry, TimeEntry, UserInfo } from '@/backend';
 
 const dateFormatter = new Intl.DateTimeFormat('en-CA', {
 	timeZone: 'Europe/Berlin',
@@ -36,7 +36,7 @@ export const getAbsenceEntriesForDay = query(
 		});
 
 		if (response.data) {
-			let data = response.data as TimeEntry[];
+			let data = response.data as AbsenceEntry[];
 
 			const dict = new Map<string, UserInfo | undefined>();
 
@@ -47,12 +47,12 @@ export const getAbsenceEntriesForDay = query(
 						const { data } = await sdk.getUserById({ client, path: { id: d.created_by } });
 						dict.set(d.created_by, data ? data : undefined);
 						return {
-							timeEntry: d,
+							absenceEntry: d,
 							createdBy: data
 						};
 					} else {
 						return {
-							timeEntry: d,
+							absenceEntry: d,
 							createdBy: c
 						};
 					}
