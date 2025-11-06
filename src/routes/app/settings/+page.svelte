@@ -40,12 +40,12 @@
 
 	<div class="space-y-2">
 		<Label>Neu Gleitzeit Warnung Gelb</Label>
-		<Input bind:value={valueYellow} type="text" />
+		<Input bind:value={valueYellow} type="number" />
 	</div>
 
 	<div class="space-y-2">
 		<Label>Neu Gleitzeit Warnung Rot</Label>
-		<Input bind:value={valueRed} type="text" />
+		<Input bind:value={valueRed} type="number" />
 	</div>
 
 	<Button
@@ -56,12 +56,12 @@
 					s2: valueRed as any
 				});
 
-				toast.success('Abwesendheitseintrag erfolgreich erstellt');
+				toast.success('Gespeichert');
 
 				await getServerStore().refresh();
 			} catch (error) {
 				toast.error(
-					`Fehler beim Erstellen vom Abwesendheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+					`Fehler beim Speichern: ${(error as any).body?.message ?? 'Unknown Error'}`
 				);
 			}
 		}}
