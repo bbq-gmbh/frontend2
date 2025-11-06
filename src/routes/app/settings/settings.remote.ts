@@ -32,6 +32,10 @@ export const setServerStoreGleitzeitwarnung = command(
 		)
 			error(400, 'Bad request');
 
+		if (data.s1 !== undefined && data.s2 !== undefined) {
+			if (data.s2 < data.s1) error(400, 'Bad request');
+		}
+
 		const res = await sdk.patchServerStoreGleitzeitWarnungen({
 			client,
 			query: {
