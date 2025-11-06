@@ -14,9 +14,7 @@
 	import TimeEntriesList from '#/time-entries/time-entries-list.svelte';
 
 	let { data }: { data: PageData } = $props();
-	let { user } = data;
-
-	let page = $state(0);
+	let { userId, superuser, readonly } = data;
 
 	let selectedDay: CalendarDate = $state(today(getLocalTimeZone()));
 	let selectedDayDate: Date | undefined = $derived(
@@ -28,21 +26,8 @@
 	<TimeEntriesCalendar bind:value={selectedDay} />
 	<TimeEntriesList
 		selectedDay={selectedDayDate}
-		user_id={user.id}
-		asSuperuser={false}
-		readonly={false}
+		user_id={userId}
+		asSuperuser={superuser}
+		{readonly}
 	/>
-	<!-- <div class="flex flex-wrap gap-2">
-		<Button variant="outline" class="ml-auto">
-			<Plus />
-			Neu erstellen
-		</Button>
-	</div>
-
-	<div class="flex flex-wrap gap-2">
-		<Button variant="outline" class="ml-auto">
-			<Plus />
-			Neu erstellen
-		</Button>
-	</div> -->
 </div>
