@@ -66,7 +66,7 @@ export const getAbsenceEntriesForDay = query(
 	}
 );
 
-export const createTimeEntry = command(
+export const createAbsenceEntry = command(
 	z.object({
 		user_id: z.uuidv4(),
 		date_begin: z.iso.date(),

@@ -94,7 +94,10 @@
 <div class="flex flex-col gap-6">
 	<Card.Root class="bg-transparent p-4">
 		<Card.Content class="flex flex-col gap-4 p-0">
-			<div class="flex flex-wrap items-center justify-end">
+			<div class="flex flex-wrap items-center justify-end gap-4">
+        <span class="font-bold">
+          Zeiteinträge
+        </span>
 				<span class="mr-auto">
 					{selectedDay?.toLocaleDateString('de-DE')}
 				</span>

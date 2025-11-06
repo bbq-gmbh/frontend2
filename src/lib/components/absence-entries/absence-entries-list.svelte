@@ -16,7 +16,7 @@
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	import {
-		createTimeEntry,
+		createAbsenceEntry,
 		deleteAbsenceEntry,
 		getAbsenceEntriesForDay
 	} from './absence-entries.remote';
@@ -57,6 +57,10 @@
 		{ value: 'sickness', label: 'Krankheit', className: 'bg-indigo-600 dark:bg-indigo-400' },
 		{ value: 'other', label: 'Other', className: 'bg-yellow-600 dark:bg-yellow-400' }
 	];
+	function isAbsenceTypeVisible(val: string) {
+		return asSuperuser ? true : val !== 'other';
+	}
+
 	let createNewDialogEntryTypeSelected: string | undefined = $state(undefined);
 	let createNewDialogDateBegin: string | undefined = $state(undefined);
 	let createNewDialogDateEnd: string | undefined = $state(undefined);
@@ -82,6 +86,10 @@
 		createNewDialogDateEnd = selectedDay ? dateFormatter.format(selectedDay) : undefined;
 	}
 
+	function createNewDialogSetDateEndBegin() {
+		createNewDialogDateEnd = createNewDialogDateBegin;
+	}
+
 	function createNewDialogOnClickReset() {
 		createNewDialogEntryTypeSelected = undefined;
 		createNewDialogResetDateBegin();
@@ -92,7 +100,8 @@
 <div class="flex flex-col gap-6">
 	<Card.Root class="bg-transparent p-4">
 		<Card.Content class="flex flex-col gap-4 p-0">
-			<div class="flex flex-wrap items-center justify-end">
+			<div class="flex flex-wrap items-center justify-end gap-4">
+				<span class="font-bold"> Abwesendheitseinträge </span>
 				<span class="mr-auto">
 					{selectedDay?.toLocaleDateString('de-DE')}
 				</span>
@@ -120,7 +129,7 @@
 								<Select.Root
 									bind:value={createNewDialogEntryTypeSelected}
 									type="single"
-									disabled={!!createTimeEntry.pending}
+									disabled={!!createAbsenceEntry.pending}
 								>
 									<Select.Trigger class="min-w-[14rem]">
 										{allAbsenceTypes.find((item) => item.value === createNewDialogEntryTypeSelected)
@@ -128,9 +137,11 @@
 									</Select.Trigger>
 									<Select.Content>
 										{#each allAbsenceTypes as i}
-											<Select.Item value={i.value} label={i.label}>
-												{i.label}
-											</Select.Item>
+											{#if isAbsenceTypeVisible(i.value)}
+												<Select.Item value={i.value} label={i.label}>
+													{i.label}
+												</Select.Item>
+											{/if}
 										{/each}
 									</Select.Content>
 								</Select.Root>
@@ -142,12 +153,12 @@
 									<InputGroup.Input
 										bind:value={createNewDialogDateBegin}
 										type="date"
-										disabled={!!createTimeEntry.pending}
+										disabled={!!createAbsenceEntry.pending}
 									/>
 									<InputGroup.Addon align="inline-end">
 										<InputGroup.Button
 											onclick={createNewDialogResetDateBegin}
-											disabled={!!createTimeEntry.pending}
+											disabled={!!createAbsenceEntry.pending}
 										>
 											Heute
 										</InputGroup.Button>
@@ -160,15 +171,21 @@
 								<InputGroup.Root>
 									<InputGroup.Input
 										bind:value={createNewDialogDateEnd}
-										type="time"
-										disabled={!!createTimeEntry.pending}
+										type="date"
+										disabled={!!createAbsenceEntry.pending}
 									/>
 									<InputGroup.Addon align="inline-end">
 										<InputGroup.Button
 											onclick={createNewDialogResetDateEnd}
-											disabled={!!createTimeEntry.pending}
+											disabled={!!createAbsenceEntry.pending}
 										>
 											Heute
+										</InputGroup.Button>
+										<InputGroup.Button
+											onclick={createNewDialogSetDateEndBegin}
+											disabled={!!createAbsenceEntry.pending}
+										>
+											Wie Beginn
 										</InputGroup.Button>
 									</InputGroup.Addon>
 								</InputGroup.Root>
@@ -180,10 +197,24 @@
 									{#snippet child({ props })}
 										<Button
 											{...props}
-											disabled={!createNewDialogAllowAdd || !!createTimeEntry.pending}
+											disabled={!createNewDialogAllowAdd || !!createAbsenceEntry.pending}
 											onclick={async () => {
 												try {
-													// TODO
+													if (
+														createNewDialogDateBegin === undefined ||
+														createNewDialogDateEnd === undefined
+													) {
+														toast.error('Unerwarteter Fehler');
+														return;
+													}
+
+													await createAbsenceEntry({
+														user_id,
+														date_begin: createNewDialogDateBegin,
+														date_end: createNewDialogDateEnd,
+														entryType: createNewDialogEntryTypeSelected as any,
+														asSuperuser
+													});
 													createNewDialogOpen = false;
 
 													toast.success('Abwesendheitseintrag erfolgreich erstellt');
@@ -201,7 +232,7 @@
 												}
 											}}
 										>
-											{#if !!createTimeEntry.pending}
+											{#if !!createAbsenceEntry.pending}
 												<Spinner />
 											{:else}
 												<Plus />

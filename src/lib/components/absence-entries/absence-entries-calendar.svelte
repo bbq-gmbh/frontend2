@@ -19,7 +19,7 @@
 
 	let todayDate = $state(today(getLocalTimeZone()));
 	let minDate = $derived(todayDate.set({ day: 1, month: 1 }));
-	let maxDate = $derived(todayDate);
+	let maxDate = $derived(todayDate.set({ year: todayDate.year + 1 }));
 </script>
 
 <div class="flex flex-col gap-6">

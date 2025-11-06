@@ -45,6 +45,18 @@
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
 					{/if}
+          {#if user.employee}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton>
+								{#snippet child({ props })}
+									<a {...props} href="/app/absence-entries">
+										<Clock />
+										Abwesendheit
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/if}
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
