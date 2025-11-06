@@ -15,7 +15,7 @@
 
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
-	import { createTimeEntry, deleteTimeEntry, getTimeEntriesForDay } from './time-entries.remote';
+	import { createTimeEntry, deleteTimeEntry, getTimeEntriesForDay } from './absence-entries.remote';
 	import Label from '#/ui/label/label.svelte';
 	import { Input } from '#/ui/input';
 	import { toast } from 'svelte-sonner';
@@ -39,47 +39,41 @@
 	let createNewDialog;
 	let createNewDialogOpen = $state(false);
 
-	const allEntryTypes = [
-		{ value: 'arrival', label: 'Kommen', className: 'bg-green-600 dark:bg-green-400' },
-		{ value: 'departure', label: 'Gehen', className: 'bg-indigo-600 dark:bg-indigo-400' }
+	const allAbsenceTypes = [
+		{ value: 'vacation', label: 'Urlaub', className: 'bg-green-600 dark:bg-green-400' },
+		{ value: 'sickness', label: 'Krankheit', className: 'bg-indigo-600 dark:bg-indigo-400' },
+		{ value: 'other', label: 'Other', className: 'bg-yellow-600 dark:bg-yellow-400' }
 	];
 	let createNewDialogEntryTypeSelected: string | undefined = $state(undefined);
-	let createNewDialogDate: string | undefined = $state(undefined);
-	let createNewDialogTime: string | undefined = $state(undefined);
+	let createNewDialogDateBegin: string | undefined = $state(undefined);
+	let createNewDialogDateEnd: string | undefined = $state(undefined);
 
 	let createNewDialogAllowAdd = $derived.by(() => {
 		if (
 			createNewDialogEntryTypeSelected === undefined ||
-			allEntryTypes.find((item) => item.value === createNewDialogEntryTypeSelected) === undefined
+			allAbsenceTypes.find((item) => item.value === createNewDialogEntryTypeSelected) === undefined
 		)
 			return false;
 
-		if (createNewDialogDate === undefined || createNewDialogDate === '') return false;
-		if (createNewDialogTime === undefined || createNewDialogTime === '') return false;
+		if (createNewDialogDateBegin === undefined || createNewDialogDateBegin === '') return false;
+		if (createNewDialogDateEnd === undefined || createNewDialogDateEnd === '') return false;
 
 		return true;
 	});
 
-	function createNewDialogResetDate() {
-		createNewDialogDate = selectedDay ? dateFormatter.format(selectedDay) : undefined;
+	function createNewDialogResetDateBegin() {
+		createNewDialogDateBegin = selectedDay ? dateFormatter.format(selectedDay) : undefined;
 	}
 
-	function createNewDialogResetTime() {
-		createNewDialogTime = new Date().toLocaleString('en-US', {
-			timeZone: 'Europe/Berlin',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false
-		});
+	function createNewDialogResetDateEnd() {
+		createNewDialogDateEnd = selectedDay ? dateFormatter.format(selectedDay) : undefined;
 	}
 
 	function createNewDialogOnClickReset() {
 		createNewDialogEntryTypeSelected = undefined;
-		createNewDialogResetDate();
-		createNewDialogResetTime();
+		createNewDialogResetDateBegin();
+		createNewDialogResetDateEnd();
 	}
-
-	//$inspect(createNewDialogDate, createNewDialogTime);
 </script>
 
 <div class="flex flex-col gap-6">
@@ -105,7 +99,7 @@
 						</Dialog.Trigger>
 						<Dialog.Content interactOutsideBehavior="close" class="space-y-6">
 							<Dialog.Header>
-								<Dialog.Title>Neuen Zeiteintrag erstellen</Dialog.Title>
+								<Dialog.Title>Neuen Abwesendheitseintrag erstellen</Dialog.Title>
 							</Dialog.Header>
 
 							<div class="space-y-2">
@@ -116,11 +110,11 @@
 									disabled={!!createTimeEntry.pending}
 								>
 									<Select.Trigger class="min-w-[14rem]">
-										{allEntryTypes.find((item) => item.value === createNewDialogEntryTypeSelected)
+										{allAbsenceTypes.find((item) => item.value === createNewDialogEntryTypeSelected)
 											?.label ?? 'Eintragsart'}
 									</Select.Trigger>
 									<Select.Content>
-										{#each allEntryTypes as i}
+										{#each allAbsenceTypes as i}
 											<Select.Item value={i.value} label={i.label}>
 												{i.label}
 											</Select.Item>
@@ -130,16 +124,16 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label>Datum</Label>
+								<Label>Beginn Datum</Label>
 								<InputGroup.Root>
 									<InputGroup.Input
-										bind:value={createNewDialogDate}
+										bind:value={createNewDialogDateBegin}
 										type="date"
 										disabled={!!createTimeEntry.pending}
 									/>
 									<InputGroup.Addon align="inline-end">
 										<InputGroup.Button
-											onclick={createNewDialogResetDate}
+											onclick={createNewDialogResetDateBegin}
 											disabled={!!createTimeEntry.pending}
 										>
 											Heute
@@ -149,19 +143,19 @@
 							</div>
 
 							<div class="space-y-2">
-								<Label>Uhrzeit</Label>
+								<Label>Ende Datum</Label>
 								<InputGroup.Root>
 									<InputGroup.Input
-										bind:value={createNewDialogTime}
+										bind:value={createNewDialogDateEnd}
 										type="time"
 										disabled={!!createTimeEntry.pending}
 									/>
 									<InputGroup.Addon align="inline-end">
 										<InputGroup.Button
-											onclick={createNewDialogResetTime}
+											onclick={createNewDialogResetDateEnd}
 											disabled={!!createTimeEntry.pending}
 										>
-											Jetzt
+											Heute
 										</InputGroup.Button>
 									</InputGroup.Addon>
 								</InputGroup.Root>
@@ -176,15 +170,10 @@
 											disabled={!createNewDialogAllowAdd || !!createTimeEntry.pending}
 											onclick={async () => {
 												try {
-													await createTimeEntry({
-														user_id,
-														dateTime: `${createNewDialogDate}T${createNewDialogTime}Z`,
-														entryType: createNewDialogEntryTypeSelected as any,
-														asSuperuser
-													});
+													// TODO
 													createNewDialogOpen = false;
 
-													toast.success('Zeiteintrag erfolgreich erstellt');
+													toast.success('Abwesendheitseintrag erfolgreich erstellt');
 
 													if (selectedDay) {
 														await getTimeEntriesForDay({
@@ -194,7 +183,7 @@
 													}
 												} catch (error) {
 													toast.error(
-														`Fehler beim Erstellen vom Zeiteintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+														`Fehler beim Erstellen vom Abwesendheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
 													);
 												}
 											}}
@@ -222,29 +211,39 @@
 							<Table.Header>
 								<Table.Row class="h-12">
 									<Table.Head class="px-4">Typ</Table.Head>
-									<Table.Head class="px-2">Zeit</Table.Head>
+									<Table.Head class="px-2">Beginn</Table.Head>
+									<Table.Head class="px-2">Ende</Table.Head>
 									<Table.Head class="pr-2 pl-4">Erstellt am</Table.Head>
 									<Table.Head class="px-2">Erstellt von</Table.Head>
 									<Table.Head class="px-4"></Table.Head>
 								</Table.Row>
 							</Table.Header>
 							<Table.Body class="**:data-[slot=table-cell]:first:w-8">
-								{#each timeEntries as timeEntryPair}
-									{@const timeEntry = timeEntryPair.timeEntry}
+								{#each absenceEntries as absenceEntryPair}
+									{@const absenceEntry = absenceEntryPair.absenceEntry}
 									<Table.Row class="h-12">
 										<Table.Cell class="px-4">
-											{@const entryType = allEntryTypes.find(
-												(item) => item.value === timeEntry.entry_type
+											{@const absenceType = allAbsenceTypes.find(
+												(item) => item.value === absenceEntry.entry_type
 											)}
-											{#if entryType}
-												<Badge class={entryType.className}>
-													{entryType.label}
+											{#if absenceType}
+												<Badge class={absenceType.className}>
+													{absenceType.label}
 												</Badge>
 											{/if}
 										</Table.Cell>
 										<Table.Cell class="px-2">
 											<span class="font-bold">
-												{new Date(timeEntry.date_time).toLocaleTimeString('de-DE', {
+												{new Date(absenceEntry.date_time).toLocaleTimeString('de-DE', {
+													hour: '2-digit',
+													minute: '2-digit',
+													hour12: false
+												})}
+											</span>
+										</Table.Cell>
+                    <Table.Cell class="px-2">
+											<span class="font-bold">
+												{new Date(absenceEntry.date_time).toLocaleTimeString('de-DE', {
 													hour: '2-digit',
 													minute: '2-digit',
 													hour12: false
@@ -252,9 +251,9 @@
 											</span>
 										</Table.Cell>
 										<Table.Cell class="pr-2 pl-4">
-											{#if timeEntry.created_at}
+											{#if absenceEntry.created_at}
 												<span class="font-normal">
-													{new Date(timeEntry.created_at).toLocaleTimeString('de-DE', {
+													{new Date(absenceEntry.created_at).toLocaleTimeString('de-DE', {
 														hour: '2-digit',
 														minute: '2-digit',
 														hour12: false
@@ -264,23 +263,23 @@
 										</Table.Cell>
 										<Table.Cell class="w-full px-2">
 											<div>
-												{#if timeEntryPair.createdBy}
-													<UserNameAvatar user={timeEntryPair.createdBy} />
+												{#if absenceEntry.createdBy}
+													<UserNameAvatar user={absenceEntry.createdBy} />
 												{/if}
 											</div>
 										</Table.Cell>
 
 										<Table.Cell class="px-4">
-											{#if timeEntry.id && !readonly}
+											{#if absenceEntry.id && !readonly}
 												<Button
 													size="icon-sm"
 													variant="ghost"
 													onclick={async () => {
 														try {
-															if (timeEntry.id === undefined || timeEntry.id === null) return;
+															if (absenceEntry.id === undefined || absenceEntry.id === null) return;
 
-															await deleteTimeEntry({
-																id: timeEntry.id,
+															await deleteAbsenceEntry({
+																id: absenceEntry.id,
 																asSuperuser
 															});
 
@@ -305,53 +304,6 @@
 										</Table.Cell>
 									</Table.Row>
 								{/each}
-
-								<!-- <Table.Row class="h-12">
-							<Table.Cell class="px-4">
-								<Badge class="bg-green-600 dark:bg-green-400">Kommen</Badge>
-							</Table.Cell>
-							<Table.Cell class="px-2">
-								<span class="font-bold"> 10:30 </span>
-							</Table.Cell>
-							<Table.Cell class="pr-2 pl-4">
-								<span class="font-normal"> 10:30 </span>
-							</Table.Cell>
-							<Table.Cell class="w-full px-2">
-								<div>
-									<UserNameAvatar
-										user={{
-											created_at: '',
-											id: '',
-											is_superuser: false,
-											username: 'eric_cartman'
-										}}
-									/>
-								</div>
-							</Table.Cell>
-						</Table.Row>
-						<Table.Row class="h-12">
-							<Table.Cell class="px-4">
-								<Badge class="bg-indigo-600 dark:bg-indigo-400">Gehen</Badge>
-							</Table.Cell>
-							<Table.Cell class="px-2">
-								<span class="font-bold"> 10:30 </span>
-							</Table.Cell>
-							<Table.Cell class="pr-2 pl-4">
-								<span class="font-normal"> 10:30 </span>
-							</Table.Cell>
-							<Table.Cell class="w-full px-2">
-								<div>
-									<UserNameAvatar
-										user={{
-											created_at: '',
-											id: '',
-											is_superuser: false,
-											username: 'eric_cartman'
-										}}
-									/>
-								</div>
-							</Table.Cell>
-						</Table.Row> -->
 							</Table.Body>
 						</Table.Root>
 					{/await}

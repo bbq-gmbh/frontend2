@@ -705,7 +705,12 @@ export const zGetTimeEntriesResponse = z.union([
 export const zDeleteAbsenceEntryData = z.object({
     body: zAbsenceEntryDelete,
     path: z.optional(z.never()),
-    query: z.optional(z.never())
+    query: z.optional(z.object({
+        force: z.optional(z.union([
+            z.boolean(),
+            z.null()
+        ]))
+    }))
 });
 
 /**

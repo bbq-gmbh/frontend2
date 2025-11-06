@@ -1291,7 +1291,12 @@ export type GetTimeEntriesResponse = GetTimeEntriesResponses[keyof GetTimeEntrie
 export type DeleteAbsenceEntryData = {
     body: AbsenceEntryDelete;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Force
+         */
+        force?: boolean | null;
+    };
     url: '/absence_entries/';
 };
 

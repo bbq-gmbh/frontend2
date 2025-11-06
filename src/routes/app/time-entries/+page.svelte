@@ -19,12 +19,19 @@
 	let page = $state(0);
 
 	let selectedDay: CalendarDate = $state(today(getLocalTimeZone()));
-	let selectedDayDate: Date = $derived(selectedDay.toDate('Europe/Berlin'));
+	let selectedDayDate: Date | undefined = $derived(
+		selectedDay ? selectedDay.toDate('Europe/Berlin') : undefined
+	);
 </script>
 
 <div class="grid gap-4 md:grid-cols-[repeat(auto-fit,minmax(36rem,1fr))]">
 	<TimeEntriesCalendar bind:value={selectedDay} />
-	<TimeEntriesList selectedDay={selectedDayDate} user_id={user.id} asSuperuser={false} />
+	<TimeEntriesList
+		selectedDay={selectedDayDate}
+		user_id={user.id}
+		asSuperuser={false}
+		readonly={false}
+	/>
 	<!-- <div class="flex flex-wrap gap-2">
 		<Button variant="outline" class="ml-auto">
 			<Plus />
