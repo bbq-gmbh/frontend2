@@ -448,16 +448,19 @@
 					{#await getEmployee then employee}
 						{#if employee}
 							<svelte:boundary>
-								{@const getSupervisorUser = async () =>
-									editEmployeeSupervisor ? await getUserById(editEmployeeSupervisor) : undefined}
+								{@const supervisorUserPromise = editEmployeeSupervisor 
+									? getUserById(editEmployeeSupervisor) 
+									: Promise.resolve(undefined)}
 								<div class="space-y-2">
 									<Label>Vorgesetzer</Label>
-									<UserSearchSelect
-										currentUser={await getSupervisorUser()}
-										bind:value={editEmployeeSupervisor}
-										remote={searchEmployeesRemote}
-										readonly={!editing}
-									/>
+									{#await supervisorUserPromise then supervisorUser}
+										<UserSearchSelect
+											currentUser={supervisorUser}
+											bind:value={editEmployeeSupervisor}
+											remote={searchEmployeesRemote}
+											readonly={!editing}
+										/>
+									{/await}
 								</div>
 							</svelte:boundary>
 						{/if}
