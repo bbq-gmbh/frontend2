@@ -111,6 +111,9 @@ export const deleteAbsenceEntry = command(
 			body: {
 				id
 			},
+			query: {
+				force: asSuperuser
+			}
 		});
 
 		await new Promise((resolve) => setTimeout(resolve, 300));
