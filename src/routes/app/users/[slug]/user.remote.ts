@@ -14,7 +14,12 @@ export const getUserById = query(z.uuidv4(), async (id) => {
 
 	if (!!result.data) return result.data;
 
-	error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+	error(
+		result.response.status,
+		result.error?.detail?.at(0)?.msg ??
+			(result.error?.detail as string | undefined) ??
+			'Unknown Error'
+	);
 });
 
 export const getEmployeeById = query(z.uuidv4(), async (id) => {
@@ -23,7 +28,12 @@ export const getEmployeeById = query(z.uuidv4(), async (id) => {
 
 	if (!!result.data) return result.data as AppModelsEmployeeEmployee;
 
-	error(result.response.status, result.error?.detail?.at(0)?.msg ?? 'Unknown Error');
+	error(
+		result.response.status,
+		result.error?.detail?.at(0)?.msg ??
+			(result.error?.detail as string | undefined) ??
+			'Unknown Error'
+	);
 });
 
 export const getUsernameExists = query(usernameSchema, async (username) => {
@@ -69,7 +79,12 @@ export const convertToEmployee = form(
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		if (result.error) {
-			error(result.response.status, result.error.detail?.at(0)?.msg ?? 'Unknown Error');
+			error(
+				result.response.status,
+				result.error.detail?.at(0)?.msg ??
+					(result.error.detail as string | undefined) ??
+					'Unknown Error'
+			);
 		}
 
 		await getUserById(data.user_id).refresh();
