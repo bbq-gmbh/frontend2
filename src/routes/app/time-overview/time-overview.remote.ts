@@ -3,10 +3,13 @@ import { withAuthClient } from '@/server/auth';
 import { error } from '@sveltejs/kit';
 
 import { z } from 'zod';
+import Holidays from 'date-holidays';
 
-import * as sdk from '@/backend/sdk.gen';
-import type { AppModelsEmployeeEmployee } from '@/backend/types.gen';
+import type { CalendarDate } from '@internationalized/date';
 import { parseDate } from '@internationalized/date';
+
+import type { AppModelsEmployeeEmployee, TimeEntry, AbsenceEntry } from '@/backend/types.gen';
+import * as sdk from '@/backend/sdk.gen';
 
 export const getUserById = query(z.uuidv4(), async (id) => {
 	const { client } = withAuthClient();
@@ -50,7 +53,189 @@ export const calculateOverview = query(
 			end: parseDate(date_end)
 		};
 
-		const result = await sdk.getEmployeeByUserId({ client, path: { user_id } });
-		if (!result.data) err(result);
+		if (dateRange.start.compare(dateRange.end) > 0) {
+			error(400, 'Start date must be before or equal to end date');
+		}
+
+		const dayAmount = dateRange.end.compare(dateRange.start) + 1;
+
+		const rUser = await sdk.getUserById({ client, path: { id: user_id } });
+		if (!rUser.data) err(rUser);
+
+		const rEmployee = await sdk.getEmployeeByUserId({ client, path: { user_id } });
+		if (!rEmployee.data) err(rEmployee);
+
+		const rServerStore = await sdk.getServerStore({ client });
+		if (!rServerStore.data) err(rServerStore);
+
+		const warnungen = {
+			gelb: rServerStore.data?.gleitzeit_warnung_gelb ?? 5,
+			rot: rServerStore.data?.gleitzeit_warnung_rot ?? 10
+		};
+		if (warnungen.gelb > warnungen.rot) error(500, 'ServerStore: gelb > rot');
+
+		const rTimeEntries = await sdk.getTimeEntries({
+			client,
+			body: {
+				user_id: user_id,
+				id: null,
+				date: null,
+				from_date: dateRange.start.toString(),
+				to_date: dateRange.end.toString()
+			}
+		});
+		if (!rTimeEntries.data) err(rTimeEntries);
+		if (!Array.isArray(rTimeEntries.data)) error(500, 'Time entry response was not array');
+
+		const rAbsenceEntries = await sdk.getAbsenceEntries({
+			client,
+			body: {
+				user_id: user_id,
+				id: null,
+				date: null,
+				from_date: dateRange.start.toString(),
+				to_date: dateRange.end.toString()
+			}
+		});
+		if (!rAbsenceEntries.data) err(rAbsenceEntries);
+		if (!Array.isArray(rAbsenceEntries.data)) error(500, 'Absence entries response was not array');
+
+		let holidays = new Holidays('DE', 'BW', {
+			timezone: 'Europe/Berlin',
+			types: ['public'],
+			languages: 'DE'
+		});
+
+		// Cache parsed dates for time entries
+		const timeEntriesWithDates = (rTimeEntries.data as TimeEntry[]).map((entry) => ({
+			entry,
+			date: parseDate(entry.date_time.split('T')[0])
+		}));
+
+		// Cache parsed dates for absence entries
+		const absenceEntriesWithDates = (rAbsenceEntries.data as AbsenceEntry[]).map((entry) => ({
+			entry,
+			dateBegin: parseDate(entry.date_begin),
+			dateEnd: parseDate(entry.date_end)
+		}));
+
+		const expectedWorktime = rEmployee.data!!.hour_model;
+    const expectedPauseMinutes = rEmployee.data!!.pause_time_minutes;
+    const expectedPause = expectedPauseMinutes / 60;
+
+		// all days
+		const days = Array.from({ length: dayAmount }, (_, i) => {
+			const currentDate = dateRange.start.add({ days: i });
+
+			const isHoliday = holidays.isHoliday(
+				new Date(currentDate.year, currentDate.month - 1, currentDate.day)
+			);
+
+			const timeEntries: TimeEntry[] = timeEntriesWithDates
+				.filter(({ date }) => date.compare(currentDate) === 0)
+				.map(({ entry }) => entry);
+
+			// Filter absence entries where current date is within the date range
+			const absenceEntries: AbsenceEntry[] = absenceEntriesWithDates
+				.filter(
+					({ dateBegin, dateEnd }) =>
+						currentDate.compare(dateBegin) >= 0 && currentDate.compare(dateEnd) <= 0
+				)
+				.map(({ entry }) => entry)
+				.sort((a, b) => {
+					// Order: sickness (sick), other, vacation (holiday)
+					const order = { sickness: 0, other: 1, vacation: 2 };
+					return order[a.entry_type] - order[b.entry_type];
+				});
+
+      const totalTime = calculateTotalTimeFromTimeEntries(timeEntries);
+
+      const {
+        work,
+        pause,
+        violates
+      } = getWorkTimeAndPause(totalTime.totalHours, expectedPause);
+
+			return {
+        totalTime,
+				workTime: work,
+        pauseTime: pause,
+        violatesWorkTime: violates,
+				timeEntries,
+				absenceEntries,
+				isWorkday: true, // false if sunday
+				isHoliday
+			};
+		});
 	}
 );
+
+function calculateTotalTimeFromTimeEntries(timeEntries: TimeEntry[]): {
+	totalHours: number;
+	detectedIssue: boolean;
+} {
+	let totalHours = 0.0;
+	let lastArrivalTime: number | undefined = undefined;
+	let detectedIssue = false;
+
+	// Sort entries by date_time to ensure correct order
+	const sortedEntries = [...timeEntries].sort((a, b) => a.date_time.localeCompare(b.date_time));
+
+	for (const entry of sortedEntries) {
+		// Parse the time from the date_time string (format: "YYYY-MM-DDTHH:MM:SS")
+		const timeParts = entry.date_time.split('T')[1].split(':');
+		const hours = parseInt(timeParts[0]);
+		const minutes = parseInt(timeParts[1]);
+		const timeInHours = hours + minutes / 60;
+
+		if (entry.entry_type === 'arrival') {
+			// If there's already an unpaired arrival, that's an issue
+			if (lastArrivalTime !== undefined) {
+				detectedIssue = true;
+			}
+			// Store arrival time for next departure calculation
+			lastArrivalTime = timeInHours;
+		} else if (entry.entry_type === 'departure') {
+			if (lastArrivalTime !== undefined) {
+				// Calculate hours between arrival and departure
+				totalHours += timeInHours - lastArrivalTime;
+				// Reset arrival time after pairing with departure
+				lastArrivalTime = undefined;
+			} else {
+				// Departure without preceding arrival is an issue
+				detectedIssue = true;
+			}
+		}
+	}
+
+	// If there's still an unpaired arrival at the end, that's an issue
+	if (lastArrivalTime !== undefined) {
+		detectedIssue = true;
+	}
+
+	return { totalHours, detectedIssue };
+}
+
+function getWorkTimeAndPause(totalHours: number, expectedPauseHours: number): {
+  work: number,
+  pause: number,
+  violates?: boolean
+} {
+  let wHours = totalHours - expectedPauseHours;
+
+  if (wHours < 6) return {
+    work: wHours,
+    pause: expectedPauseHours
+  };
+
+  if (wHours < 9) return {
+    work: totalHours - (expectedPauseHours < 0.5 ? 0.5 : expectedPauseHours),
+    pause: expectedPauseHours < 0.5 ? 0.5 : expectedPauseHours
+  };
+
+  return {
+    work: wHours - (expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours),
+    pause: expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours,
+    violates: wHours - (expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours) >= 10
+  };
+}
