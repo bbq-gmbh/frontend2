@@ -13,7 +13,7 @@
 		<Table.Header class="sticky top-0 z-10">
 			<Table.Row>
 				<Table.Head>
-					<div class="px-2">User</div>
+					<div class="px-2">Nutzer</div>
 				</Table.Head>
 			</Table.Row>
 		</Table.Header>

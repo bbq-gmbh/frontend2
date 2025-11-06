@@ -15,7 +15,7 @@
 </script>
 
 <div class="grid gap-4 md:grid-cols-[repeat(auto-fit,minmax(36rem,1fr))]">
-	<AbsenceEntriesCalendar bind:value={selectedDay} />
+	<AbsenceEntriesCalendar bind:value={selectedDay} asSuperuser={superuser} />
 	<AbsenceEntriesList
 		selectedDay={selectedDayDate}
 		user_id={userId}

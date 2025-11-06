@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getLocalTimeZone, today } from '@internationalized/date';
+	import Holidays from 'date-holidays';
 
 	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
 	import { CalendarDate } from '@internationalized/date';
@@ -9,13 +10,20 @@
 	import * as ButtonGroup from '#/ui/button-group';
 	import * as Card from '#/ui/card';
 
-	let { value = $bindable(today(getLocalTimeZone())) }: { value: CalendarDate } = $props();
+	let holidays = new Holidays('DE', 'BW', {
+		timezone: 'Europe/Berlin',
+		types: ['public'],
+		languages: 'DE'
+	});
+
+	let {
+		value = $bindable(today(getLocalTimeZone())),
+		asSuperuser
+	}: { value: CalendarDate; asSuperuser: boolean } = $props();
 
 	let monthDateTimeFormat = new Intl.DateTimeFormat('de-DE', { month: 'long' });
 
 	let calendar;
-
-	// let value = $state(today(getLocalTimeZone()));
 
 	let todayDate = $state(today(getLocalTimeZone()));
 	let minDate = $derived(todayDate.set({ day: 1, month: 1 }));
@@ -37,7 +45,12 @@
 						fixedWeeks
 						minValue={minDate}
 						maxValue={maxDate}
-            locale="de-DE"
+						locale="de-DE"
+						isDateUnavailable={(date) => {
+							if (asSuperuser === true) return false;
+							const d = date.toDate('Europe/Berlin');
+							return holidays.isHoliday(d) != false || d.getDay() === 0;
+						}}
 					/>
 
 					<div class="flex justify-end">

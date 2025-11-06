@@ -13,8 +13,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	let superuser = false;
-	if (url.searchParams.has('superuser')) {
-		const s = url.searchParams.get('superuser');
+	if (url.searchParams.has('edit')) {
+		const s = url.searchParams.get('edit');
 		if (s === null) error(400, 'superuser param was null');
 		if (s === 'true') {
 			if (!locals.user!!.is_superuser) error(401, 'Not authorized');
