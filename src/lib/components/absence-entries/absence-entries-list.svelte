@@ -116,7 +116,7 @@
 	<Card.Root class="bg-transparent p-4">
 		<Card.Content class="flex flex-col gap-4 p-0">
 			<div class="flex flex-wrap items-center justify-end gap-4">
-				<span class="font-bold"> Abwesendheitseinträge </span>
+				<span class="font-bold"> Abwesenheitseinträge </span>
 				<span class="mr-auto">
 					{selectedDay?.toLocaleDateString('de-DE')}
 				</span>
@@ -136,7 +136,7 @@
 						</Dialog.Trigger>
 						<Dialog.Content interactOutsideBehavior="close" class="space-y-6">
 							<Dialog.Header>
-								<Dialog.Title>Neuen Abwesendheitseintrag erstellen</Dialog.Title>
+								<Dialog.Title>Neuen Abwesenheitseintrag erstellen</Dialog.Title>
 							</Dialog.Header>
 
 							<div class="space-y-2">
@@ -232,7 +232,7 @@
 													});
 													createNewDialogOpen = false;
 
-													toast.success('Abwesendheitseintrag erfolgreich erstellt');
+													toast.success('Abwesenheitseintrag erfolgreich erstellt');
 
 													if (selectedDay) {
 														await getAbsenceEntriesForDay({
@@ -242,7 +242,7 @@
 													}
 												} catch (error) {
 													toast.error(
-														`Fehler beim Erstellen vom Abwesendheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+														`Fehler beim Erstellen vom Abwesenheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
 													);
 												}
 											}}
@@ -338,7 +338,7 @@
 																asSuperuser
 															});
 
-															toast.success('Abwesendheitseintrag erfolgreich gelöscht');
+															toast.success('Abwesenheitseintrag erfolgreich gelöscht');
 
 															if (selectedDay) {
 																await getAbsenceEntriesForDay({
@@ -348,7 +348,7 @@
 															}
 														} catch (error) {
 															toast.error(
-																`Fehler beim Löschen vom Abwesendheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
+																`Fehler beim Löschen vom Abwesenheitseintrag: ${(error as any).body?.message ?? 'Unknown Error'}`
 															);
 														}
 													}}

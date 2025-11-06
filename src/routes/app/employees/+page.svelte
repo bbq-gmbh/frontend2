@@ -46,7 +46,7 @@
 											onclick={() => goto(`/app/absence-entries?user_id=${user.id}`)}
 										>
 											<Calendar />
-											Abwesendheitseinträge
+											Abwesenheitseinträge
 										</Button>
 									</ButtonGroup.Root>
 								</Table.Cell>

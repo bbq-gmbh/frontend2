@@ -50,7 +50,7 @@
                 </DropdownMenu.Item>
                 <DropdownMenu.Item onclick={() => goto(`/app/absence-entries?user_id=${user.id}&edit=true`)}>
                   <Calendar />
-                  Abwesendheitseinträge Bearbeiten
+                  Abwesenheitseinträge Bearbeiten
                 </DropdownMenu.Item>
                 <DropdownMenu.Separator />
               {/if}

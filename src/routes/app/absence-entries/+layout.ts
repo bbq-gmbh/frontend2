@@ -2,6 +2,6 @@ import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = async () => {
 	return {
-		breadcrumbs: [{ name: 'Abwesendheit', path: '/absence-entries' }]
+		breadcrumbs: [{ name: 'Abwesenheit', path: '/absence-entries' }]
 	};
 };

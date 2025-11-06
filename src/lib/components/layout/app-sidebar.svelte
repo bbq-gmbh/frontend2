@@ -51,7 +51,7 @@
 								{#snippet child({ props })}
 									<a {...props} href="/app/absence-entries">
 										<Calendar />
-										Abwesendheit
+										Abwesenheit
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
