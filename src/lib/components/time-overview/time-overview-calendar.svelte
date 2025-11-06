@@ -7,6 +7,7 @@
 	import RangeCalendar from '#/ui/range-calendar/range-calendar.svelte';
 
 	import * as ButtonGroup from '#/ui/button-group';
+	import { goto } from '$app/navigation';
 
 	let todayDate = $state(today(getLocalTimeZone()));
 	let minDate = $derived(todayDate.set({ day: 1, month: 1 }));
@@ -21,7 +22,10 @@
 		};
 	} = $props();
 
-	$inspect(dateRange);
+	let canShow = $derived.by(() => {
+		if (dateRange.start === undefined || dateRange.end === undefined) return false;
+		return dateRange.start <= dateRange.end;
+	});
 </script>
 
 <div class="flex flex-col gap-6">
@@ -70,16 +74,23 @@
 	<svelte:boundary>
 		{@const fmtDate = (cd: CalendarDate) => `${cd.day}.${cd.month}.${cd.year}`}
 		<div>
-			<b>{dateRange.start !== undefined ? fmtDate(dateRange.start) : 'XX.XX.XXXX'}</b> &ndash;
-			<b>{dateRange.end !== undefined ? fmtDate(dateRange.end) : 'XX.XX.XXXX'}</b>
+			{#if dateRange.start === undefined && dateRange.end === undefined}
+				...
+			{:else}
+				<b>{dateRange.start !== undefined ? fmtDate(dateRange.start) : '...'}</b> &ndash;
+				<b>{dateRange.end !== undefined ? fmtDate(dateRange.end) : '...'}</b>
+			{/if}
 		</div>
 	</svelte:boundary>
 
 	<div class="flex">
 		<Button
 			onclick={() => {
-				dateRange = { start: undefined, end: undefined };
+				if (canShow) {
+          goto("/app/time-overview/");
+        }
 			}}
+      disabled={!canShow}
 		>
 			<ListChecks />
 			Auswerten
