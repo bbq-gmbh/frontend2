@@ -1,6 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { requireAuth } from '@/server/auth';
 
+export const ssr = false;
+
 export const load: PageServerLoad = async ({ locals }) => {
 	requireAuth(locals, { superuser: true });
 
