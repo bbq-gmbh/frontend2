@@ -451,6 +451,10 @@ export const zListUsersData = z.object({
         is_employee: z.optional(z.union([
             z.boolean(),
             z.null()
+        ])),
+        superuser: z.optional(z.union([
+            z.boolean(),
+            z.null()
         ]))
     })
 });

@@ -674,6 +674,10 @@ export type ListUsersData = {
          * Is Employee
          */
         is_employee?: boolean | null;
+        /**
+         * Superuser
+         */
+        superuser?: boolean | null;
     };
     url: '/users/';
 };
