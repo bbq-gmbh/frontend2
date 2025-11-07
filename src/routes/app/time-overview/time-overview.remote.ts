@@ -5,7 +5,7 @@ import { error } from '@sveltejs/kit';
 import { z } from 'zod';
 import Holidays from 'date-holidays';
 
-import type { CalendarDate } from '@internationalized/date';
+import { CalendarDate, getDayOfWeek } from '@internationalized/date';
 import { parseDate } from '@internationalized/date';
 
 import type { AppModelsEmployeeEmployee, TimeEntry, AbsenceEntry } from '@/backend/types.gen';
@@ -128,6 +128,7 @@ export const calculateOverview = query(
 		// all days
 		const days = Array.from({ length: dayAmount }, (_, i) => {
 			const currentDate = dateRange.start.add({ days: i });
+      const weekDay = getDayOfWeek(currentDate, "de-DE");
 
 			const isHoliday = holidays.isHoliday(
 				new Date(currentDate.year, currentDate.month - 1, currentDate.day)
@@ -155,13 +156,17 @@ export const calculateOverview = query(
 
 			const { work, pause, violates } = getWorkTimeAndPause(totalHours, expectedPause);
 
-			const isWorkday = currentDate.day !== 0; // Sunday is 0 in JavaScript Date
-			const isWeekday = currentDate.day !== 0 && currentDate.day !== 6;
+			const isWorkday = weekDay !== 6;
+			const isWeekday = weekDay !== 5 && weekDay !== 6;
 
-			const violatesWorkHours = isInWorkHours(beginWorkTime, endWorkTime, underage);
+      const violatesSunday = totalHours > 0 && !isWorkday;
+
+			const violatesWorkHours = !isInWorkHours(beginWorkTime, endWorkTime, underage);
+
+      console.log(weekDay)
 
 			return {
-				weekDay: currentDate.day,
+				weekDay,
 				date: { year: currentDate.year, month: currentDate.month, day: currentDate.day },
 				totalHours,
 				workTime: work,
@@ -175,10 +180,10 @@ export const calculateOverview = query(
 				isHoliday,
 				beginWorkTime,
 				endWorkTime,
-				violatesSunday: totalHours > 0 && !isWorkday,
-				violatesWorkTimeLimit: violates,
+				violatesSunday,
+				violatesWorkTimeLimit: violates === true,
 				violatesWorkHours,
-				violatesRestPeriod: false
+				violatesRestPeriod: false,
 			};
 		});
 
@@ -272,6 +277,8 @@ export const calculateOverview = query(
 			weeks[weekNumber].push(day);
 		}
 
+    //console.log(weeks)
+
 		return {
 			user: rUser.data!!,
 			employee: rEmployee.data!!,
@@ -315,13 +322,15 @@ function isInWorkHours(
 	endWorkTime: Date | undefined,
 	underage: boolean
 ): boolean {
-	if (beginWorkTime !== undefined) {
-		if (beginWorkTime.getMinutes() / 60 < 6) return false;
-		if (beginWorkTime.getMinutes() / 60 > (underage ? 20 : 22)) return false;
+  if (beginWorkTime !== undefined) {
+    const t = beginWorkTime.getHours() + beginWorkTime.getMinutes() / 60;
+		if (t < 6) return false;
+		if (t > (underage ? 20 : 22)) return false;
 	}
 	if (endWorkTime !== undefined) {
-		if (endWorkTime.getMinutes() / 60 < 6) return false;
-		if (endWorkTime.getMinutes() / 60 > (underage ? 20 : 22)) return false;
+    const t = endWorkTime.getHours() + endWorkTime.getMinutes() / 60;
+		if (t < 6) return false;
+		if (t > (underage ? 20 : 22)) return false;
 	}
 	return true;
 }
@@ -390,7 +399,7 @@ function getWorkTimeAndPause(
 	pause: number;
 	violates?: boolean;
 } {
-	let wHours = totalHours - expectedPauseHours;
+	let wHours = Math.max(totalHours - expectedPauseHours, 0);
 
 	if (wHours < 6)
 		return {
@@ -418,23 +427,28 @@ function violatesRestPeriod(preDayEndWorkTime: Date, startWorkTime: Date) {
 }
 
 function getISOWeek(date: Date): number {
+	// German Calendar Week follows ISO 8601 standard
+	// Week starts on Monday, first week contains the first Thursday of the year
+
 	// Copy date so we don't modify original
 	const target = new Date(date.valueOf());
 
+	// Set to nearest Thursday (current date + 4 - current day number)
 	// ISO week date weeks start on Monday, so correct the day number
-	const dayNr = (date.getDay() + 6) % 7;
-
-	// Set to nearest Thursday: current date + 4 - current day number
+	const dayNr = (target.getDay() + 6) % 7; // Monday = 0, Sunday = 6
 	target.setDate(target.getDate() - dayNr + 3);
 
-	// Get first day of year
-	const firstThursday = new Date(target.getFullYear(), 0, 4);
+	// January 4th is always in week 1
+	const yearStart = new Date(target.getFullYear(), 0, 1);
+	const week1Thursday = new Date(target.getFullYear(), 0, 1);
+	const jan1DayNr = (yearStart.getDay() + 6) % 7;
+	week1Thursday.setDate(1 - jan1DayNr + 3);
 
-	// Calculate the difference in weeks
-	const weekDiff = Math.floor(
-		(target.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000)
+	// Calculate full weeks between dates
+	const weekDiff = Math.round(
+		(target.getTime() - week1Thursday.getTime()) / (7 * 24 * 60 * 60 * 1000)
 	);
 
-	// Return week number (add 1 because weeks start at 1)
+	// Return German Calendar Week number (KW)
 	return 1 + weekDiff;
 }

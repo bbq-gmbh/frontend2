@@ -45,6 +45,7 @@
 				captionLayout="dropdown"
 				minValue={minDate}
 				maxValue={maxDate}
+        locale="de-DE"
 			/>
 			<div class="flex flex-wrap gap-2">
 				<ButtonGroup.Root>
