@@ -35,7 +35,7 @@
 
 {#await calcOverview}
 	<div class="text-muted-foreground">Loading...</div>
-{:then { days, dayAmount, user, employee, serverStore, warnungen, total }}
+{:then { weeks, dayAmount, user, employee, serverStore, warnungen, total }}
 	<div class="space-y-6">
 		<Card.Root class="max-w-[40rem]">
 			<Card.Header>
@@ -141,7 +141,9 @@
 				<Card.Title>Abeitszeiteinträge</Card.Title>
 			</Card.Header>
 			<Card.Content class="space-y-6">
+        {#each weeks as week}
         
+        {/each}
       </Card.Content>
 		</Card.Root>
 	</div>

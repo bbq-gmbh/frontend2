@@ -161,6 +161,7 @@ export const calculateOverview = query(
 			const violatesWorkHours = isInWorkHours(beginWorkTime, endWorkTime, underage);
 
 			return {
+				weekDay: currentDate.day,
 				date: { year: currentDate.year, month: currentDate.month, day: currentDate.day },
 				totalHours,
 				workTime: work,
@@ -276,7 +277,6 @@ export const calculateOverview = query(
 			employee: rEmployee.data!!,
 			serverStore: rServerStore.data!!,
 			warnungen,
-			days,
 			weeks,
 			dayAmount,
 			total: {
