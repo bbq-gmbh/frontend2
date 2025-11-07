@@ -120,7 +120,7 @@
 								if (Math.abs(h) >= warnungen.gelb) return 'dark:text-yellow-400 text-yellow-600';
 								return '';
 							}}
-							<div class={`text-2xl font-bold ${warnungColor(total.totalOverTimeHours)}`}>
+							<div class={`text-xl font-bold ${warnungColor(total.totalOverTimeHours)}`}>
 								{total.totalOverTimeHours} Stunden
 							</div>
 						</svelte:boundary>
@@ -175,9 +175,17 @@
 						{#each days as day}
 							{#if (day.isWeekday && !day.isHoliday) || day.violatesRestPeriod || day.violatesSunday || day.violatesWorkHours || day.violatesWorkTimeLimit || day.timeEntries.length + day.absenceEntries.length > 0}
 								<div class="flex flex-col gap-2">
-									<span>
-										{weekDayToGerman(day.weekDay)}
-									</span>
+									<div>
+										<span>
+											{weekDayToGerman(day.weekDay)}
+										</span>
+
+										{#if day.workTime > 0}
+											<span class="text-muted-foreground">
+												(Arbeitszeit: {day.workTime}; Pausenzeit: {day.pauseTime})
+											</span>
+										{/if}
+									</div>
 									{#if day.timeEntries.length + day.absenceEntries.length > 0}
 										<div class="flex flex-col gap-2">
 											{#if day.absenceEntries.length > 0}
@@ -292,35 +300,44 @@
 												</div>
 											{/if}
 										</div>
-									{/if}
-									<div class="flex flex-col gap-2">
-										<div class="flex gap-1 px-1">
-											{#if day.violatesSunday === true}
-												<span class="flex items-center gap-4 text-sm">
-													<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
-													Arbeitszeit ist an einem Sonntag
-												</span>
-											{/if}
-											{#if day.violatesRestPeriod === true}
-												<span class="flex items-center gap-4 text-sm">
-													<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
-													Ruhezeit wurde nicht eingehalten
-												</span>
-											{/if}
-											{#if day.violatesWorkHours === true}
-												<span class="flex items-center gap-4 text-sm">
-													<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
-													Arbeitszeit war außerhalb des erlaubten Zeitraumes
-												</span>
-											{/if}
-											{#if day.violatesWorkTimeLimit === true}
-												<span class="flex items-center gap-4 text-sm">
-													<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
-													Arbeitszeit an dem Tag überschritten
-												</span>
-											{/if}
+									{:else if day.isWeekday && !day.isHoliday}
+										<div class="flex flex-col gap-2">
+											<span class="flex items-center gap-4 text-sm">
+												<TriangleAlert size={18} />
+												Keine erfasste Arbeitszeit
+											</span>
 										</div>
-									</div>
+									{/if}
+									{#if day.violatesRestPeriod || day.violatesSunday || day.violatesWorkHours || day.violatesWorkTimeLimit}
+										<div class="flex flex-col gap-2">
+											<div class="flex gap-1 px-1">
+												{#if day.violatesSunday === true}
+													<span class="flex items-center gap-4 text-sm">
+														<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
+														Arbeitszeit ist an einem Sonntag
+													</span>
+												{/if}
+												{#if day.violatesRestPeriod === true}
+													<span class="flex items-center gap-4 text-sm">
+														<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
+														Ruhezeit wurde nicht eingehalten
+													</span>
+												{/if}
+												{#if day.violatesWorkHours === true}
+													<span class="flex items-center gap-4 text-sm">
+														<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
+														Arbeitszeit war außerhalb des erlaubten Zeitraumes
+													</span>
+												{/if}
+												{#if day.violatesWorkTimeLimit === true}
+													<span class="flex items-center gap-4 text-sm">
+														<TriangleAlert size={18} class="text-red-600 dark:text-red-400" />
+														Arbeitszeit an dem Tag überschritten
+													</span>
+												{/if}
+											</div>
+										</div>
+									{/if}
 								</div>
 							{/if}
 						{/each}
