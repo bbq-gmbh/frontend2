@@ -174,6 +174,7 @@ export const calculateOverview = query(
 				isHoliday,
 				beginWorkTime,
 				endWorkTime,
+				violatesSunday: totalHours > 0 && !isWorkday,
 				violatesWorkTimeLimit: violates,
 				violatesWorkHours,
 				violatesRestPeriod: false
@@ -206,8 +207,10 @@ export const calculateOverview = query(
 		for (let i = 0; i < days.length; i++) {
 			const day = days[i];
 
+			const isRegularWorkDay = day.isWeekday && !day.isHoliday;
+
 			if (day.absenceType === undefined) {
-				if (day.isWeekday && !day.isHoliday) {
+				if (isRegularWorkDay) {
 					totalRegularWorkdays += 1;
 
 					totalOverTimeHours += day.workTime - expectedWorktime;
@@ -219,16 +222,23 @@ export const calculateOverview = query(
 				}
 			} else {
 				totalHours += Math.max(expectedWorktime, day.workTime);
-				totalAbsenceDays += 1;
 
-				if (day.absenceType === 'sickness') {
-					totalSickdays += 1;
-				} else if (day.absenceType === 'vacation') {
-					totalVacationDays += 1;
+				if (isRegularWorkDay) {
+					totalAbsenceDays += 1;
+
+					if (day.absenceType === 'sickness') {
+						totalSickdays += 1;
+					} else if (day.absenceType === 'vacation') {
+						totalVacationDays += 1;
+					}
 				}
 			}
 
 			let violated = false;
+      if (day.violatesSunday) {
+				violations += 1;
+				violated = true;
+			}
 			if (day.violatesWorkTimeLimit) {
 				violations += 1;
 				violated = true;
