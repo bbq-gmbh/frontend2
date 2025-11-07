@@ -120,8 +120,10 @@ export const calculateOverview = query(
 		}));
 
 		const expectedWorktime = rEmployee.data!!.hour_model;
-    const expectedPauseMinutes = rEmployee.data!!.pause_time_minutes;
-    const expectedPause = expectedPauseMinutes / 60;
+		const underage = isUnderage(rEmployee.data!!.birthday);
+
+		const expectedPauseMinutes = rEmployee.data!!.pause_time_minutes;
+		const expectedPause = expectedPauseMinutes / 60;
 
 		// all days
 		const days = Array.from({ length: dayAmount }, (_, i) => {
@@ -148,35 +150,81 @@ export const calculateOverview = query(
 					return order[a.entry_type] - order[b.entry_type];
 				});
 
-      const totalTime = calculateTotalTimeFromTimeEntries(timeEntries);
+			const { totalHours, detectedIssue, beginWorkTime, endWorkTime } =
+				calculateTotalTimeFromTimeEntries(timeEntries);
 
-      const {
-        work,
-        pause,
-        violates
-      } = getWorkTimeAndPause(totalTime.totalHours, expectedPause);
+			const { work, pause, violates } = getWorkTimeAndPause(totalHours, expectedPause);
+
+			const isWorkday = currentDate.day !== 0; // Sunday is 0 in JavaScript Date
+
+			const violatesWorkHours = isInWorkHours(beginWorkTime, endWorkTime, underage);
 
 			return {
-        totalTime,
+				currentDate,
+				totalHours,
 				workTime: work,
-        pauseTime: pause,
-        violatesWorkTime: violates,
+				pauseTime: pause,
 				timeEntries,
+				timeEntriesIssueDetected: detectedIssue,
 				absenceEntries,
-				isWorkday: true, // false if sunday
-				isHoliday
+				absenceType: absenceEntries.at(0)?.entry_type,
+				isWorkday,
+				isHoliday,
+				beginWorkTime,
+				endWorkTime,
+				violatesWorkTimeLimit: violates,
+				violatesWorkHours,
+				violatesRestPeriod: false
 			};
 		});
+
+		return days;
 	}
 );
+
+function isUnderage(birthDate: string): boolean {
+	const today = new Date();
+	const birth = new Date(birthDate);
+
+	// Calculate age
+	let age = today.getFullYear() - birth.getFullYear();
+	const monthDiff = today.getMonth() - birth.getMonth();
+
+	// Adjust age if birthday hasn't occurred yet this year
+	if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+		age--;
+	}
+
+	return age < 18;
+}
+
+function isInWorkHours(
+	beginWorkTime: Date | undefined,
+	endWorkTime: Date | undefined,
+	underage: boolean
+): boolean {
+	if (beginWorkTime !== undefined) {
+		if (beginWorkTime.getMinutes() / 60 < 6) return false;
+		if (beginWorkTime.getMinutes() / 60 > (underage ? 20 : 22)) return false;
+	}
+	if (endWorkTime !== undefined) {
+		if (endWorkTime.getMinutes() / 60 < 6) return false;
+		if (endWorkTime.getMinutes() / 60 > (underage ? 20 : 22)) return false;
+	}
+	return true;
+}
 
 function calculateTotalTimeFromTimeEntries(timeEntries: TimeEntry[]): {
 	totalHours: number;
 	detectedIssue: boolean;
+	beginWorkTime: Date | undefined;
+	endWorkTime: Date | undefined;
 } {
 	let totalHours = 0.0;
 	let lastArrivalTime: number | undefined = undefined;
 	let detectedIssue = false;
+	let beginWorkTime: Date | undefined = undefined;
+	let endWorkTime: Date | undefined = undefined;
 
 	// Sort entries by date_time to ensure correct order
 	const sortedEntries = [...timeEntries].sort((a, b) => a.date_time.localeCompare(b.date_time));
@@ -189,6 +237,10 @@ function calculateTotalTimeFromTimeEntries(timeEntries: TimeEntry[]): {
 		const timeInHours = hours + minutes / 60;
 
 		if (entry.entry_type === 'arrival') {
+			// Capture the first arrival time as begin work time
+			if (beginWorkTime === undefined) {
+				beginWorkTime = new Date(entry.date_time);
+			}
 			// If there's already an unpaired arrival, that's an issue
 			if (lastArrivalTime !== undefined) {
 				detectedIssue = true;
@@ -196,6 +248,8 @@ function calculateTotalTimeFromTimeEntries(timeEntries: TimeEntry[]): {
 			// Store arrival time for next departure calculation
 			lastArrivalTime = timeInHours;
 		} else if (entry.entry_type === 'departure') {
+			// Update end work time with each departure (last one will be the final)
+			endWorkTime = new Date(entry.date_time);
 			if (lastArrivalTime !== undefined) {
 				// Calculate hours between arrival and departure
 				totalHours += timeInHours - lastArrivalTime;
@@ -213,29 +267,40 @@ function calculateTotalTimeFromTimeEntries(timeEntries: TimeEntry[]): {
 		detectedIssue = true;
 	}
 
-	return { totalHours, detectedIssue };
+	return { totalHours, detectedIssue, beginWorkTime, endWorkTime };
 }
 
-function getWorkTimeAndPause(totalHours: number, expectedPauseHours: number): {
-  work: number,
-  pause: number,
-  violates?: boolean
+function getWorkTimeAndPause(
+	totalHours: number,
+	expectedPauseHours: number
+): {
+	work: number;
+	pause: number;
+	violates?: boolean;
 } {
-  let wHours = totalHours - expectedPauseHours;
+	let wHours = totalHours - expectedPauseHours;
 
-  if (wHours < 6) return {
-    work: wHours,
-    pause: expectedPauseHours
-  };
+	if (wHours < 6)
+		return {
+			work: wHours,
+			pause: expectedPauseHours
+		};
 
-  if (wHours < 9) return {
-    work: totalHours - (expectedPauseHours < 0.5 ? 0.5 : expectedPauseHours),
-    pause: expectedPauseHours < 0.5 ? 0.5 : expectedPauseHours
-  };
+	if (wHours < 9)
+		return {
+			work: totalHours - (expectedPauseHours < 0.5 ? 0.5 : expectedPauseHours),
+			pause: expectedPauseHours < 0.5 ? 0.5 : expectedPauseHours
+		};
 
-  return {
-    work: wHours - (expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours),
-    pause: expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours,
-    violates: wHours - (expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours) >= 10
-  };
+	return {
+		work: wHours - (expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours),
+		pause: expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours,
+		violates: wHours - (expectedPauseHours < 0.75 ? 0.75 : expectedPauseHours) >= 10
+	};
+}
+
+function violatesRestPeriod(preDayEndWorkTime: Date, startWorkTime: Date) {
+	// if delta time is under 10 hours then true otherwise false
+	// e.g. 21:00 <-> 06:00 bad
+	return startWorkTime.getMinutes() / 60 + 24 - preDayEndWorkTime.getMinutes() / 60 < 10;
 }
