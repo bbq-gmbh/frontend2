@@ -156,6 +156,7 @@ export const calculateOverview = query(
 			const { work, pause, violates } = getWorkTimeAndPause(totalHours, expectedPause);
 
 			const isWorkday = currentDate.day !== 0; // Sunday is 0 in JavaScript Date
+			const isWeekday = currentDate.day !== 0 && currentDate.day !== 6;
 
 			const violatesWorkHours = isInWorkHours(beginWorkTime, endWorkTime, underage);
 
@@ -169,6 +170,7 @@ export const calculateOverview = query(
 				absenceEntries,
 				absenceType: absenceEntries.at(0)?.entry_type,
 				isWorkday,
+				isWeekday,
 				isHoliday,
 				beginWorkTime,
 				endWorkTime,
@@ -191,12 +193,73 @@ export const calculateOverview = query(
 			}
 		}
 
+		let totalHours = 0;
+		let totalOverTimeHours = 0;
+		let totalRegularWorkdays = 0;
+		let totalDaysWorked = 0;
+		let violations = 0;
+		let daysViolatated = 0;
+		let totalAbsenceDays = 0;
+		let totalSickdays = 0;
+		let totalVacationDays = 0;
+
+		for (let i = 0; i < days.length; i++) {
+			const day = days[i];
+
+			if (day.absenceType === undefined) {
+				if (day.isWeekday && !day.isHoliday) {
+					totalRegularWorkdays += 1;
+
+					totalOverTimeHours += day.workTime - expectedWorktime;
+				}
+
+				if (day.totalHours > 0) {
+					totalHours += day.totalHours;
+					totalDaysWorked += 1;
+				}
+			} else {
+				totalHours += Math.max(expectedWorktime, day.workTime);
+				totalAbsenceDays += 1;
+
+				if (day.absenceType === 'sickness') {
+					totalSickdays += 1;
+				} else if (day.absenceType === 'vacation') {
+					totalVacationDays += 1;
+				}
+			}
+
+			let violated = false;
+			if (day.violatesWorkTimeLimit) {
+				violations += 1;
+				violated = true;
+			}
+			if (day.violatesWorkHours) {
+				violations += 1;
+				violated = true;
+			}
+			if (day.violatesRestPeriod) {
+				violations += 1;
+				violated = true;
+			}
+
+			daysViolatated = violated ? 1 : 0;
+		}
+
 		return {
 			user: rUser.data!!,
 			employee: rEmployee.data!!,
 			serverStore: rServerStore.data!!,
 			warnungen,
-			days
+			days,
+			dayAmount,
+			total: {
+				totalHoursWorked: totalHours,
+				totalOverTimeHours,
+				totalRegularWorkdays,
+				totalDaysWorked,
+				violations,
+				daysViolatated
+			}
 		};
 	}
 );
