@@ -160,7 +160,7 @@ export const calculateOverview = query(
 			const violatesWorkHours = isInWorkHours(beginWorkTime, endWorkTime, underage);
 
 			return {
-				currentDate,
+				date: { year: currentDate.year, month: currentDate.month, day: currentDate.day },
 				totalHours,
 				workTime: work,
 				pauseTime: pause,
