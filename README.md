@@ -107,6 +107,19 @@ static/              # Static assets
 build/               # Production build output
 ```
 
+## Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+- **[Setup Guide](./docs/SETUP.md)** - Installation and local development setup
+- **[Architecture Guide](./docs/ARCHITECTURE.md)** - Project structure and design patterns
+- **[Development Guide](./docs/DEVELOPMENT.md)** - Code standards and best practices
+- **[API Integration Guide](./docs/API_INTEGRATION.md)** - Backend API communication
+- **[Components Guide](./docs/COMPONENTS.md)** - UI component library reference
+- **[Deployment Guide](./docs/DEPLOYMENT.md)** - Production deployment instructions
+
+For a complete overview, see [docs/README.md](./docs/README.md).
+
 ## Contributing
 
 Please follow the code style enforced by Prettier and ensure all type checks pass before submitting changes.
@@ -115,3 +128,5 @@ Please follow the code style enforced by Prettier and ensure all type checks pas
 npm run format
 npm run check
 ```
+
+Refer to the [Development Guide](./docs/DEVELOPMENT.md) for detailed code standards and conventions.
