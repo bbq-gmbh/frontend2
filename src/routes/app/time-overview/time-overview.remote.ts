@@ -255,6 +255,10 @@ export const calculateOverview = query(
 			daysViolatated = violated ? 1 : 0;
 		}
 
+    let weeks = {
+      //
+    };
+
 		return {
 			user: rUser.data!!,
 			employee: rEmployee.data!!,
