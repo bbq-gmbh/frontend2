@@ -191,7 +191,13 @@ export const calculateOverview = query(
 			}
 		}
 
-		return days;
+		return {
+			user: rUser.data!!,
+			employee: rEmployee.data!!,
+			serverStore: rServerStore.data!!,
+			warnungen,
+			days
+		};
 	}
 );
 
