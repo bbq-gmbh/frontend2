@@ -258,7 +258,10 @@ export const calculateOverview = query(
 				totalRegularWorkdays,
 				totalDaysWorked,
 				violations,
-				daysViolatated
+				daysViolatated,
+				totalAbsenceDays,
+				totalSickdays,
+				totalVacationDays
 			}
 		};
 	}
