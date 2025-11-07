@@ -48,6 +48,15 @@
 			/>
 			<div class="flex flex-wrap gap-2">
 				<ButtonGroup.Root>
+          <Button
+						size="sm"
+						variant="outline"
+						onclick={() => {
+							dateRange = { start: todayDate.subtract({ weeks: 1 }), end: todayDate };
+						}}
+					>
+						1 Woche
+					</Button>
 					<Button
 						size="sm"
 						variant="outline"

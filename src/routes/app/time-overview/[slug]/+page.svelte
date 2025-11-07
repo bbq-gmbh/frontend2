@@ -5,7 +5,7 @@
 
 	import * as Card from '#/ui/card';
 
-	import { getEmployeeById, getUserById } from '../time-overview.remote';
+	import { calculateOverview, getEmployeeById, getUserById } from '../time-overview.remote';
 	import UserNameAvatar from '#/user-name-avatar.svelte';
 
 	let { data }: { data: PageData } = $props();
@@ -24,39 +24,40 @@
 		return `${formatDate(start)} – ${formatDate(end)}`;
 	}
 
-	let getUser = $derived(getUserById(userId));
-	let getEmployee = $derived(getEmployeeById(userId));
+	let calcOverview = $derived(
+		calculateOverview({
+			user_id: userId,
+			date_start: dateRangeStr.start,
+			date_end: dateRangeStr.end
+		})
+	);
 </script>
 
-{#await getUser}
+{#await calcOverview}
 	<div class="text-muted-foreground">Loading...</div>
-{:then user}
-	{#await getEmployee}
-		<div class="text-muted-foreground">Loading...</div>
-	{:then employee}
-		<Card.Root class="max-w-[40rem]">
-			<Card.Header>
-				<Card.Title>Zeitübersicht {toDateRangeStr(dateRange.start, dateRange.end)}</Card.Title>
-			</Card.Header>
-			<Card.Content class="space-y-6">
-				<UserNameAvatar {user} />
+{:then { days, employee, serverStore, user, total }}
+	<Card.Root class="max-w-[40rem]">
+		<Card.Header>
+			<Card.Title>Zeitübersicht {toDateRangeStr(dateRange.start, dateRange.end)}</Card.Title>
+		</Card.Header>
+		<Card.Content class="space-y-6">
+			<UserNameAvatar {user} />
 
-        <div>
-					<div class="flex flex-col gap-1">
-						<div>Alle Tage</div>
-						<div class="text-xl">
-              {dateRange.end.compare(dateRange.start) + 1} Tage
-            </div>
+			<div>
+				<div class="flex flex-col gap-1">
+					<div>Alle Tage</div>
+					<div class="text-xl">
+						{dateRange.end.compare(dateRange.start) + 1} Tage
 					</div>
 				</div>
+			</div>
 
-				<div>
-					<div class="flex flex-col gap-1">
-						<div>Gesamtzahl Stunden</div>
-						<div class="text-xl">40.5 Stunden</div>
-					</div>
+			<div>
+				<div class="flex flex-col gap-1">
+					<div>Gesamtzahl Stunden</div>
+					<div class="text-xl">40.5 Stunden</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
-	{/await}
+			</div>
+		</Card.Content>
+	</Card.Root>
 {/await}
