@@ -178,6 +178,19 @@ export const calculateOverview = query(
 			};
 		});
 
+		// Check rest period violations
+		for (let i = 1; i < days.length; i++) {
+			const prevDay = days[i - 1];
+			const currentDay = days[i];
+
+			if (prevDay.endWorkTime !== undefined && currentDay.beginWorkTime !== undefined) {
+				currentDay.violatesRestPeriod = violatesRestPeriod(
+					prevDay.endWorkTime,
+					currentDay.beginWorkTime
+				);
+			}
+		}
+
 		return days;
 	}
 );
