@@ -235,7 +235,7 @@ export const calculateOverview = query(
 			}
 
 			let violated = false;
-      if (day.violatesSunday) {
+			if (day.violatesSunday) {
 				violations += 1;
 				violated = true;
 			}
@@ -255,9 +255,21 @@ export const calculateOverview = query(
 			daysViolatated = violated ? 1 : 0;
 		}
 
-    let weeks = {
-      //
-    };
+		// Group days by week (Monday to Sunday, ISO week standard)
+		const weeks: Record<number, typeof days> = {};
+
+		for (const day of days) {
+			const date = new Date(day.date.year, day.date.month - 1, day.date.day);
+
+			// Get ISO week number
+			const weekNumber = getISOWeek(date);
+
+			if (!weeks[weekNumber]) {
+				weeks[weekNumber] = [];
+			}
+
+			weeks[weekNumber].push(day);
+		}
 
 		return {
 			user: rUser.data!!,
@@ -265,6 +277,7 @@ export const calculateOverview = query(
 			serverStore: rServerStore.data!!,
 			warnungen,
 			days,
+			weeks,
 			dayAmount,
 			total: {
 				totalHoursWorked: totalHours,
@@ -402,4 +415,26 @@ function violatesRestPeriod(preDayEndWorkTime: Date, startWorkTime: Date) {
 	// if delta time is under 10 hours then true otherwise false
 	// e.g. 21:00 <-> 06:00 bad
 	return startWorkTime.getMinutes() / 60 + 24 - preDayEndWorkTime.getMinutes() / 60 < 10;
+}
+
+function getISOWeek(date: Date): number {
+	// Copy date so we don't modify original
+	const target = new Date(date.valueOf());
+
+	// ISO week date weeks start on Monday, so correct the day number
+	const dayNr = (date.getDay() + 6) % 7;
+
+	// Set to nearest Thursday: current date + 4 - current day number
+	target.setDate(target.getDate() - dayNr + 3);
+
+	// Get first day of year
+	const firstThursday = new Date(target.getFullYear(), 0, 4);
+
+	// Calculate the difference in weeks
+	const weekDiff = Math.floor(
+		(target.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000)
+	);
+
+	// Return week number (add 1 because weeks start at 1)
+	return 1 + weekDiff;
 }
